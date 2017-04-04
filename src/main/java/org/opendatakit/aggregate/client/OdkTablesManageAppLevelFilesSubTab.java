@@ -73,7 +73,7 @@ public class OdkTablesManageAppLevelFilesSubTab extends AggregateSubTabBase impl
     selectTablePanel = new FlexTable();
     selectTablePanel.getElement().setId("app_level_panel");
     selectTablePanel.setHTML(0, 0, "<h2> Application Level Files </h2>");
-    if ( AggregateUI.getUI().getUserInfo().getGrantedAuthorities().contains(GrantedAuthorityName.ROLE_ADMINISTER_TABLES)) {
+    if ( AggregateUI.getUI().getUserInfo().getGrantedAuthorities().contains(GrantedAuthorityName.ROLE_ADMINISTER_TABLES.name())) {
       selectTablePanel.setWidget(1, 0, addFileButton);
     }
 

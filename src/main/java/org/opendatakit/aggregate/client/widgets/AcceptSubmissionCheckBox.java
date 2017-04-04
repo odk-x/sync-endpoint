@@ -37,7 +37,7 @@ public final class AcceptSubmissionCheckBox extends AggregateCheckBox implements
 		this.formId = formId;
 		setValue(accept);
 		boolean enabled = AggregateUI.getUI().getUserInfo()
-		.getGrantedAuthorities().contains(GrantedAuthorityName.ROLE_DATA_OWNER);
+		.getGrantedAuthorities().contains(GrantedAuthorityName.ROLE_DATA_OWNER.name());
 		setEnabled(enabled);
 	}
 

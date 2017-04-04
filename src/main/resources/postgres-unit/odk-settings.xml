@@ -53,10 +53,7 @@
 	</bean>
 
 	<bean id="user_service" class="org.opendatakit.common.security.spring.UserServiceImpl">
-		<property name="datastore" ref="datastore" />
 		<property name="realm" ref="realm" />
-        <property name="superUserEmail" value="${security.server.superUser}" />
-		<property name="superUserUsername" value="${security.server.superUserUsername}" />
 	</bean>
 
 	<!--  bean to get the siteKey value (which is defined the first time the app starts up) -->
@@ -80,7 +77,6 @@
     <bean id="http_client_factory" class="org.opendatakit.common.utils.tomcat.TomcatHttpClientFactoryImpl" />
     <bean id="image_util" class="org.opendatakit.aggregate.util.tomcat.ImageUtilImpl" />
 	<bean id="startup" class="org.opendatakit.aggregate.AggregateStartupImpl" />
-	<bean id="oob_user_fetcher" class="org.opendatakit.common.utils.tomcat.TomcatOutOfBandUserFetcher" />
 
 	<bean id="watchdog" class="org.opendatakit.aggregate.task.tomcat.WatchdogImpl">
 		<property name="datastore" ref="datastore" />

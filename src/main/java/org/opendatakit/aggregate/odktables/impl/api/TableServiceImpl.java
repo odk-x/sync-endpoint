@@ -213,8 +213,8 @@ public class TableServiceImpl implements TableService {
   public Response createTable(TableDefinition definition) throws ODKDatastoreException,
       TableAlreadyExistsException, PermissionDeniedException, ODKTaskLockException, IOException {
 
-    TreeSet<GrantedAuthorityName> ui = SecurityServiceUtil.getCurrentUserSecurityInfo(cc);
-    if (!ui.contains(GrantedAuthorityName.ROLE_ADMINISTER_TABLES)) {
+    TreeSet<String> ui = SecurityServiceUtil.getCurrentUserSecurityInfo(cc);
+    if (!ui.contains(GrantedAuthorityName.ROLE_ADMINISTER_TABLES.name())) {
       throw new PermissionDeniedException("User does not belong to the 'Administer Tables' group");
     }
 
@@ -565,8 +565,8 @@ public class TableServiceImpl implements TableService {
       throws ODKDatastoreException, PermissionDeniedException, ODKTaskLockException,
       TableNotFoundException {
 
-    TreeSet<GrantedAuthorityName> ui = SecurityServiceUtil.getCurrentUserSecurityInfo(cc);
-    if (!ui.contains(GrantedAuthorityName.ROLE_ADMINISTER_TABLES)) {
+    TreeSet<String> ui = SecurityServiceUtil.getCurrentUserSecurityInfo(cc);
+    if (!ui.contains(GrantedAuthorityName.ROLE_ADMINISTER_TABLES.name())) {
       throw new PermissionDeniedException("User does not belong to the 'Administer Tables' group");
     }
 

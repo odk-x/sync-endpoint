@@ -332,20 +332,6 @@ public class AggregateUI implements EntryPoint {
           ((OdkTablesTabUI) w).updateVisibilityOdkTablesSubTabs();
         }
       }
-
-      if ( authorizedForTab(Tabs.ADMIN) ) {
-        AggregateTabBase AminTab = AggregateUI.getUI().getTab(Tabs.ADMIN);
-        if (AminTab != null && AminTab instanceof AdminTabUI) {
-          AdminTabUI adminTab = (AdminTabUI) AminTab;
-          if (odkTablesVisible) {
-            adminTab.displayOdkTablesSubTab();
-          } else {
-            adminTab.hideOdkTablesSubTab();
-          }
-        } else {
-          AggregateUI.getUI().reportError(new Throwable("ERROR: SOME HOW CAN'T FIND ADMIN TAB"));
-        }
-      }
     } else {
       AggregateTabBase odkTables = getTab(Tabs.ODKTABLES);
       if ( odkTables != null ) {
@@ -357,16 +343,6 @@ public class AggregateUI implements EntryPoint {
           w.setVisible(false);
           ((Widget) mainNav.getTabBar().getTab(i)).setVisible(false);
           ((OdkTablesTabUI) w).updateVisibilityOdkTablesSubTabs();
-        }
-      }
-
-      if ( authorizedForTab(Tabs.ADMIN) ) {
-        AggregateTabBase AminTab = AggregateUI.getUI().getTab(Tabs.ADMIN);
-        if (AminTab != null && AminTab instanceof AdminTabUI) {
-          AdminTabUI adminTab = (AdminTabUI) AminTab;
-          adminTab.hideOdkTablesSubTab();
-        } else {
-          AggregateUI.getUI().reportError(new Throwable("ERROR: SOME HOW CAN'T FIND ADMIN TAB"));
         }
       }
     }
@@ -386,6 +362,9 @@ public class AggregateUI implements EntryPoint {
 
     AdminTabUI admin = new AdminTabUI(this);
     addTabToDatastructures(admin, Tabs.ADMIN);
+
+    InfoTabUI info = new InfoTabUI(this);
+    addTabToDatastructures(info, Tabs.INFO);
 
     if (userInfo != null) {
       if (authorizedForTab(Tabs.SUBMISSIONS)) {
@@ -413,6 +392,9 @@ public class AggregateUI implements EntryPoint {
         mainNav.add(admin, Tabs.ADMIN.getTabLabel());
         adminVisible = true;
       }
+
+      // always show info tab
+      mainNav.add(info, Tabs.INFO.getTabLabel());
 
       // Select the correct menu item based on url hash.
       int selected = 0;
@@ -574,15 +556,17 @@ public class AggregateUI implements EntryPoint {
   private boolean authorizedForTab(Tabs tab) {
     switch (tab) {
     case SUBMISSIONS:
-      return userInfo.getGrantedAuthorities().contains(GrantedAuthorityName.ROLE_DATA_VIEWER);
+      return userInfo.getGrantedAuthorities().contains(GrantedAuthorityName.ROLE_DATA_VIEWER.name());
     case MANAGEMENT:
-      return userInfo.getGrantedAuthorities().contains(GrantedAuthorityName.ROLE_DATA_OWNER);
+      return userInfo.getGrantedAuthorities().contains(GrantedAuthorityName.ROLE_DATA_OWNER.name());
     case ADMIN:
-      return userInfo.getGrantedAuthorities().contains(GrantedAuthorityName.ROLE_SITE_ACCESS_ADMIN);
+      return userInfo.getGrantedAuthorities().contains(GrantedAuthorityName.ROLE_SITE_ACCESS_ADMIN.name());
+    case INFO:
+        return userInfo.getGrantedAuthorities().contains(GrantedAuthorityName.ROLE_USER.name());
     case ODKTABLES:
-    	return userInfo.getGrantedAuthorities().contains(GrantedAuthorityName.ROLE_SYNCHRONIZE_TABLES) ||
-    		   userInfo.getGrantedAuthorities().contains(GrantedAuthorityName.ROLE_SUPER_USER_TABLES) ||
-               userInfo.getGrantedAuthorities().contains(GrantedAuthorityName.ROLE_ADMINISTER_TABLES);
+    	return userInfo.getGrantedAuthorities().contains(GrantedAuthorityName.ROLE_SYNCHRONIZE_TABLES.name()) ||
+    		   userInfo.getGrantedAuthorities().contains(GrantedAuthorityName.ROLE_SUPER_USER_TABLES.name()) ||
+               userInfo.getGrantedAuthorities().contains(GrantedAuthorityName.ROLE_ADMINISTER_TABLES.name());
     default:
       return false;
     }
@@ -621,11 +605,7 @@ public class AggregateUI implements EntryPoint {
 
   public void updateNotSecureInfo() {
     if ( realmInfo != null ) {
-      if (!realmInfo.isSuperUsernamePasswordSet() ) {
-        notSecureMsgLabel.setText("This server and its data are not secure! Please change the super-user's password!");
-        notSecurePanel.setVisible(true);
-        resize();
-      } else if ( notSecurePanel.isVisible() ) {
+      if ( notSecurePanel.isVisible() ) {
         notSecureMsgLabel.setText("");
         notSecurePanel.setVisible(false);
         resize();

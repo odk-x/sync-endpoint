@@ -24,7 +24,6 @@ import org.opendatakit.aggregate.ContextFactory;
 import org.opendatakit.common.persistence.client.exception.DatastoreFailureException;
 import org.opendatakit.common.security.client.UserSecurityInfo;
 import org.opendatakit.common.security.client.exception.AccessDeniedException;
-import org.opendatakit.common.security.common.GrantedAuthorityName;
 import org.opendatakit.common.web.CallingContext;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -50,23 +49,5 @@ org.opendatakit.common.security.client.security.admin.SecurityAdminService {
 	    CallingContext cc = ContextFactory.getCallingContext(this, req);
 
 	    return SecurityServiceUtil.getAllUsers(withAuthorities, cc);
-	}
-	
-	@Override
-	public void setUsersAndGrantedAuthorities( String xsrfString, 
-							ArrayList<UserSecurityInfo> users,  
-							ArrayList<GrantedAuthorityName> allGroups)
-			throws AccessDeniedException, DatastoreFailureException {
-
-	    HttpServletRequest req = this.getThreadLocalRequest();
-	    CallingContext cc = ContextFactory.getCallingContext(this, req);
-
-	    if ( !req.getSession().getId().equals(xsrfString) ) {
-			throw new AccessDeniedException("Invalid request");
-		}
-
-	    SecurityServiceUtil.setStandardSiteAccessConfiguration( users, allGroups, cc ); 
-	    // clear the cache of saved user identities as we don't know what has changed...
-	    cc.getUserService().reloadPermissions();
 	}
 }

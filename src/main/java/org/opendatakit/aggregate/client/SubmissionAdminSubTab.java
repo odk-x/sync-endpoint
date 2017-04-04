@@ -107,7 +107,7 @@ public class SubmissionAdminSubTab extends AggregateSubTabBase {
 
   @Override
   public void update() {
-    if ( AggregateUI.getUI().getUserInfo().getGrantedAuthorities().contains(GrantedAuthorityName.ROLE_DATA_OWNER)) {
+    if ( AggregateUI.getUI().getUserInfo().getGrantedAuthorities().contains(GrantedAuthorityName.ROLE_DATA_OWNER.name())) {
       formsBox.setVisible(true);
       submissions.setVisible(true);
        FormServiceAsync formSvc = SecureGWT.getFormService();

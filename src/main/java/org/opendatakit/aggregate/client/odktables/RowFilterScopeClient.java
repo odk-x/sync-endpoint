@@ -34,22 +34,32 @@ public class RowFilterScopeClient implements Serializable {
   /**
 	 *
 	 */
-  private static final long serialVersionUID = -760352144860371942L;
+  private static final long serialVersionUID = -76035214486037194L;
 
   public static final RowFilterScopeClient EMPTY_ROW_FILTER_SCOPE;
 
   static {
     EMPTY_ROW_FILTER_SCOPE = new RowFilterScopeClient();
-    EMPTY_ROW_FILTER_SCOPE.initFields(Type.DEFAULT, null);
+    EMPTY_ROW_FILTER_SCOPE.initFields(Type.DEFAULT, null, GroupType.DEFAULT, null, null);
   }
 
   public enum Type {
+    DEFAULT, MODIFY, READ_ONLY, HIDDEN,
+  }
+  
+  public enum GroupType {
     DEFAULT, MODIFY, READ_ONLY, HIDDEN,
   }
 
   private Type type;
 
   private String value;
+  
+  private GroupType groupType;
+  
+  private String groupsList;
+  
+  private String filterExt;
 
   /**
    * Constructs a new Scope.
@@ -62,16 +72,19 @@ public class RowFilterScopeClient implements Serializable {
    *          {@link Type#GROUP}. If type is {@link Type#DEFAULT}, value is
    *          ignored (set to null).
    */
-  public RowFilterScopeClient(Type type, String value) {
-    initFields(type, value);
+  public RowFilterScopeClient(Type type, String value, GroupType groupType, String groupsList, String filterExt) {
+    initFields(type, value, groupType, groupsList, filterExt);
   }
 
   private RowFilterScopeClient() {
   }
 
-  private void initFields(Type type, String value) {
+  private void initFields(Type type, String value, GroupType groupType, String groupsList, String filterExt) {
     this.type = type;
     this.value = value;
+    this.groupType = groupType;
+    this.groupsList = groupsList;
+    this.filterExt = filterExt;
   }
 
   /**
@@ -88,7 +101,56 @@ public class RowFilterScopeClient implements Serializable {
   public void setType(Type type) {
     this.type = type;
   }
-
+  
+  /**
+   * @return groupType
+   */
+  public GroupType getGroupType() {
+    return groupType;
+  }
+  
+  /**
+   * @param gType
+   *     the GroupType to set
+   */
+  public void setGroupType(GroupType gType) {
+    this.groupType = gType;
+  }
+  
+  /**
+   * 
+   * @return groupsList
+   */
+  public String getGroupsList() {
+    return groupsList;
+  }
+  
+  /**
+   * 
+   * @param gList
+   *     List of groups
+   */
+  public void setGroupsList(String gList) {
+    this.groupsList = gList;
+  }
+  
+  /**
+   * 
+   * @return filterExt
+   */
+  public String getFilterExt() {
+    return filterExt;
+  }
+  
+  /**
+   * 
+   * @param filterExt
+   *        an extra parameter for super users permission
+   */
+  public void setFilterExt(String filterExt) {
+    this.filterExt = filterExt;
+  }
+  
   /**
    * @return the value
    */
@@ -115,6 +177,9 @@ public class RowFilterScopeClient implements Serializable {
     int result = 1;
     result = prime * result + ((type == null) ? 0 : type.hashCode());
     result = prime * result + ((value == null) ? 0 : value.hashCode());
+    result = prime * result + ((groupType == null) ? 0 : groupType.hashCode());
+    result = prime * result + ((groupsList == null) ? 0 : groupsList.hashCode());
+    result = prime * result + ((filterExt == null) ? 0 : filterExt.hashCode());
     return result;
   }
 
@@ -139,6 +204,15 @@ public class RowFilterScopeClient implements Serializable {
         return false;
     } else if (!value.equals(other.value))
       return false;
+    
+    if (groupType != other.groupType) { return false; }
+    
+    if (groupsList == null && other.groupsList != null) { return false; }
+    if (!groupsList.equals(other.groupsList)) { return false; }    
+    
+    if (filterExt == null && other.filterExt != null) { return false; }
+    if (!filterExt.equals(other.filterExt)) { return false; }
+    
     return true;
   }
 
@@ -154,6 +228,12 @@ public class RowFilterScopeClient implements Serializable {
     builder.append(type);
     builder.append(", value=");
     builder.append(value);
+    builder.append(", groupType=");
+    builder.append(groupType);
+    builder.append(", groupsList");
+    builder.append(groupsList);
+    builder.append(", filterExt");
+    builder.append(filterExt);
     builder.append("]");
     return builder.toString();
   }

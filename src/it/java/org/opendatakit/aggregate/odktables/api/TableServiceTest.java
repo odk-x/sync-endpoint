@@ -4,23 +4,27 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
-import java.util.List;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.opendatakit.aggregate.odktables.rest.entity.TableResource;
+import org.opendatakit.aggregate.odktables.rest.entity.TableResourceList;
 import org.springframework.web.client.HttpClientErrorException;
 
+@RunWith(org.junit.runners.JUnit4.class)
 public class TableServiceTest extends AbstractServiceTest {
-
+  
+  protected URI resourceUri;
+  
   @Test
   public void testGetTablesEmpty() {
-    List<?> resp = rt.getForObject(baseUri, List.class);
-    assertTrue(resp.isEmpty());
+    TableResourceList tables = rt.getForObject(resolveUri(TABLE_API), TableResourceList.class);
+    assertTrue(tables.getTables().isEmpty());
   }
 
   @Test(expected = HttpClientErrorException.class)
   public void testGetTableDoesNotExist() {
-    URI uri = baseUri.resolve("non-existent-table");
+    URI uri = resolveUri(TABLE_API + "non-existent-table");
     rt.getForObject(uri, TableResource.class);
   }
 
@@ -30,10 +34,16 @@ public class TableServiceTest extends AbstractServiceTest {
     assertEquals(T.tableId, resource.getTableId());
   }
 
+  @Test
+  public void testCreateTableTwice() {
+    createTable();
+    createTable();
+  }
+
   @Test(expected = HttpClientErrorException.class)
   public void testCreateTableAlreadyExists() {
     createTable();
-    createTable();
+    createAltTable();
   }
 
   @Test

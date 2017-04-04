@@ -18,11 +18,6 @@ This is a special build of javarosa using the tree at https://bitbucket.org/m.su
 It incorporates multithread-safe KoBo collect changes (from Clayton), abandons J2ME support, 
 exposes bind and prompt attributes, and numerous contributed fixes from SurveyCTO and others.
 
-# odk-httpclient-gae-4.5.2:
-
-This can be installed by pulling the Aggregate (Components) sources
-and running 'mvn install' in the GaeHttpClient project.  
-
 # odk-tomcatutil-1.0.1:
 
 This can be installed by pulling the Aggregate (Components) sources
@@ -48,9 +43,9 @@ JARs built by others
 ----------------------
 
 # sqlserver-auth\sqljdbc_auth.dll
-# sqljdbc41.jar
+# sqljdbc42.jar
 
-Microsoft SQL Server JDBC 4.1 libraries.
+Microsoft SQL Server JDBC 4.2 libraries.
 https://www.microsoft.com/en-us/download/details.aspx?id=11774
 
 This must be manually downloaded and copied to the path so that 

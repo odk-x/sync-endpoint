@@ -35,7 +35,7 @@ public final class PublishButton extends AggregateButton implements ClickHandler
     super(BUTTON_TXT, TOOLTIP_TXT, HELP_BALLOON_TXT);
     this.formId = formId;
     boolean enabled = AggregateUI.getUI().getUserInfo().getGrantedAuthorities()
-        .contains(GrantedAuthorityName.ROLE_DATA_OWNER);
+        .contains(GrantedAuthorityName.ROLE_DATA_OWNER.name());
     setEnabled(enabled);
   }
 

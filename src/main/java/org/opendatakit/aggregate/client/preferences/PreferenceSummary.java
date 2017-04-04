@@ -38,13 +38,21 @@ public class PreferenceSummary implements Serializable {
   
   private Boolean skipMalformedSubmissions;
 
+  private Boolean anonymousAccessToAttachments;
+
+  private Boolean anonymousDataCollection;
+
+  private Boolean anonymousTablesSynchronization;
+
   public PreferenceSummary() {
 
   }
 
   public PreferenceSummary(String googleSimpleApiKey, String googleApiClientId,
       String enketoApiUrl, String enketoApiToken, Boolean odkTablesEnabled,
-      String appName, Boolean fasterBackgroundActionsDisabled, Boolean skipMalformedSubmissions) {
+      String appName, Boolean fasterBackgroundActionsDisabled, Boolean skipMalformedSubmissions,
+      Boolean anonymousAccessToAttachments, Boolean anonymousDataCollection,
+      Boolean anonymousTablesSynchronization) {
     this.googleSimpleApiKey = googleSimpleApiKey;
     this.googleApiClientId = googleApiClientId;
     this.enketoApiUrl = enketoApiUrl;
@@ -53,6 +61,9 @@ public class PreferenceSummary implements Serializable {
     this.appName = appName;
     this.fasterBackgroundActionsDisabled = fasterBackgroundActionsDisabled;
     this.skipMalformedSubmissions = skipMalformedSubmissions;
+    this.anonymousAccessToAttachments = anonymousAccessToAttachments;
+    this.anonymousDataCollection = anonymousDataCollection;
+    this.anonymousTablesSynchronization = anonymousTablesSynchronization;
   }
 
   public String getGoogleSimpleApiKey() {
@@ -85,5 +96,17 @@ public class PreferenceSummary implements Serializable {
 
   public Boolean getSkipMalformedSubmissions() {
     return skipMalformedSubmissions;
+  }
+
+  public Boolean getAnonymousAccessToAttachments() {
+    return anonymousAccessToAttachments;
+  }
+
+  public Boolean getAnonymousDataCollection() {
+    return anonymousDataCollection;
+  }
+  
+  public Boolean getAnonymousTablesSynchronization() {
+    return anonymousTablesSynchronization;
   }
 }

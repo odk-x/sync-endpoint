@@ -29,13 +29,8 @@ import org.apache.commons.logging.LogFactory;
 import org.opendatakit.aggregate.ContextFactory;
 import org.opendatakit.aggregate.constants.common.UIConsts;
 import org.opendatakit.aggregate.server.ServerPreferencesProperties;
-import org.opendatakit.common.persistence.Datastore;
-import org.opendatakit.common.persistence.exception.ODKDatastoreException;
 import org.opendatakit.common.persistence.exception.ODKEntityNotFoundException;
 import org.opendatakit.common.persistence.exception.ODKOverQuotaException;
-import org.opendatakit.common.security.User;
-import org.opendatakit.common.security.UserService;
-import org.opendatakit.common.security.spring.SecurityRevisionsTable;
 import org.opendatakit.common.web.CallingContext;
 import org.opendatakit.common.web.constants.BasicConsts;
 import org.opendatakit.common.web.constants.HtmlConsts;
@@ -96,8 +91,6 @@ public class AggregateHtmlServlet extends ServletUtilBase {
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
       IOException {
     CallingContext cc = ContextFactory.getCallingContext(this, req);
-    User user = cc.getCurrentUser();
-    UserService userService = cc.getUserService();
 
     // Check to make sure we are using the canonical server name.
     // If not, redirect to that name.  This ensures that authentication
@@ -116,40 +109,6 @@ public class AggregateHtmlServlet extends ServletUtilBase {
     }
 
     // OK. We are using the canonical server name.
-    boolean isSuperUser = false;
-    try {
-      isSuperUser = userService.isSuperUser(cc);
-    } catch (ODKDatastoreException e) {
-      e.printStackTrace();
-    }
-
-    // determine if this is the first time the system has not been accessed...
-    if (isSuperUser) {
-      // this is the super-user -- examine the isEnabled
-      // field to determine whether this is the first time
-      // visiting the site. If it is, force a redirect to
-      // the site-configuration tab.
-      boolean directToConfigTab = false;
-      Datastore ds = cc.getDatastore();
-      try {
-        long changeTimestamp = SecurityRevisionsTable.getLastSuperUserIdRevisionDate(ds, user);
-        long reviewStamp = SecurityRevisionsTable.getLastPermissionsViewRevisionDate(ds, user);
-
-        if (reviewStamp < changeTimestamp) {
-          SecurityRevisionsTable.setLastPermissionsViewRevisionDate(ds, user);
-          directToConfigTab = true;
-        }
-      } catch (ODKDatastoreException e) {
-        e.printStackTrace();
-      }
-      if (directToConfigTab) {
-        newUrl += "#admin/permission///";
-        logger.info("Redirect to configuration tab: " + newUrl);
-        resp.sendRedirect(newUrl);
-        return;
-      }
-    }
-
     resp.setContentType(HtmlConsts.RESP_TYPE_HTML);
     resp.setCharacterEncoding(HtmlConsts.UTF8_ENCODE);
     resp.addHeader(HtmlConsts.X_FRAME_OPTIONS, HtmlConsts.X_FRAME_SAMEORIGIN);

@@ -33,8 +33,6 @@ public class UIConsts {
   public static final String FILTER_NONE = "none";
 
   public static final String FORM_UPLOAD_SERVLET_ADDR = "formUpload";
-  public static final String USERS_AND_PERMS_UPLOAD_SERVLET_ADDR = "ssl/reset-users-and-permissions";
-  public static final String GET_USERS_AND_PERMS_CSV_SERVLET_ADDR = "ssl/get-users-and-permissions";
   
   public static final String SERVICE_ACCOUNT_PRIVATE_KEY_UPLOAD_ADDR = "ssl/oauth2-service-account";
 

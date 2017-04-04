@@ -204,25 +204,49 @@ public class EntityConverter {
   }
 
   public static RowFilterScope getDbLogTableRowFilterScope(Entity entity) {
+    RowFilterScope.Type type = RowFilterScope.Type.DEFAULT;
+    
     String filterType = entity.getString(DbLogTable.FILTER_TYPE);
+    String value = null;
     if (filterType != null) {
-      RowFilterScope.Type type = RowFilterScope.Type.valueOf(filterType);
-      String value = entity.getString(DbLogTable.FILTER_VALUE);
-      return new RowFilterScope(type, value);
-    } else {
-      return RowFilterScope.EMPTY_ROW_FILTER;
+      type = RowFilterScope.Type.valueOf(filterType);
+      value = entity.getString(DbLogTable.FILTER_VALUE);
     }
+
+    String gType = entity.getString(DbLogTable.GROUP_TYPE);
+    RowFilterScope.GroupType groupType = RowFilterScope.GroupType.DEFAULT;
+    String groupsList = null;
+    if (gType != null) {
+      groupType = RowFilterScope.GroupType.valueOf(gType);
+      groupsList = entity.getString(DbLogTable.GROUPS_LIST);
+    }
+      
+    String ext = entity.getString(DbLogTable.FILTER_EXT);
+      
+    return new RowFilterScope(type, value, groupType, groupsList, ext);
   }
 
   public static RowFilterScope getDbTableRowFilterScope(Entity entity) {
+    RowFilterScope.Type type = RowFilterScope.Type.DEFAULT;
+    
     String filterType = entity.getString(DbTable.FILTER_TYPE);
+    String value = null;
     if (filterType != null) {
-		RowFilterScope.Type type = RowFilterScope.Type.valueOf(filterType);
-		String value = entity.getString(DbTable.FILTER_VALUE);
-		return new RowFilterScope(type, value);
-    } else {
-      return RowFilterScope.EMPTY_ROW_FILTER;
+      type = RowFilterScope.Type.valueOf(filterType);
+      value = entity.getString(DbTable.FILTER_VALUE);
     }
+    	
+    RowFilterScope.GroupType groupType = RowFilterScope.GroupType.DEFAULT;
+    String gType = entity.getString(DbTable.GROUP_TYPE);
+    String groupsList = null;
+    if (gType != null) {
+      groupType = RowFilterScope.GroupType.valueOf(gType);
+      groupsList = entity.getString(DbTable.GROUPS_LIST);
+    }
+		
+    String ext = entity.getString(DbTable.FILTER_EXT);
+		
+    return new RowFilterScope(type, value, groupType, groupsList, ext);
   }
 
   public static Scope getDbTableFileInfoFilterScope(DbTableFileInfoEntity entity) {

@@ -41,7 +41,7 @@ public final class DisableFasterBackgroundActionsCheckbox extends AggregateCheck
     this.settingsChange = settingsChange;
     setValue(enabled);
     boolean accessible = AggregateUI.getUI().getUserInfo().getGrantedAuthorities()
-        .contains(GrantedAuthorityName.ROLE_SITE_ACCESS_ADMIN);
+        .contains(GrantedAuthorityName.ROLE_SITE_ACCESS_ADMIN.name());
     setEnabled(accessible);
   }
 

@@ -71,7 +71,7 @@ public class FormsSubTab extends AggregateSubTabBase {
   @Override
   public void update() {
     if (AggregateUI.getUI().getUserInfo().getGrantedAuthorities()
-        .contains(GrantedAuthorityName.ROLE_DATA_VIEWER)) {
+        .contains(GrantedAuthorityName.ROLE_DATA_VIEWER.name())) {
 
       // Set up the callback object.
       AsyncCallback<ArrayList<FormSummary>> callback = new AsyncCallback<ArrayList<FormSummary>>() {

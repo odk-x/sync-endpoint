@@ -22,7 +22,8 @@ public enum Tabs implements Serializable {
    SUBMISSIONS("Submissions", "submissions"),
    MANAGEMENT("Form Management", "management"),
    ADMIN("Site Admin", "admin"),
-   ODKTABLES("ODK Tables", "odkTables");
+   ODKTABLES("ODK Tables", "odkTables"),
+   INFO("Info", "info");
    
    private String tabLabel;
    private String hashString;

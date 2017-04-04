@@ -100,7 +100,7 @@ public class OdkTablesTableList extends FlexTable {
         OdkTablesDeleteTableButton deleteButton = new OdkTablesDeleteTableButton(this,
             table.getTableId());
         if (!AggregateUI.getUI().getUserInfo().getGrantedAuthorities()
-            .contains(GrantedAuthorityName.ROLE_ADMINISTER_TABLES)) {
+            .contains(GrantedAuthorityName.ROLE_ADMINISTER_TABLES.name())) {
           deleteButton.setEnabled(false);
         }
         setWidget(j, DELETE_BUTTON_COLUMN, deleteButton);

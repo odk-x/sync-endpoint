@@ -19,6 +19,7 @@ package org.opendatakit.aggregate.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.TreeSet;
 
@@ -42,7 +43,6 @@ import org.opendatakit.common.security.client.exception.AccessDeniedException;
 import org.opendatakit.common.security.common.EmailParser;
 import org.opendatakit.common.security.common.GrantedAuthorityName;
 import org.opendatakit.common.security.server.SecurityServiceUtil;
-import org.opendatakit.common.security.spring.RegisteredUsersTable;
 import org.opendatakit.common.web.CallingContext;
 import org.opendatakit.common.web.constants.HtmlConsts;
 
@@ -98,13 +98,10 @@ public class GetActiveUsersServlet extends HttpServlet {
   
   private static final Log logger = LogFactory.getLog(GetActiveUsersServlet.class);
 
-  private void processRoles(TreeSet<GrantedAuthorityName> grants, HashMap<String,Object> hashMap) {
+  private void processRoles(TreeSet<String> grants, HashMap<String,Object> hashMap) {
     ArrayList<String> roleNames = new ArrayList<String>();
-    for ( GrantedAuthorityName grant : grants ) {
-      if (grant.name().startsWith(GrantedAuthorityName.ROLE_PREFIX)) {
-        roleNames.add(grant.name());
-      }
-    }
+    roleNames.addAll(grants);
+    Collections.sort(roleNames);
     hashMap.put(ROLES,  roleNames);
   }
   
@@ -120,7 +117,7 @@ public class GetActiveUsersServlet extends HttpServlet {
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     CallingContext cc = ContextFactory.getCallingContext(this, req);
 
-    TreeSet<GrantedAuthorityName> grants;
+    TreeSet<String> grants;
     try {
       grants = SecurityServiceUtil.getCurrentUserSecurityInfo(cc);
     } catch (ODKDatastoreException e) {
@@ -132,10 +129,10 @@ public class GetActiveUsersServlet extends HttpServlet {
     }
     
     boolean returnFullList = false;
-    for ( GrantedAuthorityName grant : grants ) {
-      if (grant.equals(GrantedAuthorityName.ROLE_SITE_ACCESS_ADMIN) ||
-          grant.equals(GrantedAuthorityName.ROLE_ADMINISTER_TABLES) ||
-          grant.equals(GrantedAuthorityName.ROLE_SUPER_USER_TABLES)) {
+    for ( String grant : grants ) {
+      if (grant.equals(GrantedAuthorityName.ROLE_SITE_ACCESS_ADMIN.name()) ||
+          grant.equals(GrantedAuthorityName.ROLE_ADMINISTER_TABLES.name()) ||
+          grant.equals(GrantedAuthorityName.ROLE_SUPER_USER_TABLES.name())) {
         returnFullList = true;
         break;
       }
@@ -153,30 +150,11 @@ public class GetActiveUsersServlet extends HttpServlet {
         hashMap.put(USER_ID, "anonymous"); 
         hashMap.put(FULL_NAME, User.ANONYMOUS_USER_NICKNAME);
       } else {
-        RegisteredUsersTable entry;
-        try {
-          entry = RegisteredUsersTable.getUserByUri(user.getUriUser(), cc.getDatastore(), cc.getCurrentUser());
-        } catch (ODKDatastoreException e) {
-          logger.error("Retrieving users persistence error: " + e.toString());
-          e.printStackTrace();
-          resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-              ErrorConsts.PERSISTENCE_LAYER_PROBLEM + "\n" + e.toString());
-          return;
-        }
-        if ( user.getEmail() == null ) {
-          hashMap.put(USER_ID, "username:" + entry.getUsername());
-          if ( user.getNickname() == null ) {
-            hashMap.put(FULL_NAME, entry.getUsername());
-          } else {
-            hashMap.put(FULL_NAME, user.getNickname());
-          }
+        hashMap.put(USER_ID, user.getEmail());
+        if ( user.getNickname() == null ) {
+          hashMap.put(FULL_NAME, user.getEmail().substring(EmailParser.K_MAILTO.length()));
         } else {
-          hashMap.put(USER_ID, entry.getEmail());
-          if ( user.getNickname() == null ) {
-            hashMap.put(FULL_NAME, entry.getEmail().substring(EmailParser.K_MAILTO.length()));
-          } else {
-            hashMap.put(FULL_NAME, user.getNickname());
-          }
+          hashMap.put(FULL_NAME, user.getNickname());
         }
       }
       processRoles(grants, hashMap);

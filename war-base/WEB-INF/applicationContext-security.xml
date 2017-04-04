@@ -7,28 +7,6 @@
 
 	<beans:import resource="classpath:odk-security-settings.xml"/>
 
-	<!--	The Basic Authentication passwords are sha1-encoded with a salt -->
-	<beans:bean id="basicAuthenticationMessageDigestPasswordEncoder"
-			class="org.springframework.security.authentication.encoding.ShaPasswordEncoder"/>
-
-	<!--	The group and role hierarchy is maintained in the granted authority hierarchy table.  -->
-	<!--	Unauthenticated accesses possess the USER_IS_ANONYMOUS group -->
-	<!--    If the user is registered (present in the registered users table), the user will also -->
-	<!--  	possess the USER_IS_REGISTERED group.  -->
-	<!--    An authenticated users will also possess an AUTH_ group defining the mechanism by which -->
-	<!--    they were authenticated.  i.e., either AUTH_OPENID, AUTH_GOOGLE_OAUTH2, AUTH_OUT_OF_BAND or AUTH_LOCAL -->
-	<!--  -->
-	<!-- 	The granted authority hierarchy table defines the mapping of these groups, and -->
-	<!-- 	other site-specific administrator-defined groups to the roles needed to access -->
-	<!--	web pages on the site. -->
-
-	<beans:bean id="hierarchicalRoleRelationships" class="org.opendatakit.common.security.spring.RoleHierarchyImpl">
-		<beans:property name="datastore" ref="datastore"/>
-		<beans:property name="userService" ref="user_service"/>
-		<beans:property name="passwordEncoder" ref="basicAuthenticationMessageDigestPasswordEncoder"/>
-		<beans:property name="startupAction" ref="startup" />
-	</beans:bean>
-
 	<!--	Configure the access policy to the pages here	-->
 	<!--	You can do things like this: and hasAuthority('AUTH_LOCAL') -->
 
@@ -79,7 +57,7 @@
 		<intercept-url pattern="/odk_color.png" access="true" />
 		<intercept-url pattern="/multimode_login.html" access="true" />
 		<intercept-url pattern="/relogin.html" access="true" />
-		<intercept-url pattern="/local_login.html" access="isFullyAuthenticated() and hasAuthority('AUTH_LOCAL')" />
+		<intercept-url pattern="/local_login.html" access="isFullyAuthenticated() and (hasAuthority('AUTH_LOCAL') or hasAuthority('AUTH_ACTIVE_DIRECTORY'))" />
 
 		<!-- grant access to various servlets -->
 		<intercept-url pattern="/formList" access="hasRole('ROLE_DATA_COLLECTOR') or hasRole('ROLE_DATA_VIEWER')" />
@@ -179,9 +157,7 @@
 							<beans:ref bean="channelProcessingFilter"/>
 							<beans:ref bean="securityContextPersistenceFilter"/>
 							<beans:ref bean="logoutFilter"/>
-							<beans:ref bean="oauth2ResourceFilter"/>
-							<beans:ref bean="oobAuthFilter"/>
-							<beans:ref bean="${security.server.deviceAuthentication}AuthFilter"/>
+							<beans:ref bean="activeDirectoryAuthFilter"/>
 							<beans:ref bean="requestCacheAwareFilter"/>
 							<beans:ref bean="anonymousFilter"/>
 							<beans:ref bean="securityContextHolderAwareFilter"/>
@@ -202,9 +178,7 @@
 							<beans:ref bean="channelProcessingFilter"/>
 							<beans:ref bean="securityContextPersistenceFilter"/>
 							<beans:ref bean="logoutFilter"/>
-							<beans:ref bean="oauth2ResourceFilter"/>
-							<beans:ref bean="oobAuthFilter"/>
-							<beans:ref bean="${security.server.deviceAuthentication}AuthFilter"/>
+							<beans:ref bean="activeDirectoryAuthFilter"/>
 							<beans:ref bean="requestCacheAwareFilter"/> 
 							<beans:ref bean="anonymousFilter"/>
 							<beans:ref bean="securityContextHolderAwareFilter"/>
@@ -307,8 +281,8 @@
 				<beans:bean
 					class="org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler">
 					<!--
-						Basic and Digest Auth don't have server side logout (may want to
-						invalidate session to work around this).
+						Active Directory, Basic and Digest Auth don't have server side
+						 logout (may want to invalidate session to work around this).
 					-->
 					<!-- OAuth2 logins can be disabled through this mechanism.  -->
 					<beans:property name="invalidateHttpSession" value="true"/>
@@ -334,7 +308,7 @@
 
 	<!--	This class determines what authentication to initiate.  It uses the -->
 	<!--	User-Agent header value to determine whether it is being accessed by a -->
-	<!--	browser or the device.  If it is not a browser, it does basic or digest auth.-->
+	<!--	browser or the device.  If it is not a browser, it does activeDirectory, basic or digest auth.-->
 	<beans:bean id="exceptionTranslationFilter"
 		class="org.springframework.security.web.access.ExceptionTranslationFilter">
 		<beans:constructor-arg ref="delegatingAuthenticationEntryPoint"/>
@@ -354,34 +328,27 @@
 		class="org.springframework.security.web.authentication.DelegatingAuthenticationEntryPoint">
 		<beans:constructor-arg name="entryPoints">
 			<beans:map>
-                      <beans:entry key="hasHeader('X-OpenRosa-Version','1.0')" value-ref="${security.server.deviceAuthentication}EntryPoint" />
-                      <beans:entry key="hasHeader('X-OpenDataKit-Version','2.0')" value-ref="${security.server.deviceAuthentication}EntryPoint" />
+                      <beans:entry key="hasHeader('X-OpenRosa-Version','1.0')" value-ref="activeDirectoryEntryPoint" />
+                      <beans:entry key="hasHeader('X-OpenDataKit-Version','2.0')" value-ref="activeDirectoryEntryPoint" />
                       			</beans:map>
 		</beans:constructor-arg>
-		<beans:property name="defaultEntryPoint" ref="${security.server.deviceAuthentication}EntryPoint" />
+		<beans:property name="defaultEntryPoint" ref="activeDirectoryEntryPoint" />
 	</beans:bean>
 
 	<!-- This forces the login to use the configured locally-held credential mechanism -->
 	<beans:bean id="localExceptionTranslationFilter"
 		class="org.springframework.security.web.access.ExceptionTranslationFilter">
-		<beans:constructor-arg ref="${security.server.deviceAuthentication}EntryPoint" />
+		<beans:constructor-arg ref="activeDirectoryEntryPoint" />
 	</beans:bean>
 
 	<!-- 			Anonymous User -->
 
 	<beans:bean id="anonymousFilter"
-		class="org.springframework.security.web.authentication.AnonymousAuthenticationFilter">
+		class="org.opendatakit.common.security.spring.AnonymousAuthenticationFilter">
 		<beans:constructor-arg>
 		    <beans:bean id="sitePreferencesBean.siteKey" class="org.springframework.beans.factory.config.PropertyPathFactoryBean"/>
 		</beans:constructor-arg>
 	    <beans:constructor-arg value="anonymousUser"/>
-	    <beans:constructor-arg>
-	    	<beans:list>
-	    		<beans:bean class="org.springframework.security.core.authority.SimpleGrantedAuthority">
-					<beans:constructor-arg value="USER_IS_ANONYMOUS"/>
-				</beans:bean>
-			</beans:list>
-	    </beans:constructor-arg>
 	</beans:bean>
 
 	<beans:bean id="anonymousProvider"
@@ -391,160 +358,46 @@
 		</beans:constructor-arg>
 	</beans:bean>
 
-	<!--			Basic Authentication -->
+	<!--			Active Directory (Azure) Authentication -->
 
-	<beans:bean id="basicAuthFilter"
+	<beans:bean id="activeDirectoryAuthFilter"
 		class="org.opendatakit.common.security.spring.BasicAuthenticationFilter">
 		<beans:constructor-arg>
 			<beans:bean class="org.springframework.security.authentication.ProviderManager">
 				<beans:constructor-arg>
 					<beans:list>
-						<beans:ref bean="basicAuthenticationProvider" />
+						<beans:ref bean="activeDirectoryAuthenticationProvider" />
 						<beans:ref bean="anonymousProvider" />
 					</beans:list>
 				</beans:constructor-arg>
 			</beans:bean>
 		</beans:constructor-arg>
-		<beans:constructor-arg ref="basicEntryPoint" />
+		<beans:constructor-arg ref="activeDirectoryEntryPoint" />
 	</beans:bean>
 
-	<beans:bean id="basicEntryPoint"
+	<beans:bean id="activeDirectoryEntryPoint"
 		class="org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint">
 		<beans:property name="realmName" value="${security.server.realm.realmString}" />
 	</beans:bean>
-
-
-	<beans:bean id="basicAuthenticationProvider"
-		class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
-        <beans:property name="passwordEncoder" ref="basicAuthenticationMessageDigestPasswordEncoder" />
-        <beans:property name="saltSource">
-        	<beans:bean class="org.opendatakit.common.security.spring.AggregateUserSaltSource"/>
-        </beans:property>
-		<beans:property name="userDetailsService" ref="basicLoginService" />
-	</beans:bean>
-
-	<beans:bean id="basicLoginService"
-		class="org.opendatakit.common.security.spring.UserDetailsServiceImpl">
-		<!--	Known registered users are maintained in the registered users table -->
-		<!--	Passwords are stored as salted sha1 hashes-->
-		<beans:property name="datastore" ref="datastore"/>
-		<beans:property name="userService" ref="user_service"/>
-		<beans:property name="passwordType" value="BasicAuth"/>
-		<beans:property name="credentialType" value="Username"/>
-		<beans:property name="authorities">
-			<beans:list>
-	    		<beans:bean class="org.springframework.security.core.authority.SimpleGrantedAuthority">
-					<beans:constructor-arg value="AUTH_LOCAL"/>
-				</beans:bean>
-			</beans:list>
+ 
+	<beans:bean id="activeDirectoryAuthenticationProvider"
+		class="org.opendatakit.common.security.spring.ActiveDirectoryLdapAuthenticationProvider">
+		<beans:constructor-arg index="0" value="${security.server.ldapDomain}" />
+		<beans:constructor-arg index="1" value="${security.server.ldapDomainControllerUrl}" />
+		<beans:constructor-arg index="2" value="${security.server.ldapDomainDC}" />
+		<beans:property name="ldapUser" value="${security.server.ldapQueryUsername}" />
+		<beans:property name="ldapPassword" value="${security.server.ldapQueryPassword}" />
+		<beans:property name="convertSubErrorCodesToExceptions" value="true" />
+		<beans:property name="authoritiesMapper">
+			<beans:bean class="org.opendatakit.common.security.spring.ActiveDirectoryAuthoritiesMapper">
+				<beans:constructor-arg index="0" value="${security.server.groupPrefix}" />
+			</beans:bean>
 		</beans:property>
 	</beans:bean>
 
 	<!--
 		Digest Authentication configuration. This is used for device access.
 	-->
-
-	<beans:bean id="digestAuthFilter"
-		class="org.opendatakit.common.security.spring.DigestAuthenticationFilter">
-		<beans:property name="passwordAlreadyEncoded" value="true" />
-		<beans:property name="userDetailsService" ref="digestLoginService" />
-		<beans:property name="authenticationEntryPoint" ref="digestEntryPoint" />
-	</beans:bean>
-
-	<beans:bean id="digestEntryPoint"
-		class="org.springframework.security.web.authentication.www.DigestAuthenticationEntryPoint">
-		<beans:property name="realmName" value="${security.server.realm.realmString}" />
-		<beans:property name="key">
-		    <beans:bean id="sitePreferencesBean.siteKey" class="org.springframework.beans.factory.config.PropertyPathFactoryBean"/>
-		</beans:property>
-		<beans:property name="nonceValiditySeconds" value="1800" />
-	</beans:bean>
-
-	<beans:bean id="digestAuthenticationProvider"
-		class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
-		<beans:property name="userDetailsService" ref="digestLoginService" />
-	</beans:bean>
-
-	<beans:bean id="digestLoginService"
-		class="org.opendatakit.common.security.spring.UserDetailsServiceImpl">
-		<!--	Known registered users are maintained in the registered users table -->
-		<!--	Passwords are stored as the A1 value in the protocol (MD5 hash of username + realm string + password). -->
-		<beans:property name="datastore" ref="datastore"/>
-		<beans:property name="userService" ref="user_service"/>
-		<beans:property name="passwordType" value="DigestAuth"/>
-		<beans:property name="credentialType" value="Username"/>
-		<beans:property name="authorities">
-			<beans:list>
-	    		<beans:bean class="org.springframework.security.core.authority.SimpleGrantedAuthority">
-					<beans:constructor-arg value="AUTH_LOCAL"/>
-				</beans:bean>
-			</beans:list>
-		</beans:property>
-	</beans:bean>
-
-  <!-- Out-of-band support -->
-  <!-- Out-of-band support -->
-  <!-- Out-of-band support -->
-  <!-- Out-of-band support -->
-
-	<!--	Known registered users are maintained in the registered users table -->
-	<!--	There is no password for token-authenticated users, so it is set to a random value. -->
-	<beans:bean id="tokenUserDetailsService" class="org.opendatakit.common.security.spring.UserDetailsServiceImpl">
-		<beans:property name="datastore" ref="datastore"/>
-		<beans:property name="userService" ref="user_service"/>
-		<beans:property name="passwordType" value="Random"/>
-		<beans:property name="credentialType" value="Token"/>
-	</beans:bean>
-
-	<!-- Out-of-band authentication relies on an out-of-band mechanism to obtain
-		a user's mailto:username@domain.org string (via the oob_user_fetcher). This
-		is then used to look up the OAuth2 user configured with that email address.
-		If successful, that user's credentials are used when accessing the server.
-		This can be used for portal-fronted access to the server (you still need
-		to populate the ODK Aggregate registered users table and granted authorities
-		table with the users and granted privileges for those users). The only provided
-		implementation is for Google AppEngine's OAuthService-mediated access to
-		AppEngine instances. -->
-
-	<beans:bean id="oobAuthFilter"
-		class="org.opendatakit.common.security.spring.OutOfBandUserFilter">
-		<beans:property name="outOfBandUserFetcher" ref="oob_user_fetcher" />
-		<beans:property name="authenticationProvider" ref="oobAuthenticationProvider" />
-	</beans:bean>
-
-	<!--	This OOB authentication implementation.  It relies upon an out-of-band -->
-	<!--    means to produce a "mailto:username@foo" (OAuth2) identity.  This provider then  -->
-	<!--    determines whether the user is a registered user, using the wrappingUserDetailsService.-->
-	<!--	Finally, it adds the AUTH_OUT_OF_BAND granted authority to the set of -->
-	<!--	the registered user's granted authorities (which is empty if the user is not registered). -->
-	<beans:bean id="oobAuthenticationProvider"
-		class="org.opendatakit.common.security.spring.OutOfBandAuthenticationProvider">
-		<!--	Stub userDetailsService that accepts any authenticated party-->
-		<beans:property name="wrappingUserDetailsService" ref="tokenUserDetailsService"/>
-	</beans:bean>
-
-  <!--  OAuth2 support -->
-  <!--  OAuth2 support -->
-  <!--  OAuth2 support -->
-  <!--  OAuth2 support -->
-  <!--  OAuth2 support -->
-
-	<beans:bean id="oauth2ResourceFilter"
-		class="org.opendatakit.common.security.spring.Oauth2ResourceFilter">
-		<beans:property name="httpClientFactory" ref="http_client_factory" />
-		<beans:property name="authenticationProvider" ref="oauth2AuthenticationProvider" />
-	</beans:bean>
-
-	<!--	This Oauth2 authentication implementation. It relies upon the Oauth2ResourceFilter -->
-	<!--    to produce an Oauth2AuthenticationToken containing the "mailto:username@foo" (OAuth2) -->
-	<!--    identity. This provider then determines whether the user is a registered user, using -->
-	<!--	the wrappingUserDetailsService. Finally, it adds the AUTH_GOOGLE_OAUTH2 granted authority -->
-	<!--    to the registered user's set of granted authorities (empty if the user is not registered). -->
-	<beans:bean id="oauth2AuthenticationProvider"
-		class="org.opendatakit.common.security.spring.Oauth2AuthenticationProvider">
-		<!--	Stub userDetailsService that accepts any authenticated party-->
-		<beans:property name="wrappingUserDetailsService" ref="tokenUserDetailsService"/>
-	</beans:bean>
 
 	<!--		This enforces the security applied to specific URLs   -->
 	<!--		This enforces the security applied to specific URLs   -->
@@ -564,14 +417,10 @@
 			<beans:list>
 				<beans:bean class="org.springframework.security.web.access.expression.WebExpressionVoter">
 		        	<beans:property name="expressionHandler">
-		        		<beans:bean	class="org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler">
-			        		<beans:property name="roleHierarchy" ref="hierarchicalRoleRelationships"/>
-		        		</beans:bean>
+		        		<beans:bean	class="org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler" />
 		        	</beans:property>
 		        </beans:bean>
-		        <beans:bean class="org.springframework.security.access.vote.RoleHierarchyVoter">
-		        	<beans:constructor-arg name="roleHierarchy" ref="hierarchicalRoleRelationships"/>
-		        </beans:bean>
+		        <beans:bean class="org.springframework.security.access.vote.RoleVoter" />
 				<beans:bean	class="org.springframework.security.access.vote.AuthenticatedVoter" />
 			</beans:list>
 		</beans:constructor-arg>
@@ -585,10 +434,7 @@
 		class="org.springframework.security.authentication.ProviderManager">
 		<beans:constructor-arg>
 			<beans:list>
-				<beans:ref bean="digestAuthenticationProvider" />
-				<beans:ref bean="basicAuthenticationProvider" />
-				<beans:ref bean="oobAuthenticationProvider" />
-				<beans:ref bean="oauth2AuthenticationProvider" />
+				<beans:ref bean="activeDirectoryAuthenticationProvider" />
 				<beans:ref bean="anonymousProvider" />
 			</beans:list>
 		</beans:constructor-arg>

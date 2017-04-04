@@ -217,6 +217,13 @@ public class RefreshTimer extends Timer {
           tabPanel.update();
         }
         break;
+      case GROUPS_AND_ROLES:
+        if (lastCompletionTime == 0L) {
+          GWT.log("groups and roles Refresh");
+          // update this ONLY if we are forcing a refreshNow().
+          tabPanel.update();
+        }
+        break;
       case CURRENTTABLES:
       case VIEWTABLE:
       case MANAGE_INSTANCE_FILES:

@@ -29,48 +29,11 @@ public class RealmSecurityInfo implements Serializable {
   /**
    * 
    */
-  private static final long serialVersionUID = -430735053365397828L;
+  private static final long serialVersionUID = -43073505336539828L;
 
-  String basicAuthHashEncoding;
   String realmString;
-  String superUserEmail;
-  String superUsername;
-  boolean isSuperUsernamePasswordSet;
-  String changeUserPasswordURL;
 
   public RealmSecurityInfo() {
-  }
-
-  public String getBasicAuthHashEncoding() {
-    return basicAuthHashEncoding;
-  }
-
-  public void setBasicAuthHashEncoding(String basicAuthHashEncoding) {
-    this.basicAuthHashEncoding = basicAuthHashEncoding;
-  }
-
-  public String getSuperUserEmail() {
-    return superUserEmail;
-  }
-
-  public void setSuperUserEmail(String superUserEmail) {
-    this.superUserEmail = superUserEmail;
-  }
-
-  public String getSuperUsername() {
-    return superUsername;
-  }
-
-  public void setSuperUsername(String superUsername) {
-    this.superUsername = superUsername;
-  }
-
-  public void setSuperUsernamePasswordSet(boolean isSuperUsernamePasswordSet) {
-    this.isSuperUsernamePasswordSet = isSuperUsernamePasswordSet;
-  }
-
-  public boolean isSuperUsernamePasswordSet() {
-    return isSuperUsernamePasswordSet;
   }
 
   public String getRealmString() {
@@ -79,13 +42,5 @@ public class RealmSecurityInfo implements Serializable {
 
   public void setRealmString(String realmString) {
     this.realmString = realmString;
-  }
-
-  public void setChangeUserPasswordURL(String changeUserPasswordURL) {
-    this.changeUserPasswordURL = changeUserPasswordURL;
-  }
-
-  public String getChangeUserPasswordURL() {
-    return changeUserPasswordURL;
   }
 }

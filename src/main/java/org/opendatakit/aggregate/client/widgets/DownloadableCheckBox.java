@@ -38,7 +38,7 @@ public final class DownloadableCheckBox extends AggregateCheckBox implements
     this.formId = formId;
     setValue(downloadable);
     boolean enabled = AggregateUI.getUI().getUserInfo().getGrantedAuthorities()
-        .contains(GrantedAuthorityName.ROLE_DATA_OWNER);
+        .contains(GrantedAuthorityName.ROLE_DATA_OWNER.name());
     setEnabled(enabled);
   }
 

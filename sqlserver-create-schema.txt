@@ -1,0 +1,89 @@
+
+
+-- DO THIS SECTION ONCE WHEN CREATING THE DATABASE
+-- DO THIS SECTION ONCE WHEN CREATING THE DATABASE
+-- DO THIS SECTION ONCE WHEN CREATING THE DATABASE
+-- DO THIS SECTION ONCE WHEN CREATING THE DATABASE
+
+--
+-- create the database
+create database [DATABASE_NAME];
+go
+
+-- switch to database 
+use [DATABASE_NAME];
+go
+
+-- DO THIS SECTION FOR EACH USER GROUP YOU DEFINE 
+-- DO THIS SECTION FOR EACH USER GROUP YOU DEFINE 
+-- DO THIS SECTION FOR EACH USER GROUP YOU DEFINE 
+-- DO THIS SECTION FOR EACH USER GROUP YOU DEFINE 
+
+-- declare an Azure group to which the user that
+-- can write to an ODK Aggregate schema belongs
+-- create the group (here: "odk_prod") in Azure Active 
+-- Directory before you reference it here.
+
+-- Ideally, this would be one group for each ODK Aggregate
+-- that is spun up.
+-- 
+create user [odk_prod] FROM EXTERNAL PROVIDER;
+--
+go
+-- grant access for this group to the database server.
+-- this group or user can connect to the database server
+-- and see what objects are defined within
+GRANT CONNECT, VIEW DEFINITION TO [odk_prod];
+go
+
+-- DO THIS SECTION FOR EACH ODK AGGREGATE YOU SPIN UP
+-- DO THIS SECTION FOR EACH ODK AGGREGATE YOU SPIN UP
+-- DO THIS SECTION FOR EACH ODK AGGREGATE YOU SPIN UP
+-- DO THIS SECTION FOR EACH ODK AGGREGATE YOU SPIN UP
+
+create schema [SCHEMA_NAME];
+go
+
+-- grant odk_prod group the ability to create, manipulate
+-- and drop tables on the database. Unclear how to narrow 
+-- this access to just the schema. I think this is needed
+-- to access the information_schema ?
+grant alter on database::[DATABASE_NAME] to [odk_prod];
+go
+
+-- grant odk_prod group the ability to create, manipulate
+-- and drop tables within the schema.
+grant alter, control on schema::[SCHEMA_NAME] to [odk_prod];
+go
+
+
+-----------------------------------------------------------
+-----------------------------------------------------------
+-----------------------------------------------------------
+-- original version for sqlserver running locally
+-- original version for sqlserver running locally
+-- original version for sqlserver running locally
+-----------------------------------------------------------
+-----------------------------------------------------------
+-----------------------------------------------------------
+USE master;
+IF EXISTS(select * from sys.databases where name='odk_unit') 
+  DROP database odk_unit;
+go
+CREATE DATABASE odk_unit;
+go
+USE odk_unit;
+go
+create user [odk_prod] FROM EXTERNAL PROVIDER;
+go
+GRANT CONNECT, VIEW DEFINITION TO [odk_prod];
+go
+grant alter on database::[odk_unit] to [odk_prod];
+go
+CREATE SCHEMA odk_schema authorization [odk_prod];
+go
+-- grant odk_prod group the ability to create, manipulate
+-- and drop tables within the schema.
+grant alter, control on schema::[odk_schema] to [odk_prod];
+go
+

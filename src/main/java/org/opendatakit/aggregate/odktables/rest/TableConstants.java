@@ -81,6 +81,26 @@ public class TableConstants {
    * be applied during a sync action (TBD).
    */
   public static final String FILTER_VALUE = "_filter_value";
+  
+  /**
+   * Contains the groupType attribute of a Scope. The Scope describes the access
+   * controls on this row. Changes to this value on the device may or may not
+   * be applied during a sync action (TBD).
+   */
+  public static final String GROUP_TYPE = "_group_type";
+  /**
+   * Contains the groupsList attribute of a Scope. The Scope describes the access
+   * controls on this row. Changes to this value on the device may or may not
+   * be applied during a sync action (TBD).
+   */
+  public static final String GROUPS_LIST = "_groups_list";
+  
+  /**
+   * Contains the ext attribute of a Scope. The Scope describes the access
+   * controls on this row. Changes to this value on the device may or may not
+   * be applied during a sync action (TBD).
+   */
+  public static final String FILTER_EXT = "_filter_ext";
 
   /**
    * (form_id, locale, savepoint_type, savepoint_timestamp, savepoint_creator)
@@ -130,6 +150,9 @@ public class TableConstants {
     CLIENT_ONLY_COLUMN_NAMES = new HashSet<String>();
     SHARED_COLUMN_NAMES.add(FILTER_TYPE);
     SHARED_COLUMN_NAMES.add(FILTER_VALUE);
+    SHARED_COLUMN_NAMES.add(GROUP_TYPE);
+    SHARED_COLUMN_NAMES.add(GROUPS_LIST);
+    SHARED_COLUMN_NAMES.add(FILTER_EXT);
     SHARED_COLUMN_NAMES.add(SAVEPOINT_TYPE);
     SHARED_COLUMN_NAMES.add(SAVEPOINT_TIMESTAMP);
     SHARED_COLUMN_NAMES.add(SAVEPOINT_CREATOR);

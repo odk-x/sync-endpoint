@@ -47,7 +47,7 @@ public class ExportSubTab extends AggregateSubTabBase {
   @Override
   public void update() {
     if (AggregateUI.getUI().getUserInfo().getGrantedAuthorities()
-        .contains(GrantedAuthorityName.ROLE_DATA_VIEWER)) {
+        .contains(GrantedAuthorityName.ROLE_DATA_VIEWER.name())) {
 
       AsyncCallback<ArrayList<ExportSummary>> callback = new AsyncCallback<ArrayList<ExportSummary>>() {
         @Override

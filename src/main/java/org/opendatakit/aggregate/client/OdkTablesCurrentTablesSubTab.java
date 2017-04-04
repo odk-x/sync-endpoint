@@ -18,7 +18,6 @@ package org.opendatakit.aggregate.client;
 
 import org.opendatakit.aggregate.client.OdkTablesTabUI.TablesChangeNotification;
 import org.opendatakit.aggregate.client.table.OdkTablesTableList;
-import org.opendatakit.aggregate.client.widgets.ServletPopupButton;
 
 /**
  * This is the subtab that will house the display of the current ODK Tables
@@ -30,36 +29,15 @@ import org.opendatakit.aggregate.client.widgets.ServletPopupButton;
  */
 public class OdkTablesCurrentTablesSubTab extends AggregateSubTabBase implements TablesChangeNotification {
 
-  private static final String IMPORT_TABLE_TXT = "Import table from CSV";
-  private static final String IMPORT_TABLE_TOOLTIP_TEXT = "Create a new  table by importing a CSV";
-  private static final String IMPORT_TABLE_BALLOON_TXT = "Create a new table by importing from a CSV";
-  private static final String IMPORT_TABLE_BUTTON_TXT = "<img src =\"images/yellow_plus.png\" />Import Table From CSV";
-
   private OdkTablesTabUI parent;
   
   private OdkTablesTableList tableList;
 
-  // private OdkTablesAddTableButton addButton;
-
-  private ServletPopupButton importTableButton;
-
-  // this is a button for adding a file to be associated with a table.
-  // private ServletPopupButton addFileButton;
-
   public OdkTablesCurrentTablesSubTab(OdkTablesTabUI parent) {
     this.parent = parent;
     // vertical
-    // setStylePrimaryName(UIConsts.VERTICAL_FLOW_PANEL_STYLENAME);
 
     tableList = new OdkTablesTableList();
-
-    // addButton = new OdkTablesAddTableButton();
-
-    // importTableButton = new ServletPopupButton(IMPORT_TABLE_BUTTON_TXT,
-    // IMPORT_TABLE_TXT, UIConsts.UPLOAD_TABLE_FROM_CSV_SERVLET_ADDR, this,
-    // IMPORT_TABLE_TOOLTIP_TEXT, IMPORT_TABLE_BALLOON_TXT);
-    //
-    // add(importTableButton);
     add(tableList);
 
   }

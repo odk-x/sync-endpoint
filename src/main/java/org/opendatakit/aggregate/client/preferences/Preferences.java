@@ -52,6 +52,12 @@ public class Preferences {
   
   private static Boolean skipMalformedSubmissions;
 
+  private static Boolean anonymousAccessToAttachments;
+
+  private static Boolean anonymousDataCollection;
+  
+  private static Boolean anonymousTablesSynchronization;
+
   private static int nesting = 0;
   private static ArrayList<PreferencesCompletionCallback> userCallbacks = new ArrayList<PreferencesCompletionCallback>();
 
@@ -87,6 +93,9 @@ public class Preferences {
       appName = summary.getAppName();
       fasterBackgroundActionsDisabled = summary.getFasterBackgroundActionsDisabled();
       skipMalformedSubmissions = summary.getSkipMalformedSubmissions();
+      anonymousAccessToAttachments = summary.getAnonymousAccessToAttachments();
+      anonymousDataCollection = summary.getAnonymousDataCollection();
+      anonymousTablesSynchronization = summary.getAnonymousTablesSynchronization();
 
       --nesting;
       if ( nesting <= 0 ) {
@@ -123,8 +132,9 @@ public class Preferences {
   }
 
   public static boolean showEnketoIntegration() {
-    TreeSet<GrantedAuthorityName> authorities = AggregateUI.getUI().getUserInfo().getGrantedAuthorities();
-    if (authorities.contains(GrantedAuthorityName.ROLE_DATA_COLLECTOR) || authorities.contains(GrantedAuthorityName.ROLE_DATA_OWNER)) {
+    TreeSet<String> authorities = AggregateUI.getUI().getUserInfo().getGrantedAuthorities();
+    if (authorities.contains(GrantedAuthorityName.ROLE_DATA_COLLECTOR.name()) ||
+    		authorities.contains(GrantedAuthorityName.ROLE_DATA_OWNER.name())) {
       if (getEnketoApiUrl() != null && !getEnketoApiUrl().equals("")) {
         return true;
       }
@@ -171,6 +181,29 @@ public class Preferences {
   public static Boolean getSkipMalformedSubmissions() {
     if (skipMalformedSubmissions != null) {
       return skipMalformedSubmissions;
+    }
+    return Boolean.FALSE;
+  }
+
+  public static Boolean getAnonymousAccessToAttachments() {
+    if (anonymousAccessToAttachments != null) {
+      return anonymousAccessToAttachments;
+    }
+    return Boolean.FALSE;
+  }
+
+
+  public static Boolean getAnonymousDataCollection() {
+    if (anonymousDataCollection != null) {
+      return anonymousDataCollection;
+    }
+    return Boolean.FALSE;
+  }
+
+
+  public static Boolean getAnonymousTablesSynchronization() {
+    if (anonymousTablesSynchronization != null) {
+      return anonymousTablesSynchronization;
     }
     return Boolean.FALSE;
   }

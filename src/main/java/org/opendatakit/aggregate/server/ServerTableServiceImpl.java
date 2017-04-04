@@ -40,12 +40,9 @@ import org.opendatakit.aggregate.odktables.rest.entity.TableEntry;
 import org.opendatakit.aggregate.odktables.security.TablesUserPermissions;
 import org.opendatakit.aggregate.odktables.security.TablesUserPermissionsImpl;
 import org.opendatakit.common.persistence.CommonFieldsBase;
-import org.opendatakit.common.persistence.Datastore;
 import org.opendatakit.common.persistence.client.exception.DatastoreFailureException;
-import org.opendatakit.common.persistence.engine.gae.DatastoreImpl;
 import org.opendatakit.common.persistence.exception.ODKDatastoreException;
 import org.opendatakit.common.persistence.exception.ODKTaskLockException;
-import org.opendatakit.common.security.User;
 import org.opendatakit.common.security.client.exception.AccessDeniedException;
 import org.opendatakit.common.web.CallingContext;
 
@@ -66,7 +63,6 @@ public class ServerTableServiceImpl extends RemoteServiceServlet implements Serv
     CallingContext cc = ContextFactory.getCallingContext(this, req);
     try {
       ArrayList<TableEntryClient> clientEntries = new ArrayList<TableEntryClient>();
-      User user = cc.getCurrentUser();
       TablesUserPermissions userPermissions = null;
       try {
         userPermissions = new TablesUserPermissionsImpl(cc);
@@ -102,7 +98,6 @@ public class ServerTableServiceImpl extends RemoteServiceServlet implements Serv
     HttpServletRequest req = this.getThreadLocalRequest();
     CallingContext cc = ContextFactory.getCallingContext(this, req);
     try {
-      User user = cc.getCurrentUser();
       TablesUserPermissions userPermissions = new TablesUserPermissionsImpl(cc);
       String appId = ServerPreferencesProperties.getOdkTablesAppId(cc);
       TableManager tm = new TableManager(appId, userPermissions, cc);
@@ -142,7 +137,6 @@ public class ServerTableServiceImpl extends RemoteServiceServlet implements Serv
 
     TablesUserPermissions userPermissions = null;
     try {
-      User user = cc.getCurrentUser();
       userPermissions = new TablesUserPermissionsImpl(cc);
       String appId = ServerPreferencesProperties.getOdkTablesAppId(cc);
       return ServerOdkTablesUtil.createTable(appId, tableId, definition, userPermissions, cc);
@@ -167,16 +161,11 @@ public class ServerTableServiceImpl extends RemoteServiceServlet implements Serv
     HttpServletRequest req = this.getThreadLocalRequest();
     CallingContext cc = ContextFactory.getCallingContext(this, req);
     try {
-      User user = cc.getCurrentUser();
       TablesUserPermissions userPermissions = new TablesUserPermissionsImpl(cc);
       String appId = ServerPreferencesProperties.getOdkTablesAppId(cc);
       TableManager tm = new TableManager(appId, userPermissions, cc);
       tm.deleteTable(tableId);
       logger.info("tableId: " + tableId);
-      Datastore ds = cc.getDatastore();
-      if ( ds instanceof DatastoreImpl ) {
-        ((DatastoreImpl) ds).getDam().logUsage();
-      }
     } catch (ODKDatastoreException e) {
       e.printStackTrace();
       throw new DatastoreFailureException(e);

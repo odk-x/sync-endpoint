@@ -154,8 +154,8 @@ public class FileServiceImpl implements FileService {
       @PathParam("filePath") List<PathSegment> segments, byte[] content)
       throws IOException, ODKTaskLockException, PermissionDeniedException, ODKDatastoreException {
 
-    TreeSet<GrantedAuthorityName> ui = SecurityServiceUtil.getCurrentUserSecurityInfo(cc);
-    if (!ui.contains(GrantedAuthorityName.ROLE_ADMINISTER_TABLES)) {
+    TreeSet<String> ui = SecurityServiceUtil.getCurrentUserSecurityInfo(cc);
+    if (!ui.contains(GrantedAuthorityName.ROLE_ADMINISTER_TABLES.name())) {
       throw new PermissionDeniedException("User does not belong to the 'Administer Tables' group");
     }
 
@@ -202,8 +202,8 @@ public class FileServiceImpl implements FileService {
       @PathParam("filePath") List<PathSegment> segments)
       throws IOException, ODKTaskLockException, PermissionDeniedException, ODKDatastoreException {
 
-    TreeSet<GrantedAuthorityName> ui = SecurityServiceUtil.getCurrentUserSecurityInfo(cc);
-    if (!ui.contains(GrantedAuthorityName.ROLE_ADMINISTER_TABLES)) {
+    TreeSet<String> ui = SecurityServiceUtil.getCurrentUserSecurityInfo(cc);
+    if (!ui.contains(GrantedAuthorityName.ROLE_ADMINISTER_TABLES.name())) {
       throw new PermissionDeniedException("User does not belong to the 'Administer Tables' group");
     }
 

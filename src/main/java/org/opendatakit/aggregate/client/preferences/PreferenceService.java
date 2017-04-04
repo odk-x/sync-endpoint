@@ -34,11 +34,17 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 public interface PreferenceService extends RemoteService {
   PreferenceSummary getPreferences() throws AccessDeniedException, RequestFailureException, DatastoreFailureException;
 
+  void setAnonymousTablesSynchronization(Boolean anonymousTablesSynchronization) throws AccessDeniedException, RequestFailureException, DatastoreFailureException; 
+
+  void setAnonymousDataCollection(Boolean anonymousDataCollection) throws AccessDeniedException, RequestFailureException, DatastoreFailureException;
+
+  void setAnonymousAccessToAttachments(Boolean anonymousAccessToAttachments) throws AccessDeniedException, RequestFailureException, DatastoreFailureException;
+
   void setSkipMalformedSubmissions(Boolean skipMalformedSubmissions) throws AccessDeniedException, RequestFailureException, DatastoreFailureException;
 
   void setFasterBackgroundActionsDisabled(Boolean disabled) throws AccessDeniedException, RequestFailureException, DatastoreFailureException;
 
   void setOdkTablesEnabled(Boolean enabled) throws AccessDeniedException, RequestFailureException, DatastoreFailureException;
   
-  void setOdkAppName(String appName) throws AccessDeniedException, RequestFailureException, DatastoreFailureException; 
+  void setOdkAppName(String appName) throws AccessDeniedException, RequestFailureException, DatastoreFailureException;
 }

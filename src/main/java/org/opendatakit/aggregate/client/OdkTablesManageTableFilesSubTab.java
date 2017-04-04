@@ -129,7 +129,7 @@ public class OdkTablesManageTableFilesSubTab extends AggregateSubTabBase impleme
     selectTablePanel.setHTML(0, 0, "<h2 id=\"table_name\"> Select a Table </h2>");
     selectTablePanel.setWidget(0, 1, tableBox);
     if (AggregateUI.getUI().getUserInfo().getGrantedAuthorities()
-        .contains(GrantedAuthorityName.ROLE_ADMINISTER_TABLES)) {
+        .contains(GrantedAuthorityName.ROLE_ADMINISTER_TABLES.name())) {
       selectTablePanel.setWidget(1, 0, addFileButton);
     }
 

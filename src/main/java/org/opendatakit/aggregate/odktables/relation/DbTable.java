@@ -72,6 +72,16 @@ public class DbTable extends Relation {
   // limited to 50 characters
   public static final DataField FILTER_VALUE = new DataField(TableConstants.FILTER_VALUE.toUpperCase(),
       DataType.STRING, true, 50L).setIndexable(IndexType.HASH);
+  // limited to 10 characters
+  public static final DataField GROUP_TYPE = new DataField(TableConstants.GROUP_TYPE.toUpperCase(),
+      DataType.STRING, true, 10L);
+  // limited to 50 characters
+  public static final DataField GROUPS_LIST = new DataField(TableConstants.GROUPS_LIST.toUpperCase(),
+      DataType.STRING, true, 250L).setIndexable(IndexType.HASH);
+  // limited to 50 characters
+  public static final DataField FILTER_EXT = new DataField(TableConstants.FILTER_EXT.toUpperCase(),
+      DataType.STRING, true, 50L).setIndexable(IndexType.HASH);
+  
   // The FormId of the form that was in use when this record was last saved.
   // limited to 50 characters
   public static final DataField FORM_ID = new DataField(TableConstants.FORM_ID.toUpperCase(),
@@ -105,6 +115,9 @@ public class DbTable extends Relation {
     // common metadata transmitted between server and device
     dataFields.add(FILTER_TYPE);
     dataFields.add(FILTER_VALUE);
+    dataFields.add(GROUP_TYPE);
+    dataFields.add(GROUPS_LIST);
+    dataFields.add(FILTER_EXT);
     dataFields.add(FORM_ID);
     dataFields.add(LOCALE);
     dataFields.add(SAVEPOINT_TYPE);

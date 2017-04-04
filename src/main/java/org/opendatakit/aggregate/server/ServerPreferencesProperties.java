@@ -71,6 +71,10 @@ public class ServerPreferencesProperties extends CommonFieldsBase {
   private static final String FASTER_BACKGROUND_ACTIONS_DISABLED = "FASTER_BACKGROUND_ACTIONS_DISABLED";
   private static final String SKIP_MALFORMED_SUBMISSIONS = "SKIP_MALFORMED_SUBMISSIONS";
 
+  private static final String ANONYMOUS_TABLES_SYNCHRONIZATION = "ANONYMOUS_TABLES_SYNCHRONIZATION";
+  private static final String ANONYMOUS_DATA_COLLECTION = "ANONYMOUS_DATA_COLLECTION";
+  private static final String ANONYMOUS_ACCESS_TO_ATTACHMENTS = "ANONYMOUS_ACCESS_TO_ATTACHMENTS";
+
   private static final String ODK_TABLES_SEQUENCER_BASE = "ODK_TABLES_SEQUENCER_BASE";
   // there can be only one APP_ID per ODK Aggregate. Store the app name here.
   // The main impact on this is validity checking on sync when the appId is
@@ -93,7 +97,8 @@ public class ServerPreferencesProperties extends CommonFieldsBase {
       throws ODKEntityNotFoundException, ODKOverQuotaException {
     return new PreferenceSummary(getGoogleSimpleApiKey(cc), getGoogleApiClientId(cc),
         getEnketoApiUrl(cc), getEnketoApiToken(cc), getOdkTablesEnabled(cc),
-        getOdkTablesAppId(cc), getFasterBackgroundActionsDisabled(cc), getSkipMalformedSubmissions(cc));
+        getOdkTablesAppId(cc), getFasterBackgroundActionsDisabled(cc), getSkipMalformedSubmissions(cc),
+        getAnonymousAccessToAttachments(cc), getAnonymousDataCollection(cc), getAnonymousTablesSynchronization(cc));
   }
 
   /**
@@ -274,6 +279,51 @@ public class ServerPreferencesProperties extends CommonFieldsBase {
   public static void setSkipMalformedSubmissions(CallingContext cc, Boolean skipMalformedSubmissions)
       throws ODKEntityNotFoundException, ODKOverQuotaException {
     setServerPreferencesProperty(cc, SKIP_MALFORMED_SUBMISSIONS, skipMalformedSubmissions.toString());
+  }
+
+  public static Boolean getAnonymousAccessToAttachments(CallingContext cc)
+      throws ODKEntityNotFoundException, ODKOverQuotaException {
+    String value = getServerPreferencesProperty(cc, ANONYMOUS_ACCESS_TO_ATTACHMENTS);
+    if (value != null) {
+      return Boolean.valueOf(value);
+    }
+    // null value should be treated as false
+    return false;
+  }
+
+  public static void setAnonymousAccessToAttachments(CallingContext cc, Boolean anonymousAccessToAttachments)
+      throws ODKEntityNotFoundException, ODKOverQuotaException {
+    setServerPreferencesProperty(cc, ANONYMOUS_ACCESS_TO_ATTACHMENTS, anonymousAccessToAttachments.toString());
+  }
+
+  public static Boolean getAnonymousTablesSynchronization(CallingContext cc)
+      throws ODKEntityNotFoundException, ODKOverQuotaException {
+    String value = getServerPreferencesProperty(cc, ANONYMOUS_TABLES_SYNCHRONIZATION);
+    if (value != null) {
+      return Boolean.valueOf(value);
+    }
+    // null value should be treated as false
+    return false;
+  }
+
+  public static void setAnonymousTablesSynchronization(CallingContext cc, Boolean anonymousTablesSynchronization)
+      throws ODKEntityNotFoundException, ODKOverQuotaException {
+    setServerPreferencesProperty(cc, ANONYMOUS_TABLES_SYNCHRONIZATION, anonymousTablesSynchronization.toString());
+  }
+
+  public static Boolean getAnonymousDataCollection(CallingContext cc)
+      throws ODKEntityNotFoundException, ODKOverQuotaException {
+    String value = getServerPreferencesProperty(cc, ANONYMOUS_DATA_COLLECTION);
+    if (value != null) {
+      return Boolean.valueOf(value);
+    }
+    // null value should be treated as false
+    return false;
+  }
+
+  public static void setAnonymousDataCollection(CallingContext cc, Boolean anonymousDataCollection)
+      throws ODKEntityNotFoundException, ODKOverQuotaException {
+    setServerPreferencesProperty(cc, ANONYMOUS_DATA_COLLECTION, anonymousDataCollection.toString());
   }
 
   public void persist(CallingContext cc) throws ODKEntityPersistException, ODKOverQuotaException {

@@ -66,7 +66,7 @@ public class SubmissionPanel extends FlowPanel {
       public void onSuccess(SubmissionUISummary summary) {
         AggregateUI.getUI().clearError();        
         boolean addDeleteButton = AggregateUI.getUI().getUserInfo().getGrantedAuthorities()
-        .contains(GrantedAuthorityName.ROLE_DATA_OWNER);
+        .contains(GrantedAuthorityName.ROLE_DATA_OWNER.name());
         
         paginationNavBar.update(fg, summary);
         

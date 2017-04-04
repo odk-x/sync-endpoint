@@ -72,7 +72,7 @@ public class OdkTablesTabUI extends AggregateTabBase {
       GWT.log("ServerTableService.getTables() requested");
       // we don't have an outstanding request -- issue one
       if (AggregateUI.getUI().getUserInfo().getGrantedAuthorities()
-          .contains(GrantedAuthorityName.ROLE_SYNCHRONIZE_TABLES)) {
+          .contains(GrantedAuthorityName.ROLE_SYNCHRONIZE_TABLES.name())) {
         SecureGWT.getServerTableService().getTables(new AsyncCallback<ArrayList<TableEntryClient>>() {
   
           @Override
@@ -136,7 +136,7 @@ public class OdkTablesTabUI extends AggregateTabBase {
      * delete and add features disabled.
      */
     if (AggregateUI.getUI().getUserInfo().getGrantedAuthorities()
-        .contains(GrantedAuthorityName.ROLE_SYNCHRONIZE_TABLES)) {
+        .contains(GrantedAuthorityName.ROLE_SYNCHRONIZE_TABLES.name())) {
       changeVisibilityOdkTablesSyncSubTabs(true);
       changeVisibilityOdkTablesAdminSubTabs(true);
     } else {

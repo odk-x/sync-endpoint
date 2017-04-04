@@ -32,8 +32,6 @@ import org.opendatakit.aggregate.client.odktables.ServerTableACLService;
 import org.opendatakit.aggregate.client.odktables.ServerTableACLServiceAsync;
 import org.opendatakit.aggregate.client.odktables.ServerTableService;
 import org.opendatakit.aggregate.client.odktables.ServerTableServiceAsync;
-import org.opendatakit.aggregate.client.preferences.OdkTablesAdminService;
-import org.opendatakit.aggregate.client.preferences.OdkTablesAdminServiceAsync;
 import org.opendatakit.aggregate.client.preferences.PreferenceService;
 import org.opendatakit.aggregate.client.preferences.PreferenceServiceAsync;
 import org.opendatakit.aggregate.client.submission.SubmissionService;
@@ -63,7 +61,7 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
 public class SecureGWT {
   public enum ServiceType {
     FILTER, FORM, FORM_ADMIN, PREFERENCE, SECURITY, SECURITY_ADMIN, SERVICES_ADMIN, SUBMISSION,
-    ODK_TABLES_ADMIN, ODK_TABLES_DATA, ODK_TABLES_DIFF, ODK_TABLES_ACL, ODK_TABLES_TABLE;
+    ODK_TABLES_DATA, ODK_TABLES_DIFF, ODK_TABLES_ACL, ODK_TABLES_TABLE;
   }
 
   private static SecureGWT singleton = null;
@@ -94,7 +92,6 @@ public class SecureGWT {
 
   /** site admin... */
   private SecurityAdminServiceAsync securityAdminServiceAsync = null;
-  private OdkTablesAdminServiceAsync odkTablesAdminServiceAsync = null;
 
   /** odkTables... */
   private ServerDataServiceAsync serverDataServiceAsync = null;
@@ -111,7 +108,6 @@ public class SecureGWT {
     formAdminServiceAsync = (FormAdminServiceAsync) create(ServiceType.FORM_ADMIN);
     servicesAdminServiceAsync = (ServicesAdminServiceAsync) create(ServiceType.SERVICES_ADMIN);
     securityAdminServiceAsync = (SecurityAdminServiceAsync) create(ServiceType.SECURITY_ADMIN);
-    odkTablesAdminServiceAsync = (OdkTablesAdminServiceAsync) create(ServiceType.ODK_TABLES_ADMIN);
     //tables stuff:
     serverDataServiceAsync = (ServerDataServiceAsync) create(ServiceType.ODK_TABLES_DATA);
     serverDiffServiceAsync = (ServerDiffServiceAsync) create(ServiceType.ODK_TABLES_DIFF);
@@ -149,10 +145,6 @@ public class SecureGWT {
 
   public SecurityAdminServiceAsync getSecurityAdminServiceAsync() {
     return securityAdminServiceAsync;
-  }
-
-  public OdkTablesAdminServiceAsync getOdkTablesAdminServiceAsync() {
-    return odkTablesAdminServiceAsync;
   }
 
   // odk tables stuff:
@@ -206,9 +198,6 @@ public class SecureGWT {
       break;
     case SUBMISSION:
       obj = GWT.create(SubmissionService.class);
-      break;
-    case ODK_TABLES_ADMIN:
-      obj = GWT.create(OdkTablesAdminService.class);
       break;
     case ODK_TABLES_DATA:
     	obj = GWT.create(ServerDataService.class);
@@ -268,11 +257,6 @@ public class SecureGWT {
   /** site admin... */
   public static SecurityAdminServiceAsync getSecurityAdminService() {
     return get().getSecurityAdminServiceAsync();
-  }
-
-  /** site admin... */
-  public static OdkTablesAdminServiceAsync getOdkTablesAdminService() {
-    return get().getOdkTablesAdminServiceAsync();
   }
 
   /** odk tables: these should be any user, as the actual data and whatnot should be managed

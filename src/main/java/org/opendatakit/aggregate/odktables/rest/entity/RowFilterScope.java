@@ -31,50 +31,79 @@ public class RowFilterScope implements Comparable<RowFilterScope> {
     DEFAULT, MODIFY, READ_ONLY, HIDDEN,
   }
 
+  public enum GroupType {
+    DEFAULT, MODIFY, READ_ONLY, HIDDEN,
+  }
+
   @JsonProperty(required = false)
   private Type type;
 
   @JsonProperty(required = false)
   private String value;
 
+  @JsonProperty(required = false)
+  private GroupType groupType;
+
+  @JsonProperty(required = false)
+  private String groupsList;
+
+  @JsonProperty(required = false)
+  private String ext;
 
   public static final RowFilterScope EMPTY_ROW_FILTER;
   static {
-	  EMPTY_ROW_FILTER = new RowFilterScope();
-	  EMPTY_ROW_FILTER.initFields(RowFilterScope.Type.DEFAULT, null);
+    EMPTY_ROW_FILTER = new RowFilterScope();
+    EMPTY_ROW_FILTER.initFields(RowFilterScope.Type.DEFAULT, null, RowFilterScope.GroupType.DEFAULT,
+        null, null);
   }
 
-  public static RowFilterScope asRowFilter(String filterType, String filterValue) {
-    if (filterType != null && filterType.length() != 0) {
-      RowFilterScope.Type type = RowFilterScope.Type.valueOf(filterType);
-      return new RowFilterScope(type, (filterValue == null || filterValue.length() == 0) ? null
-            : filterValue);
-    } else {
-      return RowFilterScope.EMPTY_ROW_FILTER;
+  public static RowFilterScope asRowFilter(String filterType, String filterValue, String groupType,
+      String groupsList, String ext) {
+    RowFilterScope.Type type = RowFilterScope.Type.DEFAULT;
+    
+    String fValue = null;
+    if (filterType != null) {
+      type = RowFilterScope.Type.valueOf(filterType);
+      fValue = filterValue;
     }
+    
+    String gList = null;
+    RowFilterScope.GroupType gType = RowFilterScope.GroupType.DEFAULT;
+    if (groupType != null) {
+      gType = RowFilterScope.GroupType.DEFAULT;
+      gList = groupsList;
+    }
+
+    return new RowFilterScope(type, fValue, gType, gList, ext);
+
   }
 
   /**
    * Constructs a new RowFilter.
    *
    * @param type
-   *          the type of the filter. Must not be null. The empty row filter may be
-   *          accessed as {@link RowFilterScope#EMPTY_ROW_FILTER}.
+   *          the type of the filter. Must not be null. The empty row filter may
+   *          be accessed as {@link RowFilterScope#EMPTY_ROW_FILTER}.
    * @param value
    *          the "owner" userId if any. null if no designated owner.
    */
-  public RowFilterScope(Type type, String value) {
+  public RowFilterScope(Type type, String value, GroupType groupType, String groupsList,
+      String ext) {
     Validate.notNull(type);
 
-    initFields(type, value);
+    initFields(type, value, groupType, groupsList, ext);
   }
 
   private RowFilterScope() {
   }
 
-  private void initFields(Type type, String value) {
+  private void initFields(Type type, String value, GroupType groupType, String groupsList,
+      String ext) {
     this.type = type;
     this.value = value;
+    this.groupsList = groupsList;
+    this.groupType = groupType;
+    this.ext = ext;
   }
 
   /**
@@ -107,6 +136,60 @@ public class RowFilterScope implements Comparable<RowFilterScope> {
     this.value = value;
   }
 
+  /**
+   * getGroupType
+   * 
+   * @return groupType
+   */
+  public GroupType getGroupType() {
+    return groupType;
+  }
+
+  /**
+   * setGroupType
+   * 
+   * @param groupType
+   */
+  public void setGroupType(GroupType groupType) {
+    this.groupType = groupType;
+  }
+
+  /**
+   * getGroupsList
+   * 
+   * @return groupsList
+   */
+  public String getGroupsList() {
+    return this.groupsList;
+  }
+
+  /**
+   * setGroupsList
+   * 
+   * @param groupsList
+   */
+  public void setGroupsList(String groupsList) {
+    this.groupsList = groupsList;
+  }
+
+  /**
+   * getExt
+   * 
+   * @return ext
+   */
+  public String getExt() {
+    return this.ext;
+  }
+
+  /**
+   * setExt
+   * 
+   * @param ext
+   */
+  public void setExt(String ext) {
+    this.ext = ext;
+  }
+
   /*
    * (non-Javadoc)
    *
@@ -118,6 +201,9 @@ public class RowFilterScope implements Comparable<RowFilterScope> {
     int result = 1;
     result = prime * result + ((type == null) ? 0 : type.hashCode());
     result = prime * result + ((value == null) ? 0 : value.hashCode());
+    result = prime * result + ((groupType == null) ? 0 : groupType.hashCode());
+    result = prime * result + ((groupsList == null) ? 0 : groupsList.hashCode());
+    result = prime * result + ((ext == null) ? 0 : ext.hashCode());
     return result;
   }
 
@@ -139,7 +225,10 @@ public class RowFilterScope implements Comparable<RowFilterScope> {
     }
     RowFilterScope other = (RowFilterScope) obj;
     return (type == null ? other.type == null : type.equals(other.type))
-        && (value == null ? other.value == null : value.equals(other.value));
+        && (value == null ? other.value == null : value.equals(other.value))
+        && (groupType == null ? other.groupType == null : groupType.equals(other.groupType))
+        && (groupsList == null ? other.groupsList == null : groupsList.equals(other.groupsList))
+        && (ext == null ? other.ext == null : ext.equals(other.ext));
   }
 
   /*
@@ -154,23 +243,35 @@ public class RowFilterScope implements Comparable<RowFilterScope> {
     builder.append(type);
     builder.append(", value=");
     builder.append(value);
+    builder.append(", groupType=");
+    builder.append(groupType);
+    builder.append(", groupsList=");
+    builder.append(groupsList);
+    builder.append(", ext=");
+    builder.append(ext);
     builder.append("]");
     return builder.toString();
   }
 
   @Override
   public int compareTo(RowFilterScope arg0) {
-    if ( arg0 == null ) {
-      return -1;
-    }
-    
+    if (arg0 == null) { return -1; }
+
     int outcome = type.name().compareTo(arg0.type.name());
-    if ( outcome != 0 ) {
-      return outcome;
-    }
-    outcome = (value == null) ? 
-        ((arg0.value == null) ? 0 : -1) : value.compareTo(arg0.value);
+    if (outcome != 0) { return outcome; }
+
+    outcome = (value == null) ? ((arg0.value == null) ? 0 : -1) : value.compareTo(arg0.value);
+    if (outcome != 0) { return outcome; }
+    
+    outcome = groupType.name().compareTo(arg0.groupType.name());
+    if (outcome != 0) { return outcome; }
+    
+    outcome = (groupsList == null) ? ((arg0.groupsList == null) ? 0 : -1) : groupsList.compareTo(arg0.groupsList);
+    if (outcome != 0) { return outcome; }
+    
+    outcome = (ext == null) ? ((arg0 == null) ? 0 : -1) : ext.compareTo(arg0.ext);
     return outcome;
+
   }
 
 }

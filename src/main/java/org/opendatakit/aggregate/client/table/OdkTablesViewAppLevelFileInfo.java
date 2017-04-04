@@ -102,7 +102,7 @@ public class OdkTablesViewAppLevelFileInfo extends FlexTable {
     
     // Only issue the request if we have access...
     if (AggregateUI.getUI().getUserInfo().getGrantedAuthorities()
-        .contains(GrantedAuthorityName.ROLE_SYNCHRONIZE_TABLES)) {
+        .contains(GrantedAuthorityName.ROLE_SYNCHRONIZE_TABLES.name())) {
       SecureGWT.getServerDataService().getAppLevelFileInfoContents(getDataCallback);
     }
   }
@@ -142,7 +142,7 @@ public class OdkTablesViewAppLevelFileInfo extends FlexTable {
         OdkTablesDeleteAppLevelFileButton deleteButton = 
             new OdkTablesDeleteAppLevelFileButton(this.basePanel,
                 sum.getOdkClientVersion(), sum.getFilename());
-        if ( !AggregateUI.getUI().getUserInfo().getGrantedAuthorities().contains(GrantedAuthorityName.ROLE_ADMINISTER_TABLES)) {
+        if ( !AggregateUI.getUI().getUserInfo().getGrantedAuthorities().contains(GrantedAuthorityName.ROLE_ADMINISTER_TABLES.name())) {
           deleteButton.setEnabled(false);
         }
         setWidget(currentRow, DELETE_COLUMN, deleteButton);

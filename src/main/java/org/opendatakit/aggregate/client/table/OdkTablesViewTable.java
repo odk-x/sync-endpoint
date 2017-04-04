@@ -70,6 +70,9 @@ public class OdkTablesViewTable extends FlexTable {
   private static final String ROW_ETAG = "Row ETag";
   private static final String FILTER_TYPE = "Filter Type";
   private static final String FILTER_VALUE = "Filter Value";
+  private static final String GROUP_TYPE = "Group Type";
+  private static final String GROUPS_LIST = "Groups List";
+  private static final String FILTER_EXT = "Filter Ext";
   private static final String DATA_ETAG_AT_MODIFICATION = "Changeset Data ETag";
   private static final String LAST_UPDATE_USER = "Last Update By Verified User";
   private static final String CREATED_BY_USER = "Created By Verified User";
@@ -191,7 +194,7 @@ public class OdkTablesViewTable extends FlexTable {
 
   public void nextPage() {
     if (AggregateUI.getUI().getUserInfo().getGrantedAuthorities()
-        .contains(GrantedAuthorityName.ROLE_SYNCHRONIZE_TABLES) && hasMore) {
+        .contains(GrantedAuthorityName.ROLE_SYNCHRONIZE_TABLES.name()) && hasMore) {
       SecureGWT.getServerDataService().getTableContents(currentTable.getTableId(), resumeCursor,
         getDataCallback);
     }
@@ -200,7 +203,7 @@ public class OdkTablesViewTable extends FlexTable {
   public void updateData(TableEntryClient table) {
     // TODO: paginate this
     if (AggregateUI.getUI().getUserInfo().getGrantedAuthorities()
-        .contains(GrantedAuthorityName.ROLE_SYNCHRONIZE_TABLES)) {
+        .contains(GrantedAuthorityName.ROLE_SYNCHRONIZE_TABLES.name())) {
       SecureGWT.getServerDataService().getTableContents(table.getTableId(), refreshCursor,
         getDataCallback);
     }
@@ -287,6 +290,9 @@ public class OdkTablesViewTable extends FlexTable {
       setText(0, i++, ROW_ETAG);
       setText(0, i++, FILTER_TYPE);
       setText(0, i++, FILTER_VALUE);
+      setText(0, i++, GROUP_TYPE);
+      setText(0, i++, GROUPS_LIST);
+      setText(0, i++, FILTER_EXT);
       setText(0, i++, LAST_UPDATE_USER);
       setText(0, i++, CREATED_BY_USER);
       setText(0, i++, DATA_ETAG_AT_MODIFICATION);
@@ -335,7 +341,7 @@ public class OdkTablesViewTable extends FlexTable {
           // now set the delete button
           OdkTablesDeleteRowButton deleteButton = new OdkTablesDeleteRowButton(this,
               currentTable.getTableId(), row.getRowId(), row.getRowETag());
-          if ( !AggregateUI.getUI().getUserInfo().getGrantedAuthorities().contains(GrantedAuthorityName.ROLE_ADMINISTER_TABLES)) {
+          if ( !AggregateUI.getUI().getUserInfo().getGrantedAuthorities().contains(GrantedAuthorityName.ROLE_ADMINISTER_TABLES.name())) {
             deleteButton.setEnabled(false);
           }
           setWidget(currentRow, 0, deleteButton);
@@ -353,6 +359,9 @@ public class OdkTablesViewTable extends FlexTable {
           setWidget(currentRow, j++, new HTML(row.getRowETag()));
           setWidget(currentRow, j++, new HTML(row.getRowFilterScope().getType().name()));
           setWidget(currentRow, j++, new HTML(row.getRowFilterScope().getValue()));
+          setWidget(currentRow, j++, new HTML(row.getRowFilterScope().getGroupType().name()));
+          setWidget(currentRow, j++, new HTML(row.getRowFilterScope().getGroupsList()));
+          setWidget(currentRow, j++, new HTML(row.getRowFilterScope().getFilterExt()));
           setWidget(currentRow, j++, new HTML(row.getLastUpdateUser()));
           setWidget(currentRow, j++, new HTML(row.getCreateUser()));
           setWidget(currentRow, j++, new HTML(row.getDataETagAtModification()));

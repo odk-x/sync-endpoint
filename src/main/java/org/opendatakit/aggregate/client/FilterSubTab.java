@@ -112,7 +112,7 @@ public class FilterSubTab extends AggregateSubTabBase {
   @Override
   public void update() {
     if (AggregateUI.getUI().getUserInfo().getGrantedAuthorities()
-            .contains(GrantedAuthorityName.ROLE_DATA_VIEWER)) {
+            .contains(GrantedAuthorityName.ROLE_DATA_VIEWER.name())) {
 		navTable.update();
 		
 		FilterGroup filterGroup = getDisplayedFilterGroup();

@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import org.opendatakit.common.persistence.client.exception.DatastoreFailureException;
 import org.opendatakit.common.security.client.UserSecurityInfo;
 import org.opendatakit.common.security.client.exception.AccessDeniedException;
-import org.opendatakit.common.security.common.GrantedAuthorityName;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -45,6 +44,4 @@ public interface SecurityAdminService extends RemoteService {
 	 * @throws DatastoreFailureException
 	 */
 	ArrayList<UserSecurityInfo> getAllUsers(boolean withAuthorities) throws AccessDeniedException, DatastoreFailureException;
-	
-	void setUsersAndGrantedAuthorities( String xsrfString, ArrayList<UserSecurityInfo> users, ArrayList<GrantedAuthorityName> allGroups ) throws AccessDeniedException, DatastoreFailureException;
 }

@@ -36,7 +36,7 @@ public final class DeleteFormButton extends AggregateButton implements ClickHand
     this.formId = formId;
     addStyleDependentName("negative");
     boolean enabled = AggregateUI.getUI().getUserInfo().getGrantedAuthorities()
-        .contains(GrantedAuthorityName.ROLE_DATA_OWNER);
+        .contains(GrantedAuthorityName.ROLE_DATA_OWNER.name());
     setEnabled(enabled);
   }
 

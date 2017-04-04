@@ -147,4 +147,67 @@ public class PreferenceServiceImpl extends RemoteServiceServlet implements
     }
 
   }
+
+  @Override
+  public void setAnonymousAccessToAttachments(Boolean anonymousAccessToAttachments)
+      throws AccessDeniedException, RequestFailureException, DatastoreFailureException {
+    HttpServletRequest req = this.getThreadLocalRequest();
+    CallingContext cc = ContextFactory.getCallingContext(this, req);
+
+    try {
+      ServerPreferencesProperties.setAnonymousAccessToAttachments(cc, anonymousAccessToAttachments);
+
+      log.info("setAnonymousAccessToAttachments as: " + Boolean.toString(anonymousAccessToAttachments));
+
+    } catch (ODKEntityNotFoundException e) {
+      e.printStackTrace();
+      throw new RequestFailureException(e);
+    } catch (ODKOverQuotaException e) {
+      e.printStackTrace();
+      throw new RequestFailureException(ErrorConsts.QUOTA_EXCEEDED);
+    }
+
+  }
+
+  @Override
+  public void setAnonymousTablesSynchronization(Boolean anonymousTablesSynchronization)
+      throws AccessDeniedException, RequestFailureException, DatastoreFailureException {
+    HttpServletRequest req = this.getThreadLocalRequest();
+    CallingContext cc = ContextFactory.getCallingContext(this, req);
+
+    try {
+      ServerPreferencesProperties.setAnonymousTablesSynchronization(cc, anonymousTablesSynchronization);
+
+      log.info("setAnonymousTablesSynchronization as: " + Boolean.toString(anonymousTablesSynchronization));
+
+    } catch (ODKEntityNotFoundException e) {
+      e.printStackTrace();
+      throw new RequestFailureException(e);
+    } catch (ODKOverQuotaException e) {
+      e.printStackTrace();
+      throw new RequestFailureException(ErrorConsts.QUOTA_EXCEEDED);
+    }
+
+  }
+
+  @Override
+  public void setAnonymousDataCollection(Boolean anonymousDataCollection)
+      throws AccessDeniedException, RequestFailureException, DatastoreFailureException {
+    HttpServletRequest req = this.getThreadLocalRequest();
+    CallingContext cc = ContextFactory.getCallingContext(this, req);
+
+    try {
+      ServerPreferencesProperties.setAnonymousDataCollection(cc, anonymousDataCollection);
+
+      log.info("setAnonymousDataCollection as: " + Boolean.toString(anonymousDataCollection));
+
+    } catch (ODKEntityNotFoundException e) {
+      e.printStackTrace();
+      throw new RequestFailureException(e);
+    } catch (ODKOverQuotaException e) {
+      e.printStackTrace();
+      throw new RequestFailureException(ErrorConsts.QUOTA_EXCEEDED);
+    }
+
+  }
 }

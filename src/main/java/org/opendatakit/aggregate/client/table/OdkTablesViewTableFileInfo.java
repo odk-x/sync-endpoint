@@ -149,7 +149,7 @@ public class OdkTablesViewTableFileInfo extends FlexTable {
     };
 
     if (AggregateUI.getUI().getUserInfo().getGrantedAuthorities()
-        .contains(GrantedAuthorityName.ROLE_SYNCHRONIZE_TABLES)) {
+        .contains(GrantedAuthorityName.ROLE_SYNCHRONIZE_TABLES.name())) {
       SecureGWT.getServerDataService().getTableFileInfoContents(table.getTableId(), getDataCallback);
     }
   }
@@ -189,7 +189,7 @@ public class OdkTablesViewTableFileInfo extends FlexTable {
         OdkTablesDeleteTableFileButton deleteButton = 
             new OdkTablesDeleteTableFileButton(this.basePanel,
                 sum.getOdkClientVersion(), currentTable.getTableId(), sum.getFilename());
-        if ( !AggregateUI.getUI().getUserInfo().getGrantedAuthorities().contains(GrantedAuthorityName.ROLE_ADMINISTER_TABLES)) {
+        if ( !AggregateUI.getUI().getUserInfo().getGrantedAuthorities().contains(GrantedAuthorityName.ROLE_ADMINISTER_TABLES.name())) {
           deleteButton.setEnabled(false);
         }
         setWidget(currentRow, DELETE_COLUMN, deleteButton);

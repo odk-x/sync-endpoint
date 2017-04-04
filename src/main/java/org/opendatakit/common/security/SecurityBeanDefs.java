@@ -23,8 +23,8 @@ package org.opendatakit.common.security;
  *
  */
 public final class SecurityBeanDefs {
-	public static final String BASIC_AUTH_PASSWORD_ENCODER = "basicAuthenticationMessageDigestPasswordEncoder";
-	public static final String ROLE_HIERARCHY_MANAGER = "hierarchicalRoleRelationships";
+	public static final String ACTIVE_DIRECTORY_LDAP_AUTHENTICATION_PROVIDER = "activeDirectoryAuthenticationProvider";
+	public static final String ANONYMOUS_AUTHENTICATION_FILTER = "anonymousFilter";
 	
 	private SecurityBeanDefs() {};
 }

@@ -218,11 +218,17 @@ public class EntityCreator {
     if (rowFilterScope != null) {
       RowFilterScope.Type filterType = rowFilterScope.getType();
       String filterValue = rowFilterScope.getValue();
+      RowFilterScope.GroupType groupType = rowFilterScope.getGroupType();
+      String groupsList = rowFilterScope.getGroupsList();
+      String filterExt = rowFilterScope.getExt();
       if (filterType == null) {
         throw new IllegalArgumentException("Unexpected null filterType in row");
       } else {
         row.set(DbTable.FILTER_TYPE, filterType.name());
         row.set(DbTable.FILTER_VALUE, filterValue);
+        row.set(DbTable.GROUP_TYPE, groupType.name());
+        row.set(DbTable.GROUPS_LIST, groupsList);
+        row.set(DbTable.FILTER_EXT, filterExt);
       }
     }
 
@@ -316,6 +322,9 @@ public class EntityCreator {
     // common metadata
     entity.set(DbLogTable.FILTER_TYPE, row.getString(DbTable.FILTER_TYPE));
     entity.set(DbLogTable.FILTER_VALUE, row.getString(DbTable.FILTER_VALUE));
+    entity.set(DbLogTable.GROUP_TYPE, row.getString(DbTable.GROUP_TYPE));
+    entity.set(DbLogTable.GROUPS_LIST, row.getString(DbTable.GROUPS_LIST));
+    entity.set(DbLogTable.FILTER_EXT, row.getString(DbTable.FILTER_EXT));
     entity.set(DbLogTable.FORM_ID, row.getString(DbTable.FORM_ID));
     entity.set(DbLogTable.LOCALE, row.getString(DbTable.LOCALE));
     entity.set(DbLogTable.SAVEPOINT_TYPE, row.getString(DbTable.SAVEPOINT_TYPE));

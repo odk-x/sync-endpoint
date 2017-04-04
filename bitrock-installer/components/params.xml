@@ -152,12 +152,12 @@ NOTE: If you want to use the Microsoft Azure SQL Server, you must configure Tomc
             <ordering>default</ordering>
             <width>30</width>
             <optionList>
-                <option>
+                <!-- <option>
                     <description>Uses Google's cloud-based data storage and webserver services.</description>
                     <image></image>
                     <text>Google App Engine</text>
                     <value>gae</value>
-                </option>
+                </option> -->
                 <!-- <option>
                     <description>Uses Google's cloud-based MySQL storage and webserver services.</description>
                     <image></image>

@@ -20,7 +20,6 @@ import java.io.Serializable;
 import java.util.TreeSet;
 
 import org.opendatakit.common.security.common.EmailParser;
-import org.opendatakit.common.security.common.GrantedAuthorityName;
 
 
 /**
@@ -52,8 +51,7 @@ public class UserSecurityInfo implements Comparable<UserSecurityInfo>, Serializa
 	String fullname; // tie-back to whatever the site admin wants to know.
 	String email; // null if username is non-null
 	UserType type;
-	TreeSet<GrantedAuthorityName> assignedUserGroups = new TreeSet<GrantedAuthorityName>();
-	TreeSet<GrantedAuthorityName> grantedAuthorities = new TreeSet<GrantedAuthorityName>();
+	TreeSet<String> grantedAuthorities = new TreeSet<String>();
 
 	public UserSecurityInfo() {
 	}
@@ -108,22 +106,11 @@ public class UserSecurityInfo implements Comparable<UserSecurityInfo>, Serializa
 		}
 	}
 
-	public TreeSet<GrantedAuthorityName> getAssignedUserGroups() {
-		return assignedUserGroups;
-	}
-
-	public void setAssignedUserGroups(TreeSet<GrantedAuthorityName> authorities) {
-		assignedUserGroups.clear();
-		if ( authorities != null ) {
-			assignedUserGroups.addAll(authorities);
-		}
-	}
-
-	public TreeSet<GrantedAuthorityName> getGrantedAuthorities() {
+	public TreeSet<String> getGrantedAuthorities() {
 		return grantedAuthorities;
 	}
 
-	public void setGrantedAuthorities(TreeSet<GrantedAuthorityName> authorities) {
+	public void setGrantedAuthorities(TreeSet<String> authorities) {
 		grantedAuthorities.clear();
 		if ( authorities != null ) {
 			grantedAuthorities.addAll(authorities);

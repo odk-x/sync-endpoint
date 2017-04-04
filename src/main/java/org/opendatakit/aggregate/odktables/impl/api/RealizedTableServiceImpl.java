@@ -47,7 +47,6 @@ import org.opendatakit.aggregate.odktables.rest.entity.TableDefinition;
 import org.opendatakit.aggregate.odktables.rest.entity.TableDefinitionResource;
 import org.opendatakit.aggregate.odktables.security.TablesUserPermissions;
 import org.opendatakit.common.persistence.Datastore;
-import org.opendatakit.common.persistence.engine.gae.DatastoreImpl;
 import org.opendatakit.common.persistence.exception.ODKDatastoreException;
 import org.opendatakit.common.persistence.exception.ODKEntityNotFoundException;
 import org.opendatakit.common.persistence.exception.ODKTaskLockException;
@@ -92,17 +91,14 @@ public class RealizedTableServiceImpl implements RealizedTableService {
   public Response deleteTable() throws ODKDatastoreException, ODKTaskLockException,
       PermissionDeniedException {
 
-    TreeSet<GrantedAuthorityName> ui = SecurityServiceUtil.getCurrentUserSecurityInfo(cc);
-    if ( !ui.contains(GrantedAuthorityName.ROLE_ADMINISTER_TABLES) ) {
+    TreeSet<String> ui = SecurityServiceUtil.getCurrentUserSecurityInfo(cc);
+    if ( !ui.contains(GrantedAuthorityName.ROLE_ADMINISTER_TABLES.name()) ) {
       throw new PermissionDeniedException("User does not belong to the 'Administer Tables' group");
     }
 
     tm.deleteTable(tableId);
     logger.info("tableId: " + tableId);
     Datastore ds = cc.getDatastore();
-    if ( ds instanceof DatastoreImpl ) {
-      ((DatastoreImpl) ds).getDam().logUsage();
-    }
     return Response.ok()
         .header(ApiConstants.OPEN_DATA_KIT_VERSION_HEADER, ApiConstants.OPEN_DATA_KIT_VERSION)
         .header("Access-Control-Allow-Origin", "*")

@@ -146,8 +146,8 @@ public class TableAclServiceImpl implements TableAclService {
   public Response setUserAcl(String odkTablesUserId, TableAcl acl) throws ODKDatastoreException,
       PermissionDeniedException {
 
-    TreeSet<GrantedAuthorityName> ui = SecurityServiceUtil.getCurrentUserSecurityInfo(cc);
-    if ( !ui.contains(GrantedAuthorityName.ROLE_ADMINISTER_TABLES) ) {
+    TreeSet<String> ui = SecurityServiceUtil.getCurrentUserSecurityInfo(cc);
+    if ( !ui.contains(GrantedAuthorityName.ROLE_ADMINISTER_TABLES.name()) ) {
       throw new PermissionDeniedException("User does not belong to the 'Administer Tables' group");
     }
 
@@ -165,8 +165,8 @@ public class TableAclServiceImpl implements TableAclService {
   public Response setGroupAcl(String groupId, TableAcl acl) throws ODKDatastoreException,
       PermissionDeniedException {
 
-    TreeSet<GrantedAuthorityName> ui = SecurityServiceUtil.getCurrentUserSecurityInfo(cc);
-    if ( !ui.contains(GrantedAuthorityName.ROLE_ADMINISTER_TABLES) ) {
+    TreeSet<String> ui = SecurityServiceUtil.getCurrentUserSecurityInfo(cc);
+    if ( !ui.contains(GrantedAuthorityName.ROLE_ADMINISTER_TABLES.name()) ) {
       throw new PermissionDeniedException("User does not belong to the 'Administer Tables' group");
     }
 
@@ -182,8 +182,8 @@ public class TableAclServiceImpl implements TableAclService {
   public Response setDefaultAcl(TableAcl acl) throws ODKDatastoreException,
       PermissionDeniedException {
 
-    TreeSet<GrantedAuthorityName> ui = SecurityServiceUtil.getCurrentUserSecurityInfo(cc);
-    if ( !ui.contains(GrantedAuthorityName.ROLE_ADMINISTER_TABLES) ) {
+    TreeSet<String> ui = SecurityServiceUtil.getCurrentUserSecurityInfo(cc);
+    if ( !ui.contains(GrantedAuthorityName.ROLE_ADMINISTER_TABLES.name()) ) {
       throw new PermissionDeniedException("User does not belong to the 'Administer Tables' group");
     }
 
@@ -198,8 +198,8 @@ public class TableAclServiceImpl implements TableAclService {
   @Override
   public Response deleteDefaultAcl() throws ODKDatastoreException, PermissionDeniedException {
 
-    TreeSet<GrantedAuthorityName> ui = SecurityServiceUtil.getCurrentUserSecurityInfo(cc);
-    if ( !ui.contains(GrantedAuthorityName.ROLE_ADMINISTER_TABLES) ) {
+    TreeSet<String> ui = SecurityServiceUtil.getCurrentUserSecurityInfo(cc);
+    if ( !ui.contains(GrantedAuthorityName.ROLE_ADMINISTER_TABLES.name()) ) {
       throw new PermissionDeniedException("User does not belong to the 'Administer Tables' group");
     }
 
@@ -213,8 +213,8 @@ public class TableAclServiceImpl implements TableAclService {
   @Override
   public Response deleteUserAcl(String odkTablesUserId) throws ODKDatastoreException, PermissionDeniedException {
 
-    TreeSet<GrantedAuthorityName> ui = SecurityServiceUtil.getCurrentUserSecurityInfo(cc);
-    if ( !ui.contains(GrantedAuthorityName.ROLE_ADMINISTER_TABLES) ) {
+    TreeSet<String> ui = SecurityServiceUtil.getCurrentUserSecurityInfo(cc);
+    if ( !ui.contains(GrantedAuthorityName.ROLE_ADMINISTER_TABLES.name()) ) {
       throw new PermissionDeniedException("User does not belong to the 'Administer Tables' group");
     }
 
@@ -229,8 +229,8 @@ public class TableAclServiceImpl implements TableAclService {
   public Response deleteGroupAcl(String groupId) throws ODKDatastoreException,
       PermissionDeniedException {
 
-    TreeSet<GrantedAuthorityName> ui = SecurityServiceUtil.getCurrentUserSecurityInfo(cc);
-    if ( !ui.contains(GrantedAuthorityName.ROLE_ADMINISTER_TABLES) ) {
+    TreeSet<String> ui = SecurityServiceUtil.getCurrentUserSecurityInfo(cc);
+    if ( !ui.contains(GrantedAuthorityName.ROLE_ADMINISTER_TABLES.name()) ) {
       throw new PermissionDeniedException("User does not belong to the 'Administer Tables' group");
     }
 

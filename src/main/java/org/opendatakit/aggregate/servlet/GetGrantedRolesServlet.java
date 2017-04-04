@@ -19,7 +19,8 @@ package org.opendatakit.aggregate.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.servlet.http.HttpServlet;
@@ -30,11 +31,8 @@ import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.opendatakit.aggregate.ContextFactory;
 import org.opendatakit.aggregate.odktables.rest.ApiConstants;
-import org.opendatakit.common.security.SecurityBeanDefs;
-import org.opendatakit.common.security.common.GrantedAuthorityName;
 import org.opendatakit.common.web.CallingContext;
 import org.opendatakit.common.web.constants.HtmlConsts;
-import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.core.GrantedAuthority;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -75,16 +73,14 @@ public class GetGrantedRolesServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     CallingContext cc = ContextFactory.getCallingContext(this, req);
-
-    Set<GrantedAuthority> grants = cc.getCurrentUser().getDirectAuthorities();
-    RoleHierarchy rh = (RoleHierarchy) cc.getBean(SecurityBeanDefs.ROLE_HIERARCHY_MANAGER);
-    Collection<? extends GrantedAuthority> roles = rh.getReachableGrantedAuthorities(grants);
+    
+    Set<GrantedAuthority> grants = new HashSet<GrantedAuthority>();
+    grants.addAll(cc.getCurrentUser().getAuthorities());
     ArrayList<String> roleNames = new ArrayList<String>();
-    for ( GrantedAuthority a : roles ) {
-      if (a.getAuthority().startsWith(GrantedAuthorityName.ROLE_PREFIX)) {
-        roleNames.add(a.getAuthority());
-      }
+    for ( GrantedAuthority a : grants ) {
+    	roleNames.add(a.getAuthority());
     }
+    Collections.sort(roleNames);
     
     resp.addHeader(ApiConstants.OPEN_DATA_KIT_VERSION_HEADER, ApiConstants.OPEN_DATA_KIT_VERSION);
     resp.addHeader("Access-Control-Allow-Origin", "*");

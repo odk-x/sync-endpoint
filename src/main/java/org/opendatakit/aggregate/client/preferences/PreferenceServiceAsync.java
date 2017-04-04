@@ -30,4 +30,12 @@ public interface PreferenceServiceAsync {
 
   void setSkipMalformedSubmissions(Boolean skipMalformedSubmissions, AsyncCallback<Void> callback);
 
+  void setAnonymousTablesSynchronization(Boolean anonymousTablesSynchronization,
+      AsyncCallback<Void> asyncCallback);
+
+  void setAnonymousDataCollection(Boolean anonymousDataCollection, AsyncCallback<Void> callback);
+
+  void setAnonymousAccessToAttachments(Boolean anonymousAccessToAttachments,
+      AsyncCallback<Void> callback);
+
 }

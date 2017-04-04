@@ -15,10 +15,6 @@
  */
 package org.opendatakit.common.security;
 
-import org.opendatakit.common.persistence.exception.ODKDatastoreException;
-import org.opendatakit.common.web.CallingContext;
-
-
 /**
  * Minimal service for accessing information about the current
  * user and the calling context.
@@ -39,39 +35,5 @@ public interface UserService {
 
   public User getDaemonAccountUser();
 
-  /**
-   * Determine if the access management system has been configured.
-   *
-   * @return true if access management has been configured or if database unavailable
-   */
-  public boolean isAccessManagementConfigured();
-
-  public void reloadPermissions();
-
   public boolean isUserLoggedIn();
-
-  /**
-   * @return the configured super user email address.
-   */
-  public String getSuperUserEmail();
-
-  /**
-   * @return the configured ODK Aggregate super-user username.
-   */
-  public String getSuperUserUsername();
-
-  /**
-   * @return true if this user is a superUser
-   * @throws ODKDatastoreException
-   */
-  public boolean isSuperUser(CallingContext cc) throws ODKDatastoreException;
-
-  /**
-   * If the superUsername is defined, returns true if the 
-   * password for that account is something other than 'aggregate'
-   * 
-   * @return true if superUsername account password is not 'aggregate'
-   */
-  public boolean isSuperUsernamePasswordSet(CallingContext cc) throws ODKDatastoreException;
-
 }

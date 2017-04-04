@@ -18,6 +18,9 @@ package org.opendatakit.aggregate.client;
 
 import org.opendatakit.aggregate.client.preferences.Preferences;
 import org.opendatakit.aggregate.client.preferences.Preferences.PreferencesCompletionCallback;
+import org.opendatakit.aggregate.client.widgets.AnonymousAccessToAttachmentsCheckbox;
+import org.opendatakit.aggregate.client.widgets.AnonymousDataCollectionCheckbox;
+import org.opendatakit.aggregate.client.widgets.AnonymousTablesSynchronizationCheckbox;
 import org.opendatakit.aggregate.client.widgets.ChangeAppNameButton;
 import org.opendatakit.aggregate.client.widgets.DisableFasterBackgroundActionsCheckbox;
 import org.opendatakit.aggregate.client.widgets.EnableOdkTablesCheckbox;
@@ -54,6 +57,8 @@ public class PreferencesSubTab extends AggregateSubTabBase {
   private static final String NEW_SERVICE_ACCOUNT_BALLOON_TXT = "Upload a NEW Google Simple API Key and Oauth2 Service Account information to Aggregate.";
   private static final String NEW_SERVICE_ACCOUNT_BUTTON_TEXT = "<img src=\"images/yellow_plus.png\" /> "
       + NEW_SERVICE_ACCOUNT_TXT;
+  
+  private static final String GOOGLE_EARTH_LABEL = "<h3>Google Earth Visualizations</h3>";
 
   private static final String ENKETO_API_CREDENTIALS_LABEL = "<h2>Enketo Webform Integration</h2>";
   private static final String ENKETO_API_CREDENTIALS_INFO = "<p>See <a href=\"https://accounts.enketo.org/support/aggregate/\" target=\"_blank\">instructions</a> on how to do this.</p>";
@@ -68,6 +73,8 @@ public class PreferencesSubTab extends AggregateSubTabBase {
   private static final String NEW_ENKETO_SERVICE_ACCOUNT_BUTTON_TEXT = "<img src=\"images/yellow_plus.png\" /> "
       + NEW_ENKETO_SERVICE_ACCOUNT_TXT;
 
+  private static final String ODK_1_X_FEATURES_LABEL = "<h2>ODK 1.x Features</h2>";
+  
   private static final String ODK_TABLES_FEATURES_LABEL = "<h2>ODK 2.0 Features</h2>";
   
   //external: enable 2.0 features checkbox
@@ -89,6 +96,9 @@ public class PreferencesSubTab extends AggregateSubTabBase {
   private ChangeAppNameButton changeAppNameButton;
   private DisableFasterBackgroundActionsCheckbox disableFasterBackgroundActions;
   private SkipMalformedSubmissionsCheckbox skipMalformedSubmissions;
+  private AnonymousAccessToAttachmentsCheckbox anonymousAccessToAttachments;
+  private AnonymousDataCollectionCheckbox anonymousDataCollection;
+  private AnonymousTablesSynchronizationCheckbox anonymousTablesSynchronization;
 
   private PreferencesCompletionCallback settingsChange = new PreferencesCompletionCallback() {
     @Override
@@ -96,6 +106,9 @@ public class PreferencesSubTab extends AggregateSubTabBase {
       setCredentialValues();
       disableFasterBackgroundActions.updateValue(Preferences.getFasterBackgroundActionsDisabled());
       skipMalformedSubmissions.updateValue(Preferences.getSkipMalformedSubmissions());
+      anonymousAccessToAttachments.updateValue(Preferences.getAnonymousAccessToAttachments());
+      anonymousDataCollection.updateValue(Preferences.getAnonymousDataCollection());
+      anonymousTablesSynchronization.updateValue(Preferences.getAnonymousTablesSynchronization());
       odkTablesEnable.updateValue(Preferences.getOdkTablesEnabled());
       appName.setText(Preferences.getAppName());
     }
@@ -154,6 +167,13 @@ public class PreferencesSubTab extends AggregateSubTabBase {
     newCredential.setStylePrimaryName(INDENTED_STYLE);
     add(newCredential);
 
+    HTML googleEarth = new HTML(GOOGLE_EARTH_LABEL);
+    add(googleEarth);
+    
+    anonymousAccessToAttachments = new AnonymousAccessToAttachmentsCheckbox(
+        Preferences.getAnonymousAccessToAttachments(), settingsChange);
+    add(anonymousAccessToAttachments);
+
     HTML labelCredentialsSectionEnketo = new HTML(ENKETO_API_CREDENTIALS_LABEL);
     add(labelCredentialsSectionEnketo);
 
@@ -193,15 +213,31 @@ public class PreferencesSubTab extends AggregateSubTabBase {
     add(newEnketoCredential);
 
     setCredentialValues();
+
+
     // add(new UpdateGMapsKeyButton(mapsApiKey));
     // add(new
     // UpdateGoogleClientCredentialsButton(googleApiClientId.getText()));
+
+    HTML odk1xFeatures = new HTML(ODK_1_X_FEATURES_LABEL);
+    add(odk1xFeatures);
+    
+    anonymousDataCollection = new AnonymousDataCollectionCheckbox(
+        Preferences.getAnonymousDataCollection(), settingsChange);
+    add(anonymousDataCollection);
 
     HTML tablesFeatures = new HTML(ODK_TABLES_FEATURES_LABEL);
     add(tablesFeatures);
 
     odkTablesEnable = new EnableOdkTablesCheckbox(Preferences.getOdkTablesEnabled(), settingsChange);
     add(odkTablesEnable);
+
+    HTML br1 = new HTML("<br>");
+    add(br1);
+    
+    anonymousTablesSynchronization = new AnonymousTablesSynchronizationCheckbox(
+        Preferences.getAnonymousTablesSynchronization(), settingsChange);
+    add(anonymousTablesSynchronization);
 
     HTML br = new HTML("<br>");
     add(br);

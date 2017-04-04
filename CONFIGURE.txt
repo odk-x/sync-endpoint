@@ -941,19 +941,35 @@ to perform a full build.
 
 (7) Optionally: Install SQL Server
 We use Windows authentication for connecting to SQL Server.
-This requires running on a Windows platform.
+
+If you are running on a Windows platform, install MS SQL workbench and the sqlcmd.exe command line.
+If running on Linux or Mac OSX, install http://www.sql-workbench.net/ 
 
 (7a)
-For SQLServer, run this script:
+For SQLServer, the build system is configured to use Active Directory  (Azure AD Domain Controller)
+authentication to a SQL Server.
 
-USE master;
-go
-CREATE DATABASE odk_unit;
-go
-USE odk_unit;
-go
-CREATE SCHEMA odk_schema;
-go
+Configure the Azure SQLServer with both the default Server Admin Login and a Active Directory Admin.
+
+Create an "odk_prod" Azure AD Group.
+
+Log onto the database with the Active Directory Admin. Execute:
+
+  create user [odk_prod] FROM EXTERNAL PROVIDER;
+  go
+  GRANT CONNECT, VIEW DEFINITION TO [odk_prod];
+  go
+  grant alter on database::[YOUR_DATABASE_NAME] to [odk_prod];
+  go
+
+You will also need to update the src\main\resources\sqlserv*\jdbc.properties to 
+reflect the database connection that you will use.
+
+In those files, the line: 
+
+ jdbc.schema=odk_unit_test
+
+should not be modified.  The tests will write into that schema and destroy it.
 
 (7b)
 For SQLServer, copy the src\main\libs\sqlserver-auth\sqljdbc_auth.dll to your 
@@ -1008,22 +1024,33 @@ A minimal file is:
   	  <activation><activeByDefault>true</activeByDefault></activation>
   	  <properties>
 		<localRepository>${user.home}/.m2/repository</localRepository>
-		<temp.home>C:\\Users\\Administrator\\AppData\\Local\\Temp</temp.home>
-		<bitrock.home>C:\Program Files (x86)\BitRock InstallBuilder Professional 15.9.0</bitrock.home>
-	    <keystore.propertyfile>\C:\\Users\\Administrator\\keystore\\jarSignerDetails.txt</keystore.propertyfile>
+		<temp.home>C:\\Users\\Admin\\AppData\\Local\\Temp</temp.home>
+		<bitrock.home>C:\Program Files (x86)\BitRock InstallBuilder Professional 16.7.0</bitrock.home>
+	    <keystore.propertyfile>\C:\\Users\\Admin\\keystore\\jarSignerDetails.txt</keystore.propertyfile>
 		<headless.operation>no</headless.operation>
 		<mysql.client.executable>C:\\Program Files\\MySQL\\MySQL Server 5.6\\bin\\mysql.exe</mysql.client.executable>
 		<mysql.root.password>MYSQLROOTPASSWORDHERE</mysql.root.password>
 		<postgres.client.executable>C:\\Program Files\\PostgreSQL\\9.4\\bin\\psql.exe</postgres.client.executable>
 		<postgres.root.password>POSTGRESQLROOTPASSWORDHERE</postgres.root.password>
 		<sqlserver.client.executable>C:\\Program Files\\Microsoft SQL Server\\Client SDK\\ODBC\\130\\Tools\\Binn\\sqlcmd.exe</sqlserver.client.executable>
-		<test.server.hostname>YOUR.FULLY.QUALIFIED.HOSTNAME.AND.ORG</test.server.hostname>
+		<!-- http://www.sql-workbench.net/ required if executing maven on Linux and Mac OSX. sqlcmd.exe is required for Windows -->
+		<sqlserver.linux.sqlworkbench.dir>C:\\Users\\Admin\\Downloads\\Workbench-Build122</sqlserver.linux.sqlworkbench.dir>
+		<sqlserver.server>mezuri-r1.database.windows.net</sqlserver.server>
+		<sqlserver.database>odk_prod</sqlserver.database>
+		<!-- This is the Server Admin Login (use SQL authentication). It is not the Active Directory Admin -->
+		<sqlserver.root.username>mezuri-admin</sqlserver.root.username>
+		<sqlserver.root.password>SQLSERVERROOTPASSWORDHERE</sqlserver.root.password>
+		<test.server.hostname>YOUR.FULLY.QUALIFIED.HOSTNAME.AND.ORG</test.server.hostname> 
 		<test.server.port>7070</test.server.port>
 		<test.server.secure.port>7443</test.server.secure.port>
 		<test.server.gae.monitor.port>7075</test.server.gae.monitor.port>
+		<!-- A user configured in Active Directory to be in the security.server.groupPrefix site_admin group -->
+		<test.server.username>sue@mezuricloud.com</test.server.username>
+		<test.server.password>THISUSERSPASSWORD</test.server.password>
 		<unix.display>:20.0</unix.display>
 		<webdriver.chrome.drivername>chromedriver_win32</webdriver.chrome.drivername>
 		<webdriver.chrome.driverext>.exe</webdriver.chrome.driverext>
+		<firefox.executable></firefox.executable>
 	  </properties>
   	</profile>
   </profiles>

@@ -143,7 +143,7 @@ public class OdkTablesViewInstanceFileInfo extends FlexTable {
     };
 
     if (AggregateUI.getUI().getUserInfo().getGrantedAuthorities()
-        .contains(GrantedAuthorityName.ROLE_SYNCHRONIZE_TABLES)) {
+        .contains(GrantedAuthorityName.ROLE_SYNCHRONIZE_TABLES.name())) {
       SecureGWT.getServerDataService().getInstanceFileInfoContents(table.getTableId(), getDataCallback);
     }
   }
