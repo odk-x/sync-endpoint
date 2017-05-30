@@ -233,6 +233,15 @@
     </servlet-mapping>
 
     <servlet>
+        <servlet-name>get-granted-roles-and-default</servlet-name>
+        <servlet-class>org.opendatakit.aggregate.servlet.GetGrantedRolesAndDefaultServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>get-granted-roles-and-default</servlet-name>
+        <url-pattern>/roles/grantedDefault</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>get-users-list</servlet-name>
         <servlet-class>org.opendatakit.aggregate.servlet.GetActiveUsersServlet</servlet-class>
     </servlet>

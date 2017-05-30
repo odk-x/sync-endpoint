@@ -198,6 +198,8 @@ public class RFC4180CsvReader {
         if ( ch == -1 ) {
           // allow the last line to not have a terminator
           // this is legal w.r.t. RFC4180, and is what Excel does on a Mac.
+          results.add(b.toString());
+          b.setLength(0);
           return results.toArray(new String[results.size()]);
         } else if ( ch == cr ) {
           // marks the end of this naked field (and the end of the line)

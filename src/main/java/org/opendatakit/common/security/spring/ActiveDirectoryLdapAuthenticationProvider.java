@@ -46,6 +46,7 @@ import org.opendatakit.common.security.client.exception.AccessDeniedException;
 import org.opendatakit.common.security.server.SecurityServiceUtil;
 import org.opendatakit.common.web.CallingContext;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
+import org.springframework.ldap.InvalidNameException;
 import org.springframework.ldap.core.DirContextAdapter;
 import org.springframework.ldap.core.DirContextOperations;
 import org.springframework.ldap.core.support.DefaultDirObjectFactory;
@@ -195,7 +196,74 @@ public final class ActiveDirectoryLdapAuthenticationProvider extends
 	public String getSearchFilter() {
 		return searchFilter;
 	}
+	
+	/**
+	 * @param cc
+	 * @return the defaultGroup of the current user or null.
+	 *         This is the defaultGroup from the LDAP system
+	 *         (on ActiveDirectory, it is found in streetAddress)
+	 *         This may not be a group in which the user belongs.
+	 *         The caller is responsible for filtering out those
+	 *         before making use of this value.
+	 */
+	public String getDefaultGroup(CallingContext cc) {
+      final String username = getLdapUser();
+      final String password = getLdapPassword();
 
+      DirContext context = bindAsUser(username, password);
+
+      try {
+        SearchControls searchControls = new SearchControls();
+        searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+
+        String uri = cc.getCurrentUser().getUriUser();
+        String bindPrincipal = createBindPrincipal(uri);
+        String searchRoot = rootDn != null ? rootDn
+              : searchRootFromPrincipal(bindPrincipal);
+
+        DirContextOperations userRecord = 
+            SpringSecurityLdapTemplate.searchForSingleEntryInternal(context,
+                 searchControls, searchRoot, searchFilter,
+                 new Object[] { bindPrincipal });
+
+        Assert.notNull(userRecord,
+            "No object returned by search, DirContext is not correctly configured");
+        
+        String[] cnDefaultGroupList = userRecord.getStringAttributes("streetAddress");
+        if (cnDefaultGroupList == null || cnDefaultGroupList.length == 0) {
+          return null;
+        }
+        
+        String cnDefaultGroup = cnDefaultGroupList[0];
+        
+        LdapName name = LdapUtils.newLdapName(cnDefaultGroup);
+        
+        try {
+           // see if the group exists
+           context.getAttributes(name, new String[]{"memberOf"});
+        } catch (NamingException e) {
+           logger.error("Failed to locate directory entry for group: " + cnDefaultGroup, e);
+           return null;
+        }
+
+        String rawGroupName = name.getRdn(name.getRdns().size() - 1).getValue().toString();
+
+        String groupPrefix = 
+            ((ActiveDirectoryAuthoritiesMapper) getGrantedAuthoritiesMapper()).getGroupPrefix();
+        
+        return SecurityServiceUtil.resolveAsGroupOrRoleAuthority(groupPrefix, rawGroupName);
+
+      } catch (NamingException e) {
+        logger.error("Error retrieving default group (streetAddress) for user: " + username, e);
+        return null;
+      } catch (InvalidNameException e) {
+        logger.error("Error retrieving default group (streetAddress) for user: " + username, e);
+        return null;
+      } finally {
+        LdapUtils.closeContext(context);
+      }
+	}
+	
   /**
    * Return all registered users and the Anonymous user.
    * Invoked from SecurityServiceUtils

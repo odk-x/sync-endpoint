@@ -18,7 +18,10 @@ package org.opendatakit.common.security.server;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -47,42 +50,134 @@ public class SecurityServiceUtil {
 
   public static final GrantedAuthority anonAuth = new SimpleGrantedAuthority(
       GrantedAuthorityName.USER_IS_ANONYMOUS.name());
+  
+  /**
+   * 
+   * @param authorityName
+   * @return either the canonical name for the group sent down to the device or null. 
+   */
+  private static String constructGroupName(String groupPrefix, String authorityName) {
+    String prefixSpace = groupPrefix + " ";
+    if ( authorityName.startsWith(prefixSpace) ) {
+      String name = authorityName.substring(prefixSpace.length()).toUpperCase(Locale.US);
+      name = "GROUP_" + name.replaceAll("[\\s\\p{Punct}]+", "_");
+      return name;
+    }
+    return null;
+  }
 
-  public static void addGroupOrRoleAuthorities(Set<GrantedAuthority> mappedSet, String name) {
-		if ( name.compareToIgnoreCase(GrantedAuthorityName.GROUP_DATA_COLLECTORS.name()) == 0 ) {
-			mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_USER.name()));
-			mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_DATA_COLLECTOR.name()));
-		} else if ( name.compareToIgnoreCase(GrantedAuthorityName.GROUP_DATA_VIEWERS.name()) == 0 ) {
-			mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_USER.name()));
-			mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_DATA_VIEWER.name()));
-		} else if ( name.compareToIgnoreCase(GrantedAuthorityName.GROUP_FORM_MANAGERS.name()) == 0 ) {
-			mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_USER.name()));
-			mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_DATA_VIEWER.name()));
-			mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_DATA_OWNER.name()));
-		} else if ( name.compareToIgnoreCase(GrantedAuthorityName.GROUP_SYNCHRONIZE_TABLES.name()) == 0 ) {
-			mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_USER.name()));
-			mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_SYNCHRONIZE_TABLES.name()));
-		} else if ( name.compareToIgnoreCase(GrantedAuthorityName.GROUP_SUPER_USER_TABLES.name()) == 0 ) {
-			mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_USER.name()));
-			mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_SYNCHRONIZE_TABLES.name()));
-			mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_SUPER_USER_TABLES.name()));
-		} else if ( name.compareToIgnoreCase(GrantedAuthorityName.GROUP_ADMINISTER_TABLES.name()) == 0 ) {
-			mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_USER.name()));
-			mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_SYNCHRONIZE_TABLES.name()));
-			mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_SUPER_USER_TABLES.name()));
-			mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_ADMINISTER_TABLES.name()));
-		} else if ( name.compareToIgnoreCase(GrantedAuthorityName.GROUP_SITE_ADMINS.name()) == 0 ) {
-			mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_USER.name()));
-			mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_SYNCHRONIZE_TABLES.name()));
-			mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_SUPER_USER_TABLES.name()));
-			mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_ADMINISTER_TABLES.name()));
-			mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_DATA_COLLECTOR.name()));
-			mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_DATA_VIEWER.name()));
-			mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_DATA_OWNER.name()));
-			mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_SITE_ACCESS_ADMIN.name()));
-		} else {
-		  mappedSet.add(new SimpleGrantedAuthority(name));
-		}
+  /**
+   * Check whether the rawName starts with the group prefix. 
+   * If it does, convert it to an ODK group name (via constructGroupName(...), above)
+   * and then check whether it is one of the well-known group names, and should be converted
+   * to the dominant role for that group, or if it isn't, and should be returned as a simple
+   * ODK group name.
+   * 
+   * @param groupPrefix
+   * @param rawName
+   * @return null or a well-known role or a group if not a well-known group name
+   */
+  public static String resolveAsGroupOrRoleAuthority(String groupPrefix, String rawName) {
+    String name = constructGroupName(groupPrefix, rawName);
+    if ( name == null ) {
+      return null;
+    } else if ( name.compareToIgnoreCase(GrantedAuthorityName.GROUP_DATA_COLLECTORS.name()) == 0 ) {
+      return GrantedAuthorityName.ROLE_DATA_COLLECTOR.name();
+    } else if ( name.compareToIgnoreCase(GrantedAuthorityName.GROUP_DATA_VIEWERS.name()) == 0 ) {
+      return GrantedAuthorityName.ROLE_DATA_VIEWER.name();
+    } else if ( name.compareToIgnoreCase(GrantedAuthorityName.GROUP_FORM_MANAGERS.name()) == 0 ) {
+      return GrantedAuthorityName.ROLE_DATA_OWNER.name();
+    } else if ( name.compareToIgnoreCase(GrantedAuthorityName.GROUP_SYNCHRONIZE_TABLES.name()) == 0 ) {
+      return GrantedAuthorityName.ROLE_SYNCHRONIZE_TABLES.name();
+    } else if ( name.compareToIgnoreCase(GrantedAuthorityName.GROUP_SUPER_USER_TABLES.name()) == 0 ) {
+      return GrantedAuthorityName.ROLE_SUPER_USER_TABLES.name();
+    } else if ( name.compareToIgnoreCase(GrantedAuthorityName.GROUP_ADMINISTER_TABLES.name()) == 0 ) {
+      return GrantedAuthorityName.ROLE_ADMINISTER_TABLES.name();
+    } else if ( name.compareToIgnoreCase(GrantedAuthorityName.GROUP_SITE_ADMINS.name()) == 0 ) {
+      return GrantedAuthorityName.ROLE_SITE_ACCESS_ADMIN.name();
+    } else {
+      return name;
+    }
+  }
+
+  /**
+   * Check whether the rawName starts with the group prefix. 
+   * If it does, convert it to an ODK group name (via constructGroupName(...), above)
+   * and then check whether it is one of the well-known group names. If so, then a set 
+   * of roles for that group is added to the mappedSet, or, if it isn't, then just the 
+   * simple ODK group name is added to the mappedSet.
+   * 
+   * If the group does not start with the group prefix, no action is taken.
+   * 
+   * @param groupPrefix
+   * @param mappedSet
+   * @param rawName
+   */
+  public static void addGroupOrRoleAuthorities(String groupPrefix, Set<GrantedAuthority> mappedSet, String rawName) {
+    String name = constructGroupName(groupPrefix, rawName);
+    if (name == null) {
+      return;
+    } else if (name.compareToIgnoreCase(GrantedAuthorityName.GROUP_DATA_COLLECTORS.name()) == 0) {
+      mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_USER.name()));
+      mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_DATA_COLLECTOR.name()));
+    } else if (name.compareToIgnoreCase(GrantedAuthorityName.GROUP_DATA_VIEWERS.name()) == 0) {
+      mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_USER.name()));
+      mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_DATA_VIEWER.name()));
+    } else if (name.compareToIgnoreCase(GrantedAuthorityName.GROUP_FORM_MANAGERS.name()) == 0) {
+      mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_USER.name()));
+      mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_DATA_VIEWER.name()));
+      mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_DATA_OWNER.name()));
+    } else if (name.compareToIgnoreCase(GrantedAuthorityName.GROUP_SYNCHRONIZE_TABLES.name()) == 0) {
+      mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_USER.name()));
+      mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_SYNCHRONIZE_TABLES.name()));
+    } else if (name.compareToIgnoreCase(GrantedAuthorityName.GROUP_SUPER_USER_TABLES.name()) == 0) {
+      mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_USER.name()));
+      mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_SYNCHRONIZE_TABLES.name()));
+      mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_SUPER_USER_TABLES.name()));
+    } else if (name.compareToIgnoreCase(GrantedAuthorityName.GROUP_ADMINISTER_TABLES.name()) == 0) {
+      mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_USER.name()));
+      mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_SYNCHRONIZE_TABLES.name()));
+      mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_SUPER_USER_TABLES.name()));
+      mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_ADMINISTER_TABLES.name()));
+    } else if (name.compareToIgnoreCase(GrantedAuthorityName.GROUP_SITE_ADMINS.name()) == 0) {
+      mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_USER.name()));
+      mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_SYNCHRONIZE_TABLES.name()));
+      mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_SUPER_USER_TABLES.name()));
+      mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_ADMINISTER_TABLES.name()));
+      mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_DATA_COLLECTOR.name()));
+      mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_DATA_VIEWER.name()));
+      mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_DATA_OWNER.name()));
+      mappedSet.add(new SimpleGrantedAuthority(GrantedAuthorityName.ROLE_SITE_ACCESS_ADMIN.name()));
+    } else {
+      mappedSet.add(new SimpleGrantedAuthority(name));
+    }
+  }
+  
+  public static HashMap<String,Object> getRolesAndDefaultGroup(CallingContext cc) {
+    
+    Set<GrantedAuthority> grants = new HashSet<GrantedAuthority>();
+    grants.addAll(cc.getCurrentUser().getAuthorities());
+
+    ActiveDirectoryLdapAuthenticationProvider provider = 
+            (ActiveDirectoryLdapAuthenticationProvider) 
+            cc.getBean(SecurityBeanDefs.ACTIVE_DIRECTORY_LDAP_AUTHENTICATION_PROVIDER);
+    
+    String defaultGroup = provider.getDefaultGroup(cc);
+    boolean matchesMembershipGroup = (defaultGroup == null);
+    
+    ArrayList<String> roleNames = new ArrayList<String>();
+    for ( GrantedAuthority a : grants ) {
+      String authName = a.getAuthority();
+      roleNames.add(authName);
+      matchesMembershipGroup = matchesMembershipGroup || authName.equals(defaultGroup);
+    }
+    Collections.sort(roleNames);
+    
+    HashMap<String,Object> roleGroupMap = new HashMap<String,Object>();
+    roleGroupMap.put("roles", roleNames);
+    roleGroupMap.put("defaultGroup", (matchesMembershipGroup ? defaultGroup : null));
+    
+    return roleGroupMap;
   }
   
   /**

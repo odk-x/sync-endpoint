@@ -92,72 +92,38 @@ public class UtilTransforms {
    * Transforms into the server-side RowFilterScope.
    */
   public static RowFilterScope transform(RowFilterScopeClient client) {
-    String value = null;
-    if (client.getType() != null) {
-      value = client.getValue();
-    }
-    
-    String groupsList = null;
-    if (client.getGroupType() != null) {
-      groupsList = client.getGroupsList();
-    }
-    
-    RowFilterScope.Type type = getType(client.getType());
-    RowFilterScope.GroupType groupType = getGroupType(client.getGroupType());
-    
-    String ext = client.getFilterExt(); 
+    String rowOwner = client.getRowOwner();
+    RowFilterScope.Access access = getAccess(client.getAccess());
+    String groupReadOnly = client.getGroupReadOnly();
+    String groupModify = client.getGroupModify();
+    String groupPrivileged = client.getGroupPrivileged(); 
    
-    RowFilterScope serverScope = new RowFilterScope(type, value, groupType, groupsList, ext);
+    RowFilterScope serverScope = new RowFilterScope(access, rowOwner, groupReadOnly, groupModify, groupPrivileged);
 
     return serverScope;
   }
   
-  public static RowFilterScope.Type getType(RowFilterScopeClient.Type type) {
-    RowFilterScope.Type convertedType = RowFilterScope.Type.DEFAULT;
+  public static RowFilterScope.Access getAccess(RowFilterScopeClient.Access access) {
+    RowFilterScope.Access convertedType = RowFilterScope.Access.FULL;
     
-    if (type != null) {
-      switch(type) {
+    if (access != null) {
+      switch(access) {
       case HIDDEN:
-        convertedType = RowFilterScope.Type.HIDDEN;
+        convertedType = RowFilterScope.Access.HIDDEN;
         break;
       case MODIFY:
-        convertedType = RowFilterScope.Type.MODIFY;
+        convertedType = RowFilterScope.Access.MODIFY;
         break;
       case READ_ONLY:
-        convertedType = RowFilterScope.Type.READ_ONLY;
+        convertedType = RowFilterScope.Access.READ_ONLY;
         break;
-      case DEFAULT:
+      case FULL:
       default:
         break;
       }
     }
     
     return convertedType;
-  }
-  
-  public static RowFilterScope.GroupType getGroupType(RowFilterScopeClient.GroupType groupType) {
-    RowFilterScope.GroupType gType = RowFilterScope.GroupType.DEFAULT;
-    
-    if (groupType == null) {
-      return gType;
-    }
-    
-    switch(groupType) {
-    case HIDDEN:
-      gType = RowFilterScope.GroupType.HIDDEN;
-      break;
-    case MODIFY:
-      gType = RowFilterScope.GroupType.MODIFY;
-      break;
-    case READ_ONLY:
-      gType = RowFilterScope.GroupType.READ_ONLY;
-      break;
-    case DEFAULT:
-    default:
-      break;
-    }
-    
-    return gType;
   }
 
   /**
@@ -254,32 +220,29 @@ public class UtilTransforms {
     row.setDataETagAtModification(serverRow.getDataETagAtModification());
     row.setRowETag(serverRow.getRowETag());
     row.setRowId(serverRow.getRowId());
-    if (serverRow.getRowFilterScope().getType() == null) {
+    if (serverRow.getRowFilterScope().getDefaultAccess() == null) {
       throw new IllegalStateException("rowFilterScope un-handled value!");
     } else {
-      
-      RowFilterScopeClient.GroupType gType = transformGroupType(serverRow.getRowFilterScope());
-      
-      switch (serverRow.getRowFilterScope().getType()) {
-      case DEFAULT:
-        row.setRowFilterScope(new RowFilterScopeClient(RowFilterScopeClient.Type.DEFAULT, serverRow.getRowFilterScope()
-            .getValue(), gType, serverRow.getRowFilterScope().getGroupsList(), 
-            serverRow.getRowFilterScope().getExt()));
+      switch (serverRow.getRowFilterScope().getDefaultAccess()) {
+      case FULL:
+        row.setRowFilterScope(new RowFilterScopeClient(RowFilterScopeClient.Access.FULL, serverRow.getRowFilterScope()
+            .getRowOwner(), serverRow.getRowFilterScope().getGroupReadOnly(), serverRow.getRowFilterScope().getGroupModify(), 
+            serverRow.getRowFilterScope().getGroupPrivileged()));
         break;
       case MODIFY:
-        row.setRowFilterScope(new RowFilterScopeClient(RowFilterScopeClient.Type.MODIFY, serverRow.getRowFilterScope()
-            .getValue(), gType, serverRow.getRowFilterScope().getGroupsList(), 
-            serverRow.getRowFilterScope().getExt()));
+        row.setRowFilterScope(new RowFilterScopeClient(RowFilterScopeClient.Access.MODIFY, serverRow.getRowFilterScope()
+            .getRowOwner(), serverRow.getRowFilterScope().getGroupReadOnly(), serverRow.getRowFilterScope().getGroupModify(), 
+            serverRow.getRowFilterScope().getGroupPrivileged()));
         break;
       case READ_ONLY:
-        row.setRowFilterScope(new RowFilterScopeClient(RowFilterScopeClient.Type.READ_ONLY, serverRow.getRowFilterScope()
-            .getValue(), gType, serverRow.getRowFilterScope().getGroupsList(), 
-            serverRow.getRowFilterScope().getExt()));
+        row.setRowFilterScope(new RowFilterScopeClient(RowFilterScopeClient.Access.READ_ONLY, serverRow.getRowFilterScope()
+            .getRowOwner(), serverRow.getRowFilterScope().getGroupReadOnly(), serverRow.getRowFilterScope().getGroupModify(), 
+            serverRow.getRowFilterScope().getGroupPrivileged()));
         break;
       case HIDDEN:
-        row.setRowFilterScope(new RowFilterScopeClient(RowFilterScopeClient.Type.HIDDEN, serverRow.getRowFilterScope()
-            .getValue(), gType, serverRow.getRowFilterScope().getGroupsList(), 
-            serverRow.getRowFilterScope().getExt()));
+        row.setRowFilterScope(new RowFilterScopeClient(RowFilterScopeClient.Access.HIDDEN, serverRow.getRowFilterScope()
+            .getRowOwner(), serverRow.getRowFilterScope().getGroupReadOnly(), serverRow.getRowFilterScope().getGroupModify(), 
+            serverRow.getRowFilterScope().getGroupPrivileged()));
         break;
       default:
         throw new IllegalStateException("rowFilterScope un-handled value!");
@@ -355,54 +318,28 @@ public class UtilTransforms {
     // First get the type of this scope
     RowFilterScopeClient sc = null;
 
-    RowFilterScopeClient.GroupType gType = transformGroupType(serverScope);
-    switch (serverScope.getType()) {
-    case DEFAULT:
-      sc = new RowFilterScopeClient(RowFilterScopeClient.Type.DEFAULT, serverScope.getValue(),
-          gType, serverScope.getGroupsList(), serverScope.getExt());
+    switch (serverScope.getDefaultAccess()) {
+    case FULL:
+      sc = new RowFilterScopeClient(RowFilterScopeClient.Access.FULL, serverScope.getRowOwner(),
+          serverScope.getGroupReadOnly(), serverScope.getGroupModify(), serverScope.getGroupPrivileged());
       break;
     case MODIFY:
-      sc = new RowFilterScopeClient(RowFilterScopeClient.Type.MODIFY, serverScope.getValue(),
-          gType, serverScope.getGroupsList(), serverScope.getExt());
+      sc = new RowFilterScopeClient(RowFilterScopeClient.Access.MODIFY, serverScope.getRowOwner(),
+          serverScope.getGroupReadOnly(), serverScope.getGroupModify(), serverScope.getGroupPrivileged());
       break;
     case READ_ONLY:
-      sc = new RowFilterScopeClient(RowFilterScopeClient.Type.READ_ONLY, serverScope.getValue(),
-          gType, serverScope.getGroupsList(), serverScope.getExt());
+      sc = new RowFilterScopeClient(RowFilterScopeClient.Access.READ_ONLY, serverScope.getRowOwner(),
+          serverScope.getGroupReadOnly(), serverScope.getGroupModify(), serverScope.getGroupPrivileged());
       break;
     case HIDDEN:
-      sc = new RowFilterScopeClient(RowFilterScopeClient.Type.HIDDEN, serverScope.getValue(),
-          gType, serverScope.getGroupsList(), serverScope.getExt());
+      sc = new RowFilterScopeClient(RowFilterScopeClient.Access.HIDDEN, serverScope.getRowOwner(),
+          serverScope.getGroupReadOnly(), serverScope.getGroupModify(), serverScope.getGroupPrivileged());
       break;
     }
     if (sc == null) {
       throw new IllegalStateException("rowFilterScope un-handled value!");
     }
     return sc;
-  }
-  
-  public static RowFilterScopeClient.GroupType transformGroupType(RowFilterScope serverScope) {
-    RowFilterScopeClient.GroupType groupType = RowFilterScopeClient.GroupType.DEFAULT;
-    
-    if (serverScope.getGroupType() != null) {
-      RowFilterScope.GroupType gType = serverScope.getGroupType();
-      
-      switch(gType) {
-      case HIDDEN:
-        groupType = RowFilterScopeClient.GroupType.HIDDEN;
-        break;
-      case MODIFY:
-        groupType = RowFilterScopeClient.GroupType.MODIFY;
-        break;
-      case READ_ONLY:
-        groupType = RowFilterScopeClient.GroupType.READ_ONLY;
-        break;
-      case DEFAULT:
-      default:
-        break;
-      }
-    }
-    
-    return groupType;
   }
 
   /**
