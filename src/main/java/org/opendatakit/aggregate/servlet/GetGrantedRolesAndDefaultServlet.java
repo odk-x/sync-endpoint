@@ -17,6 +17,7 @@
 package org.opendatakit.aggregate.servlet;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Map;
 
@@ -24,9 +25,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.Charsets;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.opendatakit.aggregate.ContextFactory;
+import org.opendatakit.aggregate.constants.ErrorConsts;
 import org.opendatakit.aggregate.odktables.rest.ApiConstants;
 import org.opendatakit.common.security.server.SecurityServiceUtil;
 import org.opendatakit.common.web.CallingContext;
@@ -49,7 +52,7 @@ public class GetGrantedRolesAndDefaultServlet extends HttpServlet {
   /**
    * Serial number for serialization
    */
-  private static final long serialVersionUID = -9115712148453254161L;
+  private static final long serialVersionUID = -911571214845325411L;
 
   /**
    * URI from base
@@ -70,19 +73,22 @@ public class GetGrantedRolesAndDefaultServlet extends HttpServlet {
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     CallingContext cc = ContextFactory.getCallingContext(this, req);
     
-    Map<String,Object> roleGrantStruct = SecurityServiceUtil.getRolesAndDefaultGroup(cc);
-        
-    resp.addHeader(ApiConstants.OPEN_DATA_KIT_VERSION_HEADER, ApiConstants.OPEN_DATA_KIT_VERSION);
-    resp.addHeader("Access-Control-Allow-Origin", "*");
-    resp.addHeader("Access-Control-Allow-Credentials", "true");
-    resp.addHeader(HttpHeaders.HOST, cc.getServerURL());
-    resp.setContentType(HtmlConsts.RESP_TYPE_JSON);
-    resp.setCharacterEncoding(HtmlConsts.UTF8_ENCODE);
-    
-    PrintWriter out = resp.getWriter();
-    out.write(mapper.writeValueAsString(roleGrantStruct));
-    out.flush();
+    Map<String,Object> roleGrantStruct;
+    try {
+      roleGrantStruct = SecurityServiceUtil.getRolesAndDefaultGroup(cc);
+          
+      resp.addHeader(ApiConstants.OPEN_DATA_KIT_VERSION_HEADER, ApiConstants.OPEN_DATA_KIT_VERSION);
+      resp.addHeader("Access-Control-Allow-Origin", "*");
+      resp.addHeader("Access-Control-Allow-Credentials", "true");
+      resp.addHeader(HttpHeaders.HOST, cc.getServerURL());
+      resp.setCharacterEncoding(HtmlConsts.UTF8_ENCODE);
+      resp.setContentType(HtmlConsts.RESP_TYPE_JSON);
 
-    resp.setStatus(HttpStatus.SC_OK);
+      PrintWriter out = resp.getWriter();
+      out.write(mapper.writeValueAsString(roleGrantStruct));
+    } catch ( Exception e ) {
+      resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+          "Exception: " + e.toString());
+    }
   }
 }

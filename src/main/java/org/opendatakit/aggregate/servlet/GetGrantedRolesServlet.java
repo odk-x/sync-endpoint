@@ -74,25 +74,27 @@ public class GetGrantedRolesServlet extends HttpServlet {
   public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     CallingContext cc = ContextFactory.getCallingContext(this, req);
     
-    Set<GrantedAuthority> grants = new HashSet<GrantedAuthority>();
-    grants.addAll(cc.getCurrentUser().getAuthorities());
-    ArrayList<String> roleNames = new ArrayList<String>();
-    for ( GrantedAuthority a : grants ) {
-    	roleNames.add(a.getAuthority());
+    try {
+      Set<GrantedAuthority> grants = new HashSet<GrantedAuthority>();
+      grants.addAll(cc.getCurrentUser().getAuthorities());
+      ArrayList<String> roleNames = new ArrayList<String>();
+      for ( GrantedAuthority a : grants ) {
+      	roleNames.add(a.getAuthority());
+      }
+      Collections.sort(roleNames);
+      
+      resp.addHeader(ApiConstants.OPEN_DATA_KIT_VERSION_HEADER, ApiConstants.OPEN_DATA_KIT_VERSION);
+      resp.addHeader("Access-Control-Allow-Origin", "*");
+      resp.addHeader("Access-Control-Allow-Credentials", "true");
+      resp.addHeader(HttpHeaders.HOST, cc.getServerURL());
+      resp.setContentType(HtmlConsts.RESP_TYPE_JSON);
+      resp.setCharacterEncoding(HtmlConsts.UTF8_ENCODE);
+      
+      PrintWriter out = resp.getWriter();
+      out.write(mapper.writeValueAsString(roleNames));
+    } catch ( Exception e ) {
+      resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+          "Exception: " + e.toString());
     }
-    Collections.sort(roleNames);
-    
-    resp.addHeader(ApiConstants.OPEN_DATA_KIT_VERSION_HEADER, ApiConstants.OPEN_DATA_KIT_VERSION);
-    resp.addHeader("Access-Control-Allow-Origin", "*");
-    resp.addHeader("Access-Control-Allow-Credentials", "true");
-    resp.addHeader(HttpHeaders.HOST, cc.getServerURL());
-    resp.setContentType(HtmlConsts.RESP_TYPE_JSON);
-    resp.setCharacterEncoding(HtmlConsts.UTF8_ENCODE);
-    
-    PrintWriter out = resp.getWriter();
-    out.write(mapper.writeValueAsString(roleNames));
-    out.flush();
-
-    resp.setStatus(HttpStatus.SC_OK);
   }
 }
