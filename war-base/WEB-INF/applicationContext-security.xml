@@ -71,12 +71,6 @@
 
 		<intercept-url pattern="/www/**" access="hasRole('ROLE_USER')" />
 
-		<!--rev 210&+ uses /roles/grantedDefault ; rev 208 uses /roles/granted -->
-		<!-- require that the client be a real username or google account; returns roles granted to that user -->
-		<intercept-url pattern="/roles/granted" access="isFullyAuthenticated() and hasRole('ROLE_USER')" />
-		<intercept-url pattern="/roles/grantedDefault" access="isFullyAuthenticated() and hasRole('ROLE_USER')" />
-		<intercept-url pattern="/users/list" access="isFullyAuthenticated() and hasRole('ROLE_USER')" />
-
 		<intercept-url pattern="/view/binaryData" access="hasRole('ROLE_DATA_VIEWER') or hasRole('ROLE_ATTACHMENT_VIEWER')" />
 		<intercept-url pattern="/view/**" access="hasRole('ROLE_DATA_VIEWER')" />
 
@@ -102,7 +96,13 @@
 		<intercept-url pattern="/odktables/*/tables/*/ref/*" access="hasRole('ROLE_SYNCHRONIZE_TABLES')" method="GET" />
 		<!-- OdkTables -->
 		<intercept-url pattern="/odktables/*/clientVersions" access="hasRole('ROLE_SYNCHRONIZE_TABLES')" method="GET" />
+		<!--  obtain roles and default group for this user -->
+		<intercept-url pattern="/odktables/*/privilegesInfo" access="isFullyAuthenticated() and hasRole('ROLE_USER')" method="GET" />
+		<!--  obtain users and roles on this server -->
+		<intercept-url pattern="/odktables/*/usersInfo" access="isFullyAuthenticated() and hasRole('ROLE_USER')" method="GET" />
 		<intercept-url pattern="/odktables/*/tables" access="hasRole('ROLE_SYNCHRONIZE_TABLES')" method="GET" />
+		<!-- OdkTables installationInfo -->
+		<intercept-url pattern="/odktables/*/installationInfo" access="hasRole('ROLE_SYNCHRONIZE_TABLES')" method="POST" />
 		<!--  TableAclService (not exposed) -->
 		<!--  
 		   <intercept-url pattern="/odktables/*/tables/*/acl/**" access="hasRole('ROLE_SYNCHRONIZE_TABLES')" method="GET" />
@@ -121,6 +121,8 @@
 		<!--  DataService -->
 		<intercept-url pattern="/odktables/*/tables/*/ref/*/rows/**" access="hasRole('ROLE_SYNCHRONIZE_TABLES')" />
 		<intercept-url pattern="/odktables/*/tables/*/ref/*/rows" access="hasRole('ROLE_SYNCHRONIZE_TABLES')" />
+		<!--  InstallationStatus -->
+		<intercept-url pattern="/odktables/*/tables/*/ref/*/installationStatus" access="hasRole('ROLE_SYNCHRONIZE_TABLES')" method="POST" />
 
 		<!--  all other APIs require administer-tables permissions -->		
 		<intercept-url pattern="/odktables/*/**" access="hasRole('ROLE_ADMINISTER_TABLES')" />

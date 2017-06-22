@@ -420,7 +420,8 @@ public final class ActiveDirectoryLdapAuthenticationProvider extends
 		DirContext ctx = bindAsUser(username, password);
 
 		try {
-			return searchForUser(ctx, username);
+		  DirContextOperations match = searchForUser(ctx, username);
+		  return match;
 		}
 		catch (NamingException e) {
 			logger.error("Failed to locate directory entry for authenticated user: "

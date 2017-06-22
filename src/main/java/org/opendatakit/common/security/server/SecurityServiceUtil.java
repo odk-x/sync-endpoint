@@ -19,12 +19,12 @@ package org.opendatakit.common.security.server;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.opendatakit.aggregate.odktables.rest.entity.PrivilegesInfo;
 import org.opendatakit.common.persistence.client.exception.DatastoreFailureException;
 import org.opendatakit.common.persistence.exception.ODKDatastoreException;
 import org.opendatakit.common.security.SecurityBeanDefs;
@@ -153,7 +153,7 @@ public class SecurityServiceUtil {
     }
   }
   
-  public static HashMap<String,Object> getRolesAndDefaultGroup(CallingContext cc) {
+  public static PrivilegesInfo getRolesAndDefaultGroup(CallingContext cc) {
     
     Set<GrantedAuthority> grants = new HashSet<GrantedAuthority>();
     grants.addAll(cc.getCurrentUser().getAuthorities());
@@ -173,11 +173,9 @@ public class SecurityServiceUtil {
     }
     Collections.sort(roleNames);
     
-    HashMap<String,Object> roleGroupMap = new HashMap<String,Object>();
-    roleGroupMap.put("roles", roleNames);
-    roleGroupMap.put("defaultGroup", (matchesMembershipGroup ? defaultGroup : null));
+    PrivilegesInfo info = new PrivilegesInfo(roleNames, (matchesMembershipGroup ? defaultGroup : null));
     
-    return roleGroupMap;
+    return info;
   }
   
   /**

@@ -224,33 +224,6 @@
 	</servlet-mapping>
 
     <servlet>
-        <servlet-name>get-granted-roles</servlet-name>
-        <servlet-class>org.opendatakit.aggregate.servlet.GetGrantedRolesServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>get-granted-roles</servlet-name>
-        <url-pattern>/roles/granted</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <servlet-name>get-granted-roles-and-default</servlet-name>
-        <servlet-class>org.opendatakit.aggregate.servlet.GetGrantedRolesAndDefaultServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>get-granted-roles-and-default</servlet-name>
-        <url-pattern>/roles/grantedDefault</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <servlet-name>get-users-list</servlet-name>
-        <servlet-class>org.opendatakit.aggregate.servlet.GetActiveUsersServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>get-users-list</servlet-name>
-        <url-pattern>/users/list</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
         <servlet-name>manage-oauth2-service-account</servlet-name>
         <servlet-class>org.opendatakit.aggregate.servlet.ServiceAccountPrivateKeyUploadServlet</servlet-class>
     </servlet>
