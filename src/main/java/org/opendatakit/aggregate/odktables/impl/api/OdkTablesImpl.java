@@ -3,7 +3,6 @@ package org.opendatakit.aggregate.odktables.impl.api;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.TreeSet;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -34,11 +33,8 @@ import org.opendatakit.aggregate.odktables.rest.entity.UserInfoList;
 import org.opendatakit.common.persistence.client.exception.DatastoreFailureException;
 import org.opendatakit.common.persistence.exception.ODKDatastoreException;
 import org.opendatakit.common.persistence.exception.ODKTaskLockException;
-import org.opendatakit.common.security.User;
 import org.opendatakit.common.security.client.UserSecurityInfo;
-import org.opendatakit.common.security.client.UserSecurityInfo.UserType;
 import org.opendatakit.common.security.client.exception.AccessDeniedException;
-import org.opendatakit.common.security.common.EmailParser;
 import org.opendatakit.common.security.common.GrantedAuthorityName;
 import org.opendatakit.common.security.server.SecurityServiceUtil;
 import org.opendatakit.common.web.CallingContext;
@@ -163,12 +159,6 @@ public class OdkTablesImpl implements OdkTables {
           .header("Access-Control-Allow-Credentials", "true").build();
     }
   }
-
-  private ArrayList<String> processRoles(TreeSet<String> grants) {
-    ArrayList<String> roleNames = new ArrayList<String>();
-    roleNames.addAll(grants);
-    return roleNames;
-  }
   
   @Override
   public Response /*UserInfoList*/ getUsersInfo(@Context ServletContext sc, @Context HttpServletRequest req, @Context HttpHeaders httpHeaders,
@@ -183,40 +173,27 @@ public class OdkTablesImpl implements OdkTables {
       throw new AppNameMismatchException("AppName (" + appId + ") differs");
     }
     
-      TreeSet<String> grants;
-      grants = SecurityServiceUtil.getCurrentUserSecurityInfo(cc);
+    PrivilegesInfo currentUserPrivileges = SecurityServiceUtil.getRolesAndDefaultGroup(cc);
       
-      boolean returnFullList = false;
-      for ( String grant : grants ) {
-        if (grant.equals(GrantedAuthorityName.ROLE_SITE_ACCESS_ADMIN.name()) ||
-            grant.equals(GrantedAuthorityName.ROLE_ADMINISTER_TABLES.name()) ||
-            grant.equals(GrantedAuthorityName.ROLE_SUPER_USER_TABLES.name())) {
-          returnFullList = true;
-          break;
-        }
+    boolean returnFullList = false;
+    for ( String grant : currentUserPrivileges.getRoles() ) {
+      if (grant.equals(GrantedAuthorityName.ROLE_SITE_ACCESS_ADMIN.name()) ||
+          grant.equals(GrantedAuthorityName.ROLE_ADMINISTER_TABLES.name()) ||
+          grant.equals(GrantedAuthorityName.ROLE_SUPER_USER_TABLES.name())) {
+        returnFullList = true;
+        break;
       }
+    }
       
-      // returned object (will be JSON serialized).
-      ArrayList<UserInfo> listOfUsers = new ArrayList<UserInfo>();
+    // returned object (will be JSON serialized).
+    ArrayList<UserInfo> listOfUsers = new ArrayList<UserInfo>();
 
-      if ( !returnFullList ) {
-        // only return ourself -- we don't have privileges to see everyone
-        UserInfo userInfo = new UserInfo();
-        User user = cc.getCurrentUser();
-        if ( user.isAnonymous() ) {
-          userInfo.setUser_id("anonymous");
-          userInfo.setFull_name(User.ANONYMOUS_USER_NICKNAME);
-        } else {
-          userInfo.setUser_id(user.getEmail());
-          if ( user.getNickname() == null ) {
-            userInfo.setFull_name(user.getEmail().substring(EmailParser.K_MAILTO.length()));
-          } else {
-            userInfo.setFull_name(user.getNickname());
-          }
-        }
-        userInfo.setRoles(processRoles(grants));
-        listOfUsers.add(userInfo);
-      } else {
+    if ( !returnFullList ) {
+      // only return ourself -- we don't have privileges to see everyone
+      UserInfo userInfo = new UserInfo(currentUserPrivileges.getUser_id(),
+          currentUserPrivileges.getFull_name(), currentUserPrivileges.getRoles());
+      listOfUsers.add(userInfo);
+    } else {
         // we have privileges to see all users -- return the full mapping
           ArrayList<UserSecurityInfo> allUsers;
           try {
@@ -244,27 +221,7 @@ public class OdkTablesImpl implements OdkTables {
           }
           
           for (UserSecurityInfo i : allUsers ) {
-            UserInfo userInfo = new UserInfo();
-            if ( i.getType() == UserType.ANONYMOUS ) {
-              userInfo.setUser_id("anonymous"); 
-              userInfo.setFull_name(User.ANONYMOUS_USER_NICKNAME);
-            } else if ( i.getEmail() == null ) {
-              userInfo.setUser_id("username:" + i.getUsername()); 
-              if ( i.getFullName() == null ) {
-                userInfo.setFull_name(i.getUsername());
-              } else {
-                userInfo.setFull_name(i.getFullName());
-              }
-            } else {
-              // already has the mailto: prefix
-              userInfo.setUser_id(i.getEmail()); 
-              if ( i.getFullName() == null ) {
-                userInfo.setFull_name(i.getEmail().substring(EmailParser.K_MAILTO.length()));
-              } else {
-                userInfo.setFull_name(i.getFullName());
-              }
-            }
-            userInfo.setRoles(processRoles(i.getGrantedAuthorities()));
+            UserInfo userInfo = SecurityServiceUtil.createUserInfo(i);
             listOfUsers.add(userInfo);
           }
       }

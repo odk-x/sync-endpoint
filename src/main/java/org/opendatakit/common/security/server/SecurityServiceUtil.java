@@ -25,11 +25,15 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.opendatakit.aggregate.odktables.rest.entity.PrivilegesInfo;
+import org.opendatakit.aggregate.odktables.rest.entity.UserInfo;
 import org.opendatakit.common.persistence.client.exception.DatastoreFailureException;
 import org.opendatakit.common.persistence.exception.ODKDatastoreException;
 import org.opendatakit.common.security.SecurityBeanDefs;
+import org.opendatakit.common.security.User;
 import org.opendatakit.common.security.client.UserSecurityInfo;
+import org.opendatakit.common.security.client.UserSecurityInfo.UserType;
 import org.opendatakit.common.security.client.exception.AccessDeniedException;
+import org.opendatakit.common.security.common.EmailParser;
 import org.opendatakit.common.security.common.GrantedAuthorityName;
 import org.opendatakit.common.security.spring.ActiveDirectoryLdapAuthenticationProvider;
 import org.opendatakit.common.security.spring.AnonymousAuthenticationFilter;
@@ -152,11 +156,81 @@ public class SecurityServiceUtil {
       mappedSet.add(new SimpleGrantedAuthority(name));
     }
   }
+
+  private static final class UserIdFullName {
+    final String user_id;
+    final String full_name;
+    
+    UserIdFullName(UserSecurityInfo userSecurityInfo) {
+      if ( userSecurityInfo.getType() == UserType.ANONYMOUS ) {
+        user_id = "anonymous"; 
+        full_name = User.ANONYMOUS_USER_NICKNAME;
+      } else if ( userSecurityInfo.getEmail() == null ) {
+        user_id = "username:" + userSecurityInfo.getUsername(); 
+        if ( userSecurityInfo.getFullName() == null ) {
+          full_name = userSecurityInfo.getUsername();
+        } else {
+          full_name = userSecurityInfo.getFullName();
+        }
+      } else {
+        // already has the mailto: prefix
+        user_id = userSecurityInfo.getEmail(); 
+        if ( userSecurityInfo.getFullName() == null ) {
+          full_name = userSecurityInfo.getEmail().substring(EmailParser.K_MAILTO.length());
+        } else {
+          full_name = userSecurityInfo.getFullName();
+        }
+      }
+    }
+    
+    UserIdFullName(User user) {
+      if ( user.isAnonymous() ) {
+        user_id = "anonymous";
+        full_name = User.ANONYMOUS_USER_NICKNAME;
+      } else if ( user.getEmail() == null ) {
+        throw new IllegalStateException("dead code in sync endpoint");
+//        user_id = "username:" + user.getUsername(); 
+//        if ( user.getNickname() == null ) {
+//          full_name = user.getUsername();
+//        } else {
+//          full_name = user.getNickname();
+//        }
+      } else {
+        user_id = user.getEmail();
+        if ( user.getNickname() == null ) {
+          full_name = user.getEmail().substring(EmailParser.K_MAILTO.length());
+        } else {
+          full_name = user.getNickname();
+        }
+      }
+
+    }
+  }
+  private static final ArrayList<String> processRoles(TreeSet<String> grants) {
+    ArrayList<String> roleNames = new ArrayList<String>();
+    roleNames.addAll(grants);
+    return roleNames;
+  }
+
+  /**
+   * Constructor to extract content from UserSecurityInfo
+   * 
+   * @param userSecurityInfo
+   */
+  public static final UserInfo createUserInfo(UserSecurityInfo userSecurityInfo) {
+    ArrayList<String> roles;
+    
+    UserIdFullName fields = new UserIdFullName(userSecurityInfo);
+    roles = processRoles(userSecurityInfo.getGrantedAuthorities());
+    
+    return new UserInfo(fields.user_id, fields.full_name, roles);
+  }
   
   public static PrivilegesInfo getRolesAndDefaultGroup(CallingContext cc) {
     
+    User user = cc.getCurrentUser();
     Set<GrantedAuthority> grants = new HashSet<GrantedAuthority>();
-    grants.addAll(cc.getCurrentUser().getAuthorities());
+    grants.addAll(user.getAuthorities());
 
     ActiveDirectoryLdapAuthenticationProvider provider = 
             (ActiveDirectoryLdapAuthenticationProvider) 
@@ -172,8 +246,10 @@ public class SecurityServiceUtil {
       matchesMembershipGroup = matchesMembershipGroup || authName.equals(defaultGroup);
     }
     Collections.sort(roleNames);
-    
-    PrivilegesInfo info = new PrivilegesInfo(roleNames, (matchesMembershipGroup ? defaultGroup : null));
+    UserIdFullName fields = new UserIdFullName(user);
+
+    PrivilegesInfo info = new PrivilegesInfo(fields.user_id, fields.full_name, 
+        roleNames, (matchesMembershipGroup ? defaultGroup : null));
     
     return info;
   }

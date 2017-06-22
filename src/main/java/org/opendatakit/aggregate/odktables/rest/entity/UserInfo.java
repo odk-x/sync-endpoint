@@ -18,7 +18,6 @@ package org.opendatakit.aggregate.odktables.rest.entity;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
@@ -81,8 +80,8 @@ public class UserInfo {
       Collections.sort(this.roles);
     }
   }
-
-  public List<String> getRoles() {
+  
+  public ArrayList<String> getRoles() {
     return roles;
   }
 
