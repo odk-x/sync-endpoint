@@ -199,6 +199,12 @@ public class ODKFileUtils {
     String result = appFolder + File.separator + ASSETS_FOLDER_NAME;
     return result;
   }
+
+  public static String getAssetsCsvFolder(String appName) {
+    String appFolder = ODKFileUtils.getAppFolder(appName);
+    String result = appFolder + File.separator + ASSETS_FOLDER_NAME + File.separator + CSV_FOLDER_NAME;
+    return result;
+  }
   
   public static String getInstanceFolder(String appName, String tableId, String instanceId) {
     String path;
