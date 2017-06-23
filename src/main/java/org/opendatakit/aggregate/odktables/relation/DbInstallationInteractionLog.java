@@ -46,7 +46,7 @@ public class DbInstallationInteractionLog extends Relation {
     super(namespace, tableName, fields, cc);
   }
 
-  private static final String RELATION_NAME = "ROLE_VERIFICATION_LOG";
+  private static final String RELATION_NAME = "INTERACTION_LOG";
 
   /**
    * The installation id from the header.
@@ -92,7 +92,7 @@ public class DbInstallationInteractionLog extends Relation {
 
   private static final List<DataField> dataFields;
   static {
-    DataField detailField = new DataField("DETAIL", DataType.STRING, false);
+    DataField detailField = new DataField("DETAIL", DataType.STRING, true);
     detailField.setMaxCharLen(4000L);
     DETAIL = detailField;
 

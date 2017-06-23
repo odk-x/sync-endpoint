@@ -140,7 +140,7 @@ public class OdkTablesImpl implements OdkTables {
         }
       } catch ( Exception e ) {
         LogFactory.getLog(OdkTablesImpl.class).warn("Unable to write verification log entry for " +
-                    installationId + " user " + cc.getCurrentUser().getEmail());
+                    installationId + " user " + cc.getCurrentUser().getUriUser(), e);
       }
 
       return Response.ok(privilegesInfo)

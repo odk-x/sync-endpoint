@@ -188,13 +188,13 @@ public class SecurityServiceUtil {
         user_id = "anonymous";
         full_name = User.ANONYMOUS_USER_NICKNAME;
       } else if ( user.getEmail() == null ) {
-        throw new IllegalStateException("dead code in sync endpoint");
-//        user_id = "username:" + user.getUsername(); 
-//        if ( user.getNickname() == null ) {
-//          full_name = user.getUsername();
-//        } else {
-//          full_name = user.getNickname();
-//        }
+        // TODO: fix this in Aggregate back-port
+        user_id = "username:" + user.getUriUser();
+        if ( user.getNickname() == null ) {
+          full_name = user.getUriUser();
+        } else {
+          full_name = user.getNickname();
+        }
       } else {
         user_id = user.getEmail();
         if ( user.getNickname() == null ) {
