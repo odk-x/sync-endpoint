@@ -23,7 +23,7 @@ public class TableAclServiceTest extends AbstractServiceTest {
   protected URI resourceUri;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() throws Exception, Throwable {
     super.createTable();
     TableResource resource = rt.getForObject(resolveUri(TABLE_API + T.tableId), TableResource.class);
     resourceUri = URI.create(resource.getAclUri());

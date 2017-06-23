@@ -37,7 +37,7 @@ public class BaseWebDriver {
   public BaseWebDriver() {
   }
 
-  public void authenticateToSite(String username, String password) throws Exception {
+  public void authenticateToSite(String username, String password) throws Exception, Throwable {
     hostname = System.getProperty("test.server.hostname");
     baseUrl = System.getProperty("test.server.baseUrl");
     port = Integer.parseInt(System.getProperty("test.server.port"));

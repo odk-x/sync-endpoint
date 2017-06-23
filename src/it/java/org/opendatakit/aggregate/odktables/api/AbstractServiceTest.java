@@ -49,7 +49,7 @@ public abstract class AbstractServiceTest {
   private String tableDefinitionUri = null;
 
   @BeforeClass
-  public static void setupProxy() {
+  public static void setupProxy() throws Throwable {
     String hostname = System.getProperty("test.server.hostname");
     String username = System.getProperty("test.server.username");
     String password = System.getProperty("test.server.password");
@@ -83,7 +83,7 @@ public abstract class AbstractServiceTest {
   }
   
   @Before
-  public void abstractServiceSetUp() throws Exception {
+  public void abstractServiceSetUp() throws Exception, Throwable {
     String hostname = System.getProperty("test.server.hostname");
     baseUrl = System.getProperty("test.server.baseUrl");
     String port = System.getProperty("test.server.port");
@@ -140,7 +140,7 @@ public abstract class AbstractServiceTest {
     }
   }
 
-  protected TableResource createTable() {
+  protected TableResource createTable() throws Throwable  {
     URI uri = resolveUri(TABLE_API + T.tableId);
 
     TableDefinition definition = new TableDefinition(T.tableId, null, T.columns);
@@ -158,7 +158,7 @@ public abstract class AbstractServiceTest {
     return rsc;
   }
 
-  protected TableResource createAltTable() {
+  protected TableResource createAltTable() throws Throwable  {
     URI uri = resolveUri(TABLE_API + T.tableId);
 
     TableDefinition definition = new TableDefinition(T.tableId, null, T.altcolumns);

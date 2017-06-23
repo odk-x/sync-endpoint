@@ -13,7 +13,7 @@ public class TestUploadForm {
   private static String formsDir;
 
   @BeforeClass
-  public static void setUp() throws Exception {
+  public static void setUp() throws Exception, Throwable {
     formsDir = System.getProperty("test.forms.dir");
     String username = System.getProperty("test.server.username");
     String password = System.getProperty("test.server.password");

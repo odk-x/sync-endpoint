@@ -17,7 +17,7 @@ public class TestStartPage {
   private static BaseWebDriver webDriver;
 
   @BeforeClass
-  public static void setUp() throws Exception {
+  public static void setUp() throws Exception, Throwable {
     String username = System.getProperty("test.server.username");
     String password = System.getProperty("test.server.password");
     webDriver = new BaseWebDriver();

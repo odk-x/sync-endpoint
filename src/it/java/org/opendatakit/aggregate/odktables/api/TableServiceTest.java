@@ -29,25 +29,25 @@ public class TableServiceTest extends AbstractServiceTest {
   }
 
   @Test
-  public void testCreateTable() {
+  public void testCreateTable() throws Throwable  {
     TableResource resource = createTable();
     assertEquals(T.tableId, resource.getTableId());
   }
 
   @Test
-  public void testCreateTableTwice() {
+  public void testCreateTableTwice() throws Throwable  {
     createTable();
     createTable();
   }
 
   @Test(expected = HttpClientErrorException.class)
-  public void testCreateTableAlreadyExists() {
+  public void testCreateTableAlreadyExists() throws Throwable  {
     createTable();
     createAltTable();
   }
 
   @Test
-  public void testGetTable() {
+  public void testGetTable() throws Throwable  {
     TableResource expected = createTable();
     String uri = expected.getSelfUri();
     TableResource actual = rt.getForObject(uri, TableResource.class);

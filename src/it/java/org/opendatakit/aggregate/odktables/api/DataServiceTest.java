@@ -27,7 +27,7 @@ public class DataServiceTest extends AbstractServiceTest {
   protected URI resourceUri;
   
   @Before
-  public void setUp() throws Exception {
+  public void setUp() throws Exception, Throwable {
     super.createTable();
     TableResource resource = rt.getForObject(resolveUri(TABLE_API + T.tableId), TableResource.class);
     resourceUri = URI.create(resource.getDataUri());
@@ -40,7 +40,7 @@ public class DataServiceTest extends AbstractServiceTest {
   }
 
   @Test
-  public void testInsertRow() {
+  public void testInsertRow() throws Throwable {
     String rowId = T.Data.DYLAN.getId();
     String uri = Util.buildUri(resourceUri.toASCIIString());
 

@@ -23,7 +23,7 @@ public class TestOhmageJsonServer {
   private static String dylansSubmissionsDir;
 
   @BeforeClass
-  public static void setUpClass() throws Exception {
+  public static void setUpClass() throws Exception, Throwable {
     String username = System.getProperty("test.server.username");
     String password = System.getProperty("test.server.password");
     webDriver = new BaseWebDriver();
