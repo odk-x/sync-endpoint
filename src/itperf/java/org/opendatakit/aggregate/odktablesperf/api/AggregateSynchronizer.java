@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.opendatakit.aggregate.odktables.api.perf;
+package org.opendatakit.aggregate.odktablesperf.api;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -56,6 +56,11 @@ import org.apache.wink.client.EntityType;
 import org.apache.wink.client.Resource;
 import org.apache.wink.client.RestClient;
 import org.apache.wink.client.internal.handlers.GzipHandler;
+import org.opendatakit.aggregate.odktables.api.SyncETagsUtils;
+import org.opendatakit.aggregate.odktables.api.SyncProgressState;
+import org.opendatakit.aggregate.odktables.api.SyncRow;
+import org.opendatakit.aggregate.odktables.api.SyncRowPending;
+import org.opendatakit.aggregate.odktables.api.exceptions.InvalidAuthTokenException;
 import org.opendatakit.aggregate.odktables.rest.ApiConstants;
 import org.opendatakit.aggregate.odktables.rest.entity.ChangeSetList;
 import org.opendatakit.aggregate.odktables.rest.entity.Column;
@@ -69,12 +74,6 @@ import org.opendatakit.aggregate.odktables.rest.entity.TableDefinition;
 import org.opendatakit.aggregate.odktables.rest.entity.TableDefinitionResource;
 import org.opendatakit.aggregate.odktables.rest.entity.TableResource;
 import org.opendatakit.aggregate.odktables.rest.entity.TableResourceList;
-import org.opendatakit.aggregate.odktables.api.SyncETagsUtils;
-import org.opendatakit.aggregate.odktables.api.SyncProgressState;
-import org.opendatakit.aggregate.odktables.api.SyncRow;
-import org.opendatakit.aggregate.odktables.api.SyncRowPending;
-import org.opendatakit.aggregate.odktables.api.Synchronizer;
-import org.opendatakit.aggregate.odktables.api.exceptions.InvalidAuthTokenException;
 
 /**
  * Implementation of {@link Synchronizer} for ODK Aggregate.

@@ -5,10 +5,15 @@ This assumes you have completed the [**"Minimal Eclipse Installation Setup"**][e
 (including the download of the AppEngine SDK and GWT SDK. These are needed to resolve symbols when
 compiling the source code, even when running under Tomcat8.)
 
+1. Install Ant. This document assumes Ant 1.9.6 or higher.
+1. Update your path so that ant is recognized.
+1. Install Java 8 JDK.
+1. Configure JAVA_HOME to point to Java 8 JDK.
+1. Configure your PATH to have Java 8.
+    `java -version` should indicate that java 8 is being accessed. 
 1. Install Tomcat8 on your computer.
 1. Database Dependencies
    - download MySQL Connector/J and place it in the lib directory of the Tomcat install. This **MUST** be version 5.1.40 or higher. It is known that there are issues with 5.1.6 and earlier. We have only tested with 5.1.40. Stop and restart the Tomcat8 server so it picks up that library. This must be present for MySQL connections to work. It does not harm anything if this is present when using PostgreSQL.
-   - SQLServer configuration requires running on a Windows system. Copy the src\main\sqlserver-auth\sqljdbc_auth.dll to your C:\Windows\System32 directory. This is the authentication library for JDBC 4.1 that uses Windows authentication to verify user identity.
 1. install the database server of your choice (MySQL or PostgreSQL or SQLServer). **NOTE**:  Be sure that it is configured using a UTF-8 character set as the default.
 
     For MySQL: Stop the MySQL database server, then configure the database (via the "my.cnf" or the "my.ini" file) with these lines added to the [mysqld] section:
@@ -19,7 +24,10 @@ compiling the source code, even when running under Tomcat8.)
     max_allowed_packet=1073741824
     ```
  
-    For SQLServer, we configure it to use Windows authentication mode, but it can be mixed-mode.
+    For SQLServer, we configure it to use mixed-mode.
+1. For SQLServer, install Microsoft SQL Server client:
+    on Windows: Microsoft SQL Server Management Studio
+    on Linux/MacOSX: SQL Server workbench (http://www.sql-workbench.net/)
 1. Start Eclipse (Mars) and select this ODK Aggregate workspace.
     - Go to Help / Install New Software.
     - Choose Add...
@@ -119,31 +127,42 @@ compiling the source code, even when running under Tomcat8.)
     - open odk-sqlserver-settings/sqlserver
     - edit jdbc.properties to specify a database name in the url. The url is configured to use Windows authentication for accessing the database, so no username or password is present in this file. If you do not want to use Windows authentication, compare the odk_settings.xml file for sqlserver with that for postgres to see where to add settings for username and password so that you can use those for authentication.
 
+	To use standard SQLServer username and password (suitable for all platforms):
+	
     ```
     jdbc.driverClassName=com.microsoft.sqlserver.jdbc.SQLServerDriver
     jdbc.resourceName=jdbc/odk_aggregate
-    jdbc.url=jdbc:sqlserver://127.0.0.1\\MSSQLSERVER:1433;databaseName=odk_unit;applicationName=ODKAggregate;encrypt=true;trustServerCertificate=true;integratedSecurity=true;authentication=ActiveDirectoryIntegrated;
+    jdbc.url=jdbc:sqlserver://127.0.0.1\\MSSQLSERVER:1433;database=odk_unit;user=odk_unit_login;password=odk_unit;integratedSecurity=false;encrypt=true;trustServerCertificate=true;loginTimeout=30
     jdbc.schema=odk_schema
     ```
 
+	If your server is remote, you will need to update the jdbc.url to point to something other than localhost.
+
     - Save changes.
-    - Now open Microsoft SQL Server Management Studio. If you have not yet created that database, issue the following commands, with the names changed for what you specified above. The names to substitute above/below are:
+    - Now open Microsoft SQL Server Management Studio or the SQL Server workbench. If you have not yet created that database, issue the following commands, with the names changed for what you specified above. The names to substitute above/below are:
       - odk_unit -- replace with your database name
       - odk_schema -- replace with the schema name
 
-    ```
-    USE master;
-    go
-    CREATE DATABASE odk_unit;
-    go
-    USE odk_unit;
-    go
-    CREATE SCHEMA odk_schema;
-    go
-    ```
+   For SQL Server username/password authentication:
+   
+   ```
+   USE master;
+   go
+   CREATE DATABASE odk_unit;
+   go
+   USE odk_unit;
+   go
+   CREATE LOGIN odk_unit_login with password = 'odk_unit', default_database = odk_unit;
+   go
+   CREATE USER odk_unit_login from LOGIN odk_unit_login WITH default_schema = dbo;
+   go
+   grant all privileges on DATABASE::odk_unit to odk_unit_login;
+   go
+   CREATE SCHEMA odk_schema;
+   go
+   ```
 
-    - Because we are using Windows authentication, the run-as user under Eclipse will be your user. Since you are an admin on the database, we don't need to set permissions.
-    - Finally, return to Eclipse, select the build.xml script within the odk-postgres-settings project, right-click, Run As / Ant Build.
+    - Finally, return to Eclipse, select the build.xml script within the odk-sqlserver-settings project, right-click, Run As / Ant Build.
     - This will bundle up these changes and copy the changes into the eclipse-tomcat8 project.
 1. Select eclipse-tomcat8, right-click, Refresh. (to pick up file changes).
 1. Select eclipse-tomcat8, right-click, Google / GWT Compile

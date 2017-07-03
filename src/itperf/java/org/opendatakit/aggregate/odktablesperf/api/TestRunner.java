@@ -1,4 +1,4 @@
-package org.opendatakit.aggregate.odktables.api.perf;
+package org.opendatakit.aggregate.odktablesperf.api;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -12,7 +12,7 @@ import java.util.Scanner;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.opendatakit.aggregate.odktables.api.exceptions.InvalidAuthTokenException;
-import org.opendatakit.aggregate.odktables.api.perf.PerfTest.TestInfo;
+import org.opendatakit.aggregate.odktablesperf.api.PerfTest.TestInfo;
 
 import com.google.common.collect.Lists;
 import com.google.gson.FieldNamingPolicy;

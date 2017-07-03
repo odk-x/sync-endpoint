@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.opendatakit.aggregate.odktables.rest.entity.TableResource;
@@ -15,7 +16,12 @@ import org.springframework.web.client.HttpClientErrorException;
 public class TableServiceTest extends AbstractServiceTest {
   
   protected URI resourceUri;
-  
+
+  @Before
+  public void setup() throws Exception, Throwable {
+    super.abstractServiceSetUp();
+  }
+
   @Test
   public void testGetTablesEmpty() {
     TableResourceList tables = rt.getForObject(resolveUri(TABLE_API), TableResourceList.class);

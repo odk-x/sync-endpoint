@@ -52,14 +52,14 @@
 			<locationURI>WORKSPACE_LOC/src/it/java</locationURI>
 		</link>
 		<link>
+			<name>itperfjava</name>
+			<type>2</type>
+			<locationURI>WORKSPACE_LOC/src/itperf/java</locationURI>
+		</link>
+		<link>
 			<name>java</name>
 			<type>2</type>
 			<locationURI>WORKSPACE_LOC/src/main/java</locationURI>
-		</link>
-		<link>
-			<name>test-java</name>
-			<type>2</type>
-			<locationURI>WORKSPACE_LOC/src/test/java</locationURI>
 		</link>
 		<link>
 			<name>testjava</name>

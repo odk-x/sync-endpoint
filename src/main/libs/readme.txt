@@ -31,19 +31,3 @@ The sources are in the jar. The full project can be found in
 the Aggregate (Components) project. It is copied from the download
 formerly available here:
   http://code.google.com/p/gwt-google-apis/
-
-----------------------
-JARs built by others
-----------------------
-
-# sqlserver-auth\sqljdbc_auth.dll
-# sqljdbc42.jar
-
-Microsoft SQL Server JDBC 4.2 libraries.
-https://www.microsoft.com/en-us/download/details.aspx?id=11774
-
-This must be manually downloaded and copied to the path so that 
-Windows authentication can be used when connecting to SQLServer
-Note that the installer will use either the 41 or 42 library, 
-based upon whether you are connecting to Azure SQL Server.
-

@@ -43,7 +43,7 @@
         <google.api-services-drive.version>v3-rev52-1.22.0</google.api-services-drive.version>
         <google.gwt.version>2.7.0</google.gwt.version>
         <org.apache.wink.version>1.4</org.apache.wink.version>
-        <jacoco.maven.plugin.version>0.7.6.201602180812</jacoco.maven.plugin.version>
+        <jacoco.maven.plugin.version>0.7.9</jacoco.maven.plugin.version>
         <maven.surefire.report.plugin.version>2.19.1</maven.surefire.report.plugin.version>
         <maven.surefire.plugin.version>2.19.1</maven.surefire.plugin.version>
         <surefire.argLine>-Xms300m -Xmx3048m -XX:+UseParallelGC -XX:+UseParallelOldGC</surefire.argLine> <!-- JVM size can probably be reduced -->
@@ -191,7 +191,7 @@
 		</dependency>
         <dependency> <!-- required by spring-security -->
           <groupId>commons-codec</groupId>
-          <artifactId>commons-codec</artifactId>
+          <artifactId>commons-codec</artifactId> <!-- note: java 1.6 -->
           <version>1.10</version>
           <type>jar</type>
           <scope>compile</scope>
@@ -708,18 +708,33 @@
 		  <version>${org.seleniumhq.version}</version>
 		  <scope>test</scope>
 		</dependency>
-		<dependency>
-		  <groupId>xml-apis</groupId>
-		  <artifactId>xml-apis</artifactId>
-		  <version>1.4.01</version>
-		  <scope>test</scope>
-		</dependency>
         <dependency>
             <groupId>org.jacoco</groupId>
             <artifactId>org.jacoco.agent</artifactId>
             <version>${jacoco.maven.plugin.version}</version>
             <scope>test</scope>
         </dependency>
+		<dependency>
+			<!-- this is used in the failsafe config below via direct 
+			     classpath injection from the local repository -->
+			<groupId>org.apache.wink</groupId>
+			<artifactId>wink-client</artifactId>
+			<version>${org.apache.wink.version}</version>
+			<type>jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+		  <groupId>xml-apis</groupId>
+		  <artifactId>xml-apis</artifactId>
+		  <version>1.4.01</version>
+		  <scope>test</scope>
+		</dependency>
+		<dependency>
+		  <groupId>javax.servlet</groupId>
+		  <artifactId>javax.servlet-api</artifactId>
+		  <version>3.1.0</version>
+		  <scope>provided</scope>
+		</dependency>
     </dependencies>
     <build>
         <plugins>
@@ -1097,6 +1112,8 @@
 							<classpathDependencyExcludes>org.jacoco:org.jacoco.agent</classpathDependencyExcludes>
 						  </classpathDependencyExcludes>
                           <additionalClasspathElements>
+						    <!-- hack to get wink included; guava included as part of selenium -->
+                            <additionalClasspathElement>${localRepository}/org/apache/wink/wink-client/wink-client-${org.apache.wink.version}.jar</additionalClasspathElement>
                             <additionalClasspathElement>${selenium.home}/client-combined-3.4.0-nodeps.jar</additionalClasspathElement>
                             <additionalClasspathElement>${selenium.libs}/cglib-nodep-3.2.4.jar</additionalClasspathElement>
                             <additionalClasspathElement>${selenium.libs}/commons-codec-1.10.jar</additionalClasspathElement>
