@@ -146,7 +146,7 @@ A minimal file is:
 		<sqlserver.database>odk_unit</sqlserver.database>
 		<!-- This is the Server Admin Login. It is not the Active Directory Admin -->
 		<sqlserver.root.username>odk_owner</sqlserver.root.username>
-		<sqlserver.root.password>SQLSERVERROOTPASSWORDHERE</postgres.root.sqlserver>
+		<sqlserver.root.password>SQLSERVERROOTPASSWORDHERE</sqlserver.root.password>
 		<test.server.hostname>localhost</test.server.hostname> <!-- sprite.cs.washington.edu -->
 		<test.server.port>7070</test.server.port>
 		<test.server.secure.port>7443</test.server.secure.port>
