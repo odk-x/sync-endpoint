@@ -484,7 +484,7 @@
 	</beans:bean>
 
 	<!-- Store the currently selected AuthenticationProvider for SecurityServiceUtil -->
-	<beans:bean id="directoryAwareAuthProvider" parent="${security.server.authenticationMethod}AuthenticationProvider" />
+	<beans:alias name="${security.server.authenticationMethod}AuthenticationProvider" alias="directoryAwareAuthProvider"/>
 
 	<!--
 		Digest Authentication configuration. This is used for device access.
