@@ -21,7 +21,7 @@
     </dependency>
     <dependency>
       <groupId>org.opendatakit</groupId>
-      <artifactId>odk-sqlserver-it-settings</artifactId>
+      <artifactId>odk-sqlserver-settings</artifactId>
       <version>latest</version>
     </dependency>
     <dependency>

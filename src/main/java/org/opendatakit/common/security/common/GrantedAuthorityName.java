@@ -33,6 +33,7 @@ public enum GrantedAuthorityName implements Serializable {
 
 	AUTH_LOCAL("any users authenticated via the locally-held (<em>Aggregate password</em>) credential"),
 	AUTH_ACTIVE_DIRECTORY("any users authenticated via Active Directory"),
+	AUTH_LDAP("any users authenticated via LDAP"),
 
 	USER_IS_ANONYMOUS("for unauthenticated access"),
 	USER_IS_REGISTERED("for registered users of this system (a user identified " +

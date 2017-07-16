@@ -57,7 +57,7 @@
 		<intercept-url pattern="/odk_color.png" access="true" />
 		<intercept-url pattern="/multimode_login.html" access="true" />
 		<intercept-url pattern="/relogin.html" access="true" />
-		<intercept-url pattern="/local_login.html" access="isFullyAuthenticated() and (hasAuthority('AUTH_LOCAL') or hasAuthority('AUTH_ACTIVE_DIRECTORY'))" />
+		<intercept-url pattern="/local_login.html" access="isFullyAuthenticated() and (hasAuthority('AUTH_LOCAL') or hasAuthority('AUTH_ACTIVE_DIRECTORY') or hasAuthority('AUTH_LDAP'))" />
 
 		<!-- grant access to various servlets -->
 		<intercept-url pattern="/formList" access="hasRole('ROLE_DATA_COLLECTOR') or hasRole('ROLE_DATA_VIEWER')" />
@@ -161,7 +161,7 @@
 							<beans:ref bean="channelProcessingFilter"/>
 							<beans:ref bean="securityContextPersistenceFilter"/>
 							<beans:ref bean="logoutFilter"/>
-							<beans:ref bean="activeDirectoryAuthFilter"/>
+							<beans:ref bean="${security.server.authenticationMethod}AuthFilter"/>
 							<beans:ref bean="requestCacheAwareFilter"/>
 							<beans:ref bean="anonymousFilter"/>
 							<beans:ref bean="securityContextHolderAwareFilter"/>
@@ -182,7 +182,7 @@
 							<beans:ref bean="channelProcessingFilter"/>
 							<beans:ref bean="securityContextPersistenceFilter"/>
 							<beans:ref bean="logoutFilter"/>
-							<beans:ref bean="activeDirectoryAuthFilter"/>
+							<beans:ref bean="${security.server.authenticationMethod}AuthFilter"/>
 							<beans:ref bean="requestCacheAwareFilter"/> 
 							<beans:ref bean="anonymousFilter"/>
 							<beans:ref bean="securityContextHolderAwareFilter"/>
@@ -285,7 +285,7 @@
 				<beans:bean
 					class="org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler">
 					<!--
-						Active Directory, Basic and Digest Auth don't have server side
+						Active Directory, LDAP, Basic and Digest Auth don't have server side
 						 logout (may want to invalidate session to work around this).
 					-->
 					<!-- OAuth2 logins can be disabled through this mechanism.  -->
@@ -312,7 +312,7 @@
 
 	<!--	This class determines what authentication to initiate.  It uses the -->
 	<!--	User-Agent header value to determine whether it is being accessed by a -->
-	<!--	browser or the device.  If it is not a browser, it does activeDirectory, basic or digest auth.-->
+	<!--	browser or the device.  If it is not a browser, it does activeDirectory, ldap, basic or digest auth.-->
 	<beans:bean id="exceptionTranslationFilter"
 		class="org.springframework.security.web.access.ExceptionTranslationFilter">
 		<beans:constructor-arg ref="delegatingAuthenticationEntryPoint"/>
@@ -332,17 +332,17 @@
 		class="org.springframework.security.web.authentication.DelegatingAuthenticationEntryPoint">
 		<beans:constructor-arg name="entryPoints">
 			<beans:map>
-                      <beans:entry key="hasHeader('X-OpenRosa-Version','1.0')" value-ref="activeDirectoryEntryPoint" />
-                      <beans:entry key="hasHeader('X-OpenDataKit-Version','2.0')" value-ref="activeDirectoryEntryPoint" />
-                      			</beans:map>
+                      <beans:entry key="hasHeader('X-OpenRosa-Version','1.0')" value-ref="${security.server.authenticationMethod}EntryPoint" />
+                      <beans:entry key="hasHeader('X-OpenDataKit-Version','2.0')" value-ref="${security.server.authenticationMethod}EntryPoint" />
+			</beans:map>
 		</beans:constructor-arg>
-		<beans:property name="defaultEntryPoint" ref="activeDirectoryEntryPoint" />
+		<beans:property name="defaultEntryPoint" ref="${security.server.authenticationMethod}EntryPoint" />
 	</beans:bean>
 
 	<!-- This forces the login to use the configured locally-held credential mechanism -->
 	<beans:bean id="localExceptionTranslationFilter"
 		class="org.springframework.security.web.access.ExceptionTranslationFilter">
-		<beans:constructor-arg ref="activeDirectoryEntryPoint" />
+		<beans:constructor-arg ref="${security.server.authenticationMethod}EntryPoint" />
 	</beans:bean>
 
 	<!-- 			Anonymous User -->
@@ -362,7 +362,7 @@
 		</beans:constructor-arg>
 	</beans:bean>
 
-	<!--			Active Directory (Azure) Authentication -->
+	<!--			Active Directory (Azure ADDS) Authentication -->
 
 	<beans:bean id="activeDirectoryAuthFilter"
 		class="org.opendatakit.common.security.spring.BasicAuthenticationFilter">
@@ -393,11 +393,98 @@
 		<beans:property name="ldapPassword" value="${security.server.ldapQueryPassword}" />
 		<beans:property name="convertSubErrorCodesToExceptions" value="true" />
 		<beans:property name="authoritiesMapper">
-			<beans:bean class="org.opendatakit.common.security.spring.ActiveDirectoryAuthoritiesMapper">
+			<beans:bean class="org.opendatakit.common.security.spring.PrefixedAuthoritiesMapper">
 				<beans:constructor-arg index="0" value="${security.server.groupPrefix}" />
+				<beans:constructor-arg index="1">
+					<beans:list>
+						<beans:value>AUTH_ACTIVE_DIRECTORY</beans:value>
+						<beans:value>USER_IS_REGISTERED</beans:value>
+						<beans:value>ROLE_USER</beans:value>
+					</beans:list>
+				</beans:constructor-arg>
 			</beans:bean>
 		</beans:property>
 	</beans:bean>
+
+	<!-- LDAP Authentication -->
+
+	<beans:bean id="ldapAuthCtxSource"
+				class="org.springframework.security.ldap.DefaultSpringSecurityContextSource">
+		<beans:constructor-arg value="${security.server.ldapProviderUrl}"/>
+		<beans:property name="userDn" value="${security.server.ldapQueryUsername}"/>
+		<beans:property name="password" value="${security.server.ldapQueryPassword}"/>
+	</beans:bean>
+
+	<beans:bean id="ldapAuthMapper"
+				class="org.opendatakit.common.security.spring.PrefixedAuthoritiesMapper">
+		<beans:constructor-arg index="0" value="${security.server.groupPrefix}"/>
+		<beans:constructor-arg index="1">
+			<beans:list>
+				<beans:value>AUTH_LDAP</beans:value>
+				<beans:value>USER_IS_REGISTERED</beans:value>
+				<beans:value>ROLE_USER</beans:value>
+			</beans:list>
+		</beans:constructor-arg>
+	</beans:bean>
+
+	<beans:bean id="ldapAuthenticationProvider"
+				class="org.opendatakit.common.security.spring.DefaultLdapAuthenticationProvider">
+		<beans:constructor-arg index="0" ref="ldapAuthCtxSource"/>
+		<beans:constructor-arg index="1">
+			<beans:bean class="org.springframework.security.ldap.authentication.BindAuthenticator">
+				<beans:constructor-arg ref="ldapAuthCtxSource"/>
+				<beans:property name="userDnPatterns">
+					<beans:list>
+						<beans:value>${security.server.userDnPattern}</beans:value>
+					</beans:list>
+				</beans:property>
+			</beans:bean>
+		</beans:constructor-arg>
+		<beans:constructor-arg index="2">
+			<beans:bean class="org.springframework.security.ldap.userdetails.DefaultLdapAuthoritiesPopulator">
+				<beans:constructor-arg index="0" ref="ldapAuthCtxSource"/>
+				<beans:constructor-arg index="1" value="${security.server.groupSearchBase}"/>
+				<beans:property name="rolePrefix" value=""/> <!-- role prefix added in mapper -->
+				<beans:property name="groupSearchFilter" value="${security.server.memberOfGroupSearchFilter}"/>
+				<beans:property name="groupRoleAttribute" value="${security.server.groupRoleAttribute}"/>
+			</beans:bean>
+		</beans:constructor-arg>
+		<beans:constructor-arg index="3" ref="ldapAuthMapper"/>
+		<beans:property name="userDetailsContextMapper">
+			<beans:bean class="org.springframework.security.ldap.userdetails.InetOrgPersonContextMapper"/>
+		</beans:property>
+		<beans:property name="authoritiesMapper" ref="ldapAuthMapper"/>
+		<beans:property name="groupSearchBase" value="${security.server.groupSearchBase}"/>
+		<beans:property name="userSearchBase" value="${security.server.userSearchBase}"/>
+		<beans:property name="groupSearchFilter" value="${security.server.serverGroupSearchFilter}"/>
+		<beans:property name="userFullnameAttribute" value="${security.server.userFullnameAttribute}"/>
+		<beans:property name="usernameAttribute" value="${security.server.usernameAttribute}"/>
+		<beans:property name="userDnPattern" value="${security.server.userDnPattern}"/>
+		<beans:property name="groupRoleAttribute" value="${security.server.groupRoleAttribute}"/>
+	</beans:bean>
+
+	<beans:bean id="ldapAuthFilter"
+				class="org.opendatakit.common.security.spring.BasicAuthenticationFilter">
+		<beans:constructor-arg>
+			<beans:bean class="org.springframework.security.authentication.ProviderManager">
+				<beans:constructor-arg>
+					<beans:list>
+						<beans:ref bean="ldapAuthenticationProvider" />
+						<beans:ref bean="anonymousProvider" />
+					</beans:list>
+				</beans:constructor-arg>
+			</beans:bean>
+		</beans:constructor-arg>
+		<beans:constructor-arg ref="ldapEntryPoint" />
+	</beans:bean>
+
+	<beans:bean id="ldapEntryPoint"
+				class="org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint">
+		<beans:property name="realmName" value="${security.server.realm.realmString}" />
+	</beans:bean>
+
+	<!-- Store the currently selected AuthenticationProvider for SecurityServiceUtil -->
+	<beans:bean id="directoryAwareAuthProvider" parent="${security.server.authenticationMethod}AuthenticationProvider" />
 
 	<!--
 		Digest Authentication configuration. This is used for device access.
@@ -438,7 +525,7 @@
 		class="org.springframework.security.authentication.ProviderManager">
 		<beans:constructor-arg>
 			<beans:list>
-				<beans:ref bean="activeDirectoryAuthenticationProvider" />
+				<beans:ref bean="${security.server.authenticationMethod}AuthenticationProvider"/>
 				<beans:ref bean="anonymousProvider" />
 			</beans:list>
 		</beans:constructor-arg>
