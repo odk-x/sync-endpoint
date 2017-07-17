@@ -204,7 +204,7 @@ public class DefaultLdapAuthenticationProvider
             // invert groups, convert it to memberUid -> group cn
             allUserMembership = new HashMap<>();
             for (Map<String, List<String>> group : groups) {
-                for (String uid : group.get(GROUP_MEMBER_ATTR)) {
+                for (String uid : group.getOrDefault(GROUP_MEMBER_ATTR, Collections.emptyList())) {
                     List<String> memberships = allUserMembership.getOrDefault(uid, new ArrayList<>());
                     memberships.add(group.get(getGroupRoleAttribute()).get(0));
                     allUserMembership.putIfAbsent(uid, memberships);
@@ -216,7 +216,7 @@ public class DefaultLdapAuthenticationProvider
         Set<String> memberUids;
         memberUids = withAuthorities ? allUserMembership.keySet() : groups
                 .stream()
-                .flatMap(g -> g.get(GROUP_MEMBER_ATTR).stream())
+                .flatMap(g -> g.getOrDefault(GROUP_MEMBER_ATTR, Collections.emptyList()).stream())
                 .collect(Collectors.toSet());
 
         // retrieve userFullname for all users, in parallel
