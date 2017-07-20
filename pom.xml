@@ -82,6 +82,7 @@
         <module>odk-sqlserver-settings</module>
         <module>odk-sqlserver-it-settings</module>
         <module>odk-sqlserver-unit-settings</module>
+        <module>odk-container-settings</module>
 
         <!-- aggregate-postgresql-specific -->
         <module>aggregate-postgres</module>

@@ -3,15 +3,21 @@
 <beans:beans xmlns="http://www.springframework.org/schema/security"
 	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd">
-	
-	<!--	Configure values in the security.properties file (from the conf/common directory)-->
-    <beans:bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+
+	<beans:import resource="odk-common-security-settings.xml"/>
+
+	<beans:bean
+			class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<beans:property name="ignoreResourceNotFound" value="true"/>
 		<beans:property name="locations">
 			<beans:list>
+				<!-- Supply defaults with jar, override with Docker configs/secrets -->
 				<beans:value>classpath:jdbc.properties</beans:value>
 				<beans:value>classpath:security.properties</beans:value>
 				<beans:value>classpath:logging.properties</beans:value>
+				<beans:value>file:/run/secrets/org.opendatakit.aggregate.jdbc.properties</beans:value>
+				<beans:value>file:/run/secrets/org.opendatakit.aggregate.security.properties</beans:value>
+				<beans:value>file:/org.opendatakit.aggregate.logging.properties</beans:value>
 			</beans:list>
 		</beans:property>
 	</beans:bean>

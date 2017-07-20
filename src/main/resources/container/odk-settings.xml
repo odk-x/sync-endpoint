@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-4.1.xsd">
+
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="ignoreResourceNotFound" value="true"/>
+		<property name="locations">
+			<list>
+				<!-- Supply defaults with jar, override with Docker configs/secrets -->
+				<value>classpath:jdbc.properties</value>
+				<value>classpath:security.properties</value>
+				<value>classpath:logging.properties</value>
+				<value>file:/run/secrets/org.opendatakit.aggregate.jdbc.properties</value>
+				<value>file:/run/secrets/org.opendatakit.aggregate.security.properties</value>
+				<value>file:/org.opendatakit.aggregate.logging.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<beans profile="mysql">
+		<import resource="odk-mysql-settings.xml"/>
+	</beans>
+	<beans profile="postgres">
+		<import resource="odk-postgres-settings.xml"/>
+	</beans>
+	<beans profile="sqlserver">
+		<import resource="odk-sqlserver-settings.xml"/>
+	</beans>
+</beans>
