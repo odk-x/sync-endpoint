@@ -16,13 +16,8 @@
 
 package org.opendatakit.common.security.server;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import org.opendatakit.aggregate.odktables.rest.entity.PrivilegesInfo;
 import org.opendatakit.aggregate.odktables.rest.entity.UserInfo;
@@ -35,8 +30,8 @@ import org.opendatakit.common.security.client.UserSecurityInfo.UserType;
 import org.opendatakit.common.security.client.exception.AccessDeniedException;
 import org.opendatakit.common.security.common.EmailParser;
 import org.opendatakit.common.security.common.GrantedAuthorityName;
-import org.opendatakit.common.security.spring.ActiveDirectoryLdapAuthenticationProvider;
 import org.opendatakit.common.security.spring.AnonymousAuthenticationFilter;
+import org.opendatakit.common.security.spring.DirectoryAwareAuthenticationProvider;
 import org.opendatakit.common.web.CallingContext;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -54,6 +49,31 @@ public class SecurityServiceUtil {
 
   public static final GrantedAuthority anonAuth = new SimpleGrantedAuthority(
       GrantedAuthorityName.USER_IS_ANONYMOUS.name());
+
+  private static final Map<String, String[]> impliedAuthorities;
+  static {
+    Map<String, String[]> authoritiesMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    authoritiesMap.put(GrantedAuthorityName.ROLE_DATA_OWNER.name(), new String[] {
+            GrantedAuthorityName.ROLE_DATA_VIEWER.name()
+    });
+    authoritiesMap.put(GrantedAuthorityName.ROLE_SUPER_USER_TABLES.name(), new String[] {
+            GrantedAuthorityName.ROLE_SYNCHRONIZE_TABLES.name()
+    });
+    authoritiesMap.put(GrantedAuthorityName.ROLE_ADMINISTER_TABLES.name(), new String[] {
+            GrantedAuthorityName.ROLE_SYNCHRONIZE_TABLES.name(),
+            GrantedAuthorityName.ROLE_SUPER_USER_TABLES.name()
+    });
+    authoritiesMap.put(GrantedAuthorityName.ROLE_SITE_ACCESS_ADMIN.name(), new String[] {
+            GrantedAuthorityName.ROLE_SYNCHRONIZE_TABLES.name(),
+            GrantedAuthorityName.ROLE_SUPER_USER_TABLES.name(),
+            GrantedAuthorityName.ROLE_ADMINISTER_TABLES.name(),
+            GrantedAuthorityName.ROLE_DATA_COLLECTOR.name(),
+            GrantedAuthorityName.ROLE_DATA_VIEWER.name(),
+            GrantedAuthorityName.ROLE_DATA_OWNER.name()
+    });
+
+    impliedAuthorities = Collections.unmodifiableMap(authoritiesMap);
+  }
   
   /**
    * 
@@ -61,9 +81,12 @@ public class SecurityServiceUtil {
    * @return either the canonical name for the group sent down to the device or null. 
    */
   private static String constructGroupName(String groupPrefix, String authorityName) {
+    groupPrefix = groupPrefix.toUpperCase(Locale.US);
+    authorityName = authorityName.toUpperCase(Locale.US);
+
     String prefixSpace = groupPrefix + " ";
     if ( authorityName.startsWith(prefixSpace) ) {
-      String name = authorityName.substring(prefixSpace.length()).toUpperCase(Locale.US);
+      String name = authorityName.substring(prefixSpace.length());
       name = "GROUP_" + name.replaceAll("[\\s\\p{Punct}]+", "_");
       return name;
     }
@@ -157,6 +180,21 @@ public class SecurityServiceUtil {
     }
   }
 
+  /**
+   * Resolves the implied authorities.
+   * Returns the implied authorities, including the provided authority.
+   * If no authority is implied, then an empty set is returned.
+   *
+   * @param authority
+   * @return
+   */
+  public static Set<GrantedAuthority> resolveImpliedRoleAuthority(String authority) {
+    return Arrays
+            .stream(impliedAuthorities.getOrDefault(authority, new String[] { authority }))
+            .map(SimpleGrantedAuthority::new)
+            .collect(Collectors.toSet());
+  }
+
   private static final class UserIdFullName {
     final String user_id;
     final String full_name;
@@ -232,9 +270,8 @@ public class SecurityServiceUtil {
     Set<GrantedAuthority> grants = new HashSet<GrantedAuthority>();
     grants.addAll(user.getAuthorities());
 
-    ActiveDirectoryLdapAuthenticationProvider provider = 
-            (ActiveDirectoryLdapAuthenticationProvider) 
-            cc.getBean(SecurityBeanDefs.ACTIVE_DIRECTORY_LDAP_AUTHENTICATION_PROVIDER);
+    DirectoryAwareAuthenticationProvider provider
+            = (DirectoryAwareAuthenticationProvider) cc.getBean(SecurityBeanDefs.DIRECTORY_AWARE_AUTHENTICATION_PROVIDER);
     
     String defaultGroup = provider.getDefaultGroup(cc);
     boolean matchesMembershipGroup = (defaultGroup == null);
@@ -248,9 +285,9 @@ public class SecurityServiceUtil {
     Collections.sort(roleNames);
     UserIdFullName fields = new UserIdFullName(user);
 
-    PrivilegesInfo info = new PrivilegesInfo(fields.user_id, fields.full_name, 
+    PrivilegesInfo info = new PrivilegesInfo(fields.user_id, fields.full_name,
         roleNames, (matchesMembershipGroup ? defaultGroup : null));
-    
+
     return info;
   }
   
@@ -266,11 +303,10 @@ public class SecurityServiceUtil {
   public static ArrayList<UserSecurityInfo> getAllUsers(boolean withAuthorities, CallingContext cc)
       throws AccessDeniedException, DatastoreFailureException {
 
-	ActiveDirectoryLdapAuthenticationProvider provider = 
-			  (ActiveDirectoryLdapAuthenticationProvider) 
-			  cc.getBean(SecurityBeanDefs.ACTIVE_DIRECTORY_LDAP_AUTHENTICATION_PROVIDER);
+    DirectoryAwareAuthenticationProvider provider
+            = (DirectoryAwareAuthenticationProvider) cc.getBean(SecurityBeanDefs.DIRECTORY_AWARE_AUTHENTICATION_PROVIDER);
 	
-	return provider.getAllUsers(withAuthorities, cc);
+	return (ArrayList<UserSecurityInfo>) provider.getAllUsers(withAuthorities, cc);
   }
 
   static GrantedAuthorityName mapName(GrantedAuthority auth, Set<GrantedAuthority> badGrants) {

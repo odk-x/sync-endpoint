@@ -23,7 +23,7 @@ package org.opendatakit.common.security;
  *
  */
 public final class SecurityBeanDefs {
-	public static final String ACTIVE_DIRECTORY_LDAP_AUTHENTICATION_PROVIDER = "activeDirectoryAuthenticationProvider";
+	public static final String DIRECTORY_AWARE_AUTHENTICATION_PROVIDER = "directoryAwareAuthProvider";
 	public static final String ANONYMOUS_AUTHENTICATION_FILTER = "anonymousFilter";
 	
 	private SecurityBeanDefs() {};
