@@ -384,8 +384,8 @@ public class InstanceFileServiceImpl implements InstanceFileService {
                 op.addHeader("Name", "file-" + Integer.toString(entryIndex));
                 String disposition = "file; filename=\"" + content.partialPath.replace("\"", "\"\"")
                     + "\"";
-                op.addHeader("Content-Disposition", disposition);
-                op.addHeader("Content-Type", content.contentType);
+                op.addHeader(HtmlConsts.CONTENT_DISPOSITION, disposition);
+                op.addHeader(HttpHeaders.CONTENT_TYPE, content.contentType);
                 op.setBody(fileBlob);
                 outParts[entryIndex] = op;
               }

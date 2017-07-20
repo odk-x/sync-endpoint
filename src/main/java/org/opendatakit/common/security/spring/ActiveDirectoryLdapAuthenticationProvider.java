@@ -60,7 +60,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.ldap.SpringSecurityLdapTemplate;
 import org.springframework.security.ldap.authentication.AbstractLdapAuthenticationProvider;
@@ -108,8 +107,9 @@ import org.springframework.util.StringUtils;
  * @author Rob Winch
  * @since 3.1
  */
-public final class ActiveDirectoryLdapAuthenticationProvider extends
-		AbstractLdapAuthenticationProvider {
+public final class ActiveDirectoryLdapAuthenticationProvider
+		extends AbstractLdapAuthenticationProvider
+		implements DirectoryAwareAuthenticationProvider {
 	private static final Pattern SUB_ERROR_CODE = Pattern
 			.compile(".*data\\s([0-9a-f]{3,4}).*");
 
@@ -174,14 +174,16 @@ public final class ActiveDirectoryLdapAuthenticationProvider extends
 		this.ldapPassword = ldapPassword;
 	}
 
-	private GrantedAuthoritiesMapper savedAuthoritiesMapper;
+	private PrefixedAuthoritiesMapper savedAuthoritiesMapper;
 	
-	public void setAuthoritiesMapper(GrantedAuthoritiesMapper authoritiesMapper) {
+	public void setAuthoritiesMapper(PrefixedAuthoritiesMapper authoritiesMapper) {
+		Assert.notNull(authoritiesMapper);
+
 		this.savedAuthoritiesMapper = authoritiesMapper;
 		super.setAuthoritiesMapper(authoritiesMapper);
 	}
 	
-	public GrantedAuthoritiesMapper getGrantedAuthoritiesMapper() {
+	public PrefixedAuthoritiesMapper getGrantedAuthoritiesMapper() {
 		return savedAuthoritiesMapper;
 	}
 	
@@ -206,6 +208,7 @@ public final class ActiveDirectoryLdapAuthenticationProvider extends
 	 *         The caller is responsible for filtering out those
 	 *         before making use of this value.
 	 */
+	@Override
 	public String getDefaultGroup(CallingContext cc) {
       final String username = getLdapUser();
       final String password = getLdapPassword();
@@ -248,8 +251,7 @@ public final class ActiveDirectoryLdapAuthenticationProvider extends
 
         String rawGroupName = name.getRdn(name.getRdns().size() - 1).getValue().toString();
 
-        String groupPrefix = 
-            ((ActiveDirectoryAuthoritiesMapper) getGrantedAuthoritiesMapper()).getGroupPrefix();
+        String groupPrefix = getGrantedAuthoritiesMapper().getGroupPrefix();
         
         return SecurityServiceUtil.resolveAsGroupOrRoleAuthority(groupPrefix, rawGroupName);
 
@@ -274,6 +276,7 @@ public final class ActiveDirectoryLdapAuthenticationProvider extends
    * @throws AccessDeniedException
    * @throws DatastoreFailureException
    */
+  @Override
   public ArrayList<UserSecurityInfo> getAllUsers(boolean withAuthorities, CallingContext cc)
       throws AccessDeniedException, DatastoreFailureException {
 
@@ -321,10 +324,8 @@ public final class ActiveDirectoryLdapAuthenticationProvider extends
         }
       } catch (PartialResultException e) {
         try {
-          if (resultsEnum != null) {
-            resultsEnum.close();
-          }
-        } catch (NamingException ex) {
+			resultsEnum.close();
+		} catch (NamingException ex) {
           ex.printStackTrace();
         }
       }
@@ -420,8 +421,7 @@ public final class ActiveDirectoryLdapAuthenticationProvider extends
 		DirContext ctx = bindAsUser(username, password);
 
 		try {
-		  DirContextOperations match = searchForUser(ctx, username);
-		  return match;
+			return searchForUser(ctx, username);
 		}
 		catch (NamingException e) {
 			logger.error("Failed to locate directory entry for authenticated user: "

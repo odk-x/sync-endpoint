@@ -106,3 +106,7 @@ build/chromedriver_win32-2.29.zip
 .DS_Store
 
 target/
+
+# IntelliJ IDEA
+.idea
+*.iml
