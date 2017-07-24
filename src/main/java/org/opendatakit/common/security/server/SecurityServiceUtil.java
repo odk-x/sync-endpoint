@@ -18,6 +18,7 @@ package org.opendatakit.common.security.server;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.opendatakit.aggregate.odktables.rest.entity.PrivilegesInfo;
 import org.opendatakit.aggregate.odktables.rest.entity.UserInfo;
@@ -189,8 +190,11 @@ public class SecurityServiceUtil {
    * @return
    */
   public static Set<GrantedAuthority> resolveImpliedRoleAuthority(String authority) {
-    return Arrays
-            .stream(impliedAuthorities.getOrDefault(authority, new String[] { authority }))
+    return Stream
+            .concat(
+                    Arrays.stream(impliedAuthorities.getOrDefault(authority, new String[]{})),
+                    Stream.of(authority)
+            )
             .map(SimpleGrantedAuthority::new)
             .collect(Collectors.toSet());
   }
