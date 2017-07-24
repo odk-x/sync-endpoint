@@ -259,6 +259,7 @@ public class DefaultLdapAuthenticationProvider
             SecurityServiceUtil.setAuthenticationListsForAnonymousUser(anonymous, cc);
         }
 
+        usiList.add(anonymous);
         return usiList;
     }
 }
