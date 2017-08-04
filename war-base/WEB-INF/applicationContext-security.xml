@@ -408,11 +408,12 @@
 
 	<!-- LDAP Authentication -->
 
-	<beans:bean id="ldapAuthCtxSource"
-				class="org.springframework.security.ldap.DefaultSpringSecurityContextSource">
-		<beans:constructor-arg value="${security.server.ldapProviderUrl}"/>
-		<beans:property name="userDn" value="${security.server.ldapQueryUsername}"/>
-		<beans:property name="password" value="${security.server.ldapQueryPassword}"/>
+	<beans:bean id="ldapAuthCtxSource" class="org.springframework.ldap.core.support.LdapContextSource">
+		<beans:property name="url" value="${security.server.ldapUrl}" />
+		<beans:property name="base" value="${security.server.ldapBaseDn}" />
+		<beans:property name="userDn" value="${security.server.ldapQueryUsername}" />
+		<beans:property name="password" value="${security.server.ldapQueryPassword}" />
+		<beans:property name="pooled" value="${security.server.ldapPooled}"/>
 	</beans:bean>
 
 	<beans:bean id="ldapAuthMapper"
