@@ -1,9 +1,6 @@
 # sync-endpoint
 
-See [CONFIGURE.md](CONFIGURE.md) for build information
-and [README.txt](README.md) for upgrade information.
-
-See [sync-endpoint-containers](https://github.com/opendatakit/sync-endpoint-containers) for typical usage.
+See [sync-endpoint-default-setup](https://github.com/opendatakit/sync-endpoint-default-setup) for typical usage.
 
 -------
 License
