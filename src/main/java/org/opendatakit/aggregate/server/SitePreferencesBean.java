@@ -23,6 +23,7 @@ import org.opendatakit.common.persistence.exception.ODKOverQuotaException;
 import org.opendatakit.common.security.User;
 import org.opendatakit.common.security.UserService;
 import org.opendatakit.common.web.CallingContext;
+import org.springframework.beans.factory.InitializingBean;
 
 /**
  * Simple class to retrieve the site key from ServerPreferencesProperties during
@@ -31,11 +32,15 @@ import org.opendatakit.common.web.CallingContext;
  * @author mitchellsundt@gmail.com
  *
  */
-public class SitePreferencesBean {
+public class SitePreferencesBean implements InitializingBean {
 
   private Datastore datastore;
   private UserService userService;
   private String siteKey = null;
+  private String appName;
+  private boolean enableTables;
+  private boolean anonTablesSync;
+  private boolean anonAttachmentsAccess;
 
   private CallingContext ccHack = new CallingContext() {
     @Override
@@ -118,5 +123,45 @@ public class SitePreferencesBean {
       siteKey = ServerPreferencesProperties.getSiteKey(ccHack);
     }
     return siteKey;
+  }
+
+  public String getAppName() {
+    return appName;
+  }
+
+  public void setAppName(String appName) {
+    this.appName = appName;
+  }
+
+  public boolean getAnonTablesSync() {
+    return anonTablesSync;
+  }
+
+  public boolean getEnableTables() {
+    return enableTables;
+  }
+
+  public void setEnableTables(boolean enableTables) {
+    this.enableTables = enableTables;
+  }
+
+  public void setAnonTablesSync(boolean anonTablesSync) {
+    this.anonTablesSync = anonTablesSync;
+  }
+
+  public boolean getAnonAttachmentsAccess() {
+    return anonAttachmentsAccess;
+  }
+
+  public void setAnonAttachmentsAccess(boolean anonAttachmentsAccess) {
+    this.anonAttachmentsAccess = anonAttachmentsAccess;
+  }
+
+  @Override
+  public void afterPropertiesSet() throws Exception {
+    ServerPreferencesProperties.setOdkTablesEnabled(ccHack, getEnableTables());
+    ServerPreferencesProperties.setOdkTablesAppId(ccHack, getAppName());
+    ServerPreferencesProperties.setAnonymousTablesSynchronization(ccHack, getAnonTablesSync());
+    ServerPreferencesProperties.setAnonymousAccessToAttachments(ccHack, getAnonAttachmentsAccess());
   }
 }

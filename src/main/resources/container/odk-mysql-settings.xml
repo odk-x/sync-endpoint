@@ -45,12 +45,6 @@
 		<property name="realm" ref="realm" />
 	</bean>
 
-	<!--  bean to get the siteKey value (which is defined the first time the app starts up) -->
-	<bean id="sitePreferencesBean" class="org.opendatakit.aggregate.server.SitePreferencesBean" >
-		<property name="datastore" ref="datastore"/>
-		<property name="userService" ref="user_service"/>
-	</bean>
-
 	<!--  change the background scheduler to only have three worker threads. Tasks will be queued. -->
 	<task:scheduler id="task_scheduler" pool-size="3" />
 

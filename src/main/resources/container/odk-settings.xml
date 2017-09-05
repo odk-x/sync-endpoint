@@ -30,4 +30,16 @@
 	<beans profile="sqlserver">
 		<import resource="odk-sqlserver-settings.xml"/>
 	</beans>
+
+	<beans>
+		<!--  bean to get the siteKey value (which is defined the first time the app starts up) -->
+		<bean id="sitePreferencesBean" class="org.opendatakit.aggregate.server.SitePreferencesBean">
+			<property name="datastore" ref="datastore"/>
+			<property name="userService" ref="user_service"/>
+			<property name="appName" value="${sync.preference.appName}"/>
+			<property name="enableTables" value="true"/> <!-- For Sync Endpoint Tables in always enabled -->
+			<property name="anonTablesSync" value="${sync.preference.anonymousTablesSync}"/>
+			<property name="anonAttachmentsAccess" value="${sync.preference.anonymousAttachmentAccess}"/>
+		</bean>
+	</beans>
 </beans>
