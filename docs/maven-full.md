@@ -2,17 +2,15 @@
 
 1. Install Maven 3.  This document assumes Maven 3.3.3 or higher.
     This will generally set up a maven repository under
-    the user's home directory:  ${HOME}/.m2/repository
-1. Update your path so that mvn is recognized.
+    the user's home directory: `${HOME}/.m2/repository`
+1. Update your path so that `mvn` is recognized.
 1. Install Ant. This document assumes Ant 1.9.6 or higher.
-1. Update your path so that ant is recognized.
+1. Update your path so that `ant` is recognized.
 1. Install Java 8 JDK.
-1. Configure JAVA_HOME to point to Java 8 JDK.
+1. Configure `JAVA_HOME` to point to Java 8 JDK.
 1. Configure your PATH to have Java 8.
     `java -version` should indicate that java 8 is being accessed. 
-1. Install Eclipse Mars.
-1. Install Google Eclipse Plugin with App Engine SDK and Google Web Toolkit SDK.
-1. Install Tomcat 8.0.
+1. Install Tomcat 8.5.
     This is required.
 	
 1. Install Postgres
@@ -20,7 +18,7 @@
 
    For Postgres, run these commands:
 
-   ```
+   ```sql
    create database "odk_unit";
    create schema "odk_unit";
    create user "odk_unit" with unencrypted password 'odk_unit';
@@ -44,7 +42,7 @@
    
    For MySQL, run this script:
 
-   ```
+   ```sql
    UPDATE mysql.user SET Password=PASSWORD('odk_unit') WHERE User='root';
    FLUSH PRIVILEGES;
    CREATE USER 'odk_unit'@'localhost' IDENTIFIED BY 'odk_unit';
@@ -70,7 +68,7 @@
 
    For SQLServer, run this script:
 
-   ```
+   ```sql
    USE master;
    go
    CREATE DATABASE odk_unit;
@@ -95,7 +93,7 @@
 
    To run, just cd to this directory and type `ant`
 
-   See the src/main/libs/readme.txt for information about these jars.
+   See the [here](../src/main/libs/readme.txt) for information about these jars.
 
 1. Download and install Chrome. The test scripts now use Chrome for the selenium testing rather than Firefox, which changed so often as to be unusable. You might need to update selenium and the Chrome Driver for UI testing to work.  This is done in the build\build.xml file.
 
@@ -107,11 +105,11 @@
 
    To run, just cd to this directory and type `ant`
    
-1. Edit Maven's settings.xml file (this is in the .m2 directory).
+1. Edit Maven's `settings.xml` file (this is in the .m2 directory).
 
 A minimal file is:
 
-```
+```xml
 <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
@@ -119,7 +117,7 @@ A minimal file is:
   <servers>
 	<server>
 		<id>local.gae</id>
-		<username>mitchellsundt@gmail.com</username>
+		<username>example@example.com</username>
 		<password></password>
 	</server>
   </servers>
@@ -179,32 +177,11 @@ Be sure to update the paths and passwords to match those of your environment.
 
 If you are running on a Mac, change the webdriver.chrome.driver* entries to:
 
-```
+```xml
 		<webdriver.chrome.drivername>chromedriver_mac64</webdriver.chrome.drivername>
 		<webdriver.chrome.driverext></webdriver.chrome.driverext>
 ```
 
 The ant script at build/build.xml will download both the windows and mac drivers. If you are 
-running on Linux (and not Mac OSX), you will need to modify the build.xml to download the 
+running on Linux (and not Mac OSX), you will need to modify the `build.xml` to download the 
 Linux drivers and modify these entries with the appropriate values for those drivers.
-
-## Maven Command Line Builds
-
-Maven command-line builds are done as follows:
-
-```
-mvn clean
-```
-
-This cleans the workspace, removing all temporary files.
-If this errors out, verify that there are no orphaned java
-executables running. If the GAE tests crash, they can leave
-a java database background process running.
-
-```
-mvn install
-```
-
-This will build and install the projects, running the unit tests
-against the 4 datastores (Google BigTable, MySQL, Postgresql, SQLServer),
-and building the wars for the 4 platforms.
