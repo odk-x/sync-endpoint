@@ -25,7 +25,7 @@ public class PrefixedAuthoritiesMapper implements GroupPrefixAwareAuthoritiesMap
     }
 
     public PrefixedAuthoritiesMapper(String groupPrefix, String[] defaultAuthorities) {
-        Assert.hasText(groupPrefix);
+        Assert.notNull(groupPrefix);
 
         this.groupPrefix = groupPrefix;
         this.defaultAuthorities = defaultAuthorities;
