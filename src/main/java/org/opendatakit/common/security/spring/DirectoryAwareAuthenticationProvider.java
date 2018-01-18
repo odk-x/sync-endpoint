@@ -4,13 +4,14 @@ import org.opendatakit.common.persistence.client.exception.DatastoreFailureExcep
 import org.opendatakit.common.security.client.UserSecurityInfo;
 import org.opendatakit.common.security.client.exception.AccessDeniedException;
 import org.opendatakit.common.web.CallingContext;
+import org.springframework.security.authentication.AuthenticationProvider;
 
 import java.util.List;
 
 /**
  * Authentication Provider that is capable of reading the underlying user directory.
  */
-public interface DirectoryAwareAuthenticationProvider {
+public interface DirectoryAwareAuthenticationProvider extends AuthenticationProvider {
     /**
      *
      * @param cc

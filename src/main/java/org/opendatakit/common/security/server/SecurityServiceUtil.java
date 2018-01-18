@@ -86,12 +86,17 @@ public class SecurityServiceUtil {
     authorityName = authorityName.toUpperCase(Locale.US);
 
     String prefixSpace = groupPrefix + " ";
-    if ( authorityName.startsWith(prefixSpace) ) {
-      String name = authorityName.substring(prefixSpace.length());
-      name = "GROUP_" + name.replaceAll("[\\s\\p{Punct}]+", "_");
-      return name;
+    if (!groupPrefix.isEmpty() && !authorityName.startsWith(prefixSpace)) {
+      return null;
     }
-    return null;
+
+    String name = authorityName;
+    if (!groupPrefix.isEmpty()) {
+      name = authorityName.substring(prefixSpace.length());
+    }
+
+    name = GrantedAuthorityName.GROUP_PREFIX + name.replaceAll("[\\s\\p{Punct}]+", "_");
+    return name;
   }
 
   /**

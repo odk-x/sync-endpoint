@@ -484,6 +484,67 @@
 		<beans:property name="realmName" value="${security.server.realm.realmString}" />
 	</beans:bean>
 
+	<!-- DHIS2 Authentication -->
+
+	<beans:bean id="dhis2AuthMapper"
+				class="org.opendatakit.common.security.spring.Dhis2AuthoritiesMapper">
+		<beans:constructor-arg index="0">
+			<beans:list>
+				<beans:value>AUTH_DHIS2</beans:value>
+				<beans:value>ROLE_USER</beans:value>
+			</beans:list>
+		</beans:constructor-arg>
+        <beans:constructor-arg index="1">
+            <beans:map>
+                <beans:entry key="${security.server.dhis2SiteAdmins}" value="site_admins"/>
+                <beans:entry key="${security.server.dhis2AdministerTables}" value="administer_tables"/>
+                <beans:entry key="${security.server.dhis2SuperUserTables}" value="super_user_tables"/>
+                <beans:entry key="${security.server.dhis2SyncTables}" value="synchronize_tables"/>
+                <beans:entry key="${security.server.dhis2FormManagers}" value="form_managers"/>
+                <beans:entry key="${security.server.dhis2DataViewers}" value="data_viewers"/>
+                <beans:entry key="${security.server.dhis2DataCollectors}" value="data_collectors"/>
+            </beans:map>
+        </beans:constructor-arg>
+	</beans:bean>
+
+	<beans:bean id="dhis2AuthenticationProvider"
+				class="org.opendatakit.common.security.spring.Dhis2AuthenticationProvider">
+        <beans:constructor-arg index="0" value="${security.server.dhis2ApiUrl}"/>
+        <beans:constructor-arg index="1" ref="dhis2AuthMapper"/>
+		<beans:constructor-arg index="2">
+			<beans:bean class="org.springframework.web.client.RestTemplate">
+				<beans:property name="interceptors">
+					<beans:list>
+						<beans:bean class="org.springframework.http.client.support.BasicAuthorizationInterceptor">
+							<beans:constructor-arg index="0" value="${security.server.dhis2AdminUsername}"/>
+							<beans:constructor-arg index="1" value="${security.server.dhis2AdminPassword}"/>
+						</beans:bean>
+					</beans:list>
+				</beans:property>
+			</beans:bean>
+		</beans:constructor-arg>
+    </beans:bean>
+
+	<beans:bean id="dhis2AuthFilter"
+				class="org.opendatakit.common.security.spring.BasicAuthenticationFilter">
+		<beans:constructor-arg>
+			<beans:bean class="org.springframework.security.authentication.ProviderManager">
+				<beans:constructor-arg>
+					<beans:list>
+						<beans:ref bean="dhis2AuthenticationProvider" />
+						<beans:ref bean="anonymousProvider" />
+					</beans:list>
+				</beans:constructor-arg>
+			</beans:bean>
+		</beans:constructor-arg>
+		<beans:constructor-arg ref="dhis2EntryPoint" />
+	</beans:bean>
+
+	<beans:bean id="dhis2EntryPoint"
+				class="org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint">
+		<beans:property name="realmName" value="${security.server.realm.realmString}" />
+	</beans:bean>
+
 	<!-- Store the currently selected AuthenticationProvider for SecurityServiceUtil -->
 	<beans:alias name="${security.server.authenticationMethod}AuthenticationProvider" alias="directoryAwareAuthProvider"/>
 
