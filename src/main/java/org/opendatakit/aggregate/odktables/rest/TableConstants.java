@@ -18,12 +18,7 @@ package org.opendatakit.aggregate.odktables.rest;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.SimpleTimeZone;
+import java.util.*;
 
 /**
  * Contains various things that are constant in tables and must be known and
@@ -166,35 +161,90 @@ public class TableConstants {
     CLIENT_ONLY_COLUMN_NAMES.add(CONFLICT_TYPE);
   }
 
+  public static final Locale TIMESTAMP_LOCALE = Locale.ROOT;
+
   // nanosecond-extended iso8601-style UTC date yyyy-mm-ddTHH:MM:SS.sssssssss
   private static final String MILLI_TO_NANO_TIMESTAMP_EXTENSION = "000000";
 
-  public static String nanoSecondsFromMillis(Long timeMillis ) {
-    if ( timeMillis == null ) return null;
-    // convert to a nanosecond-extended iso8601-style UTC date yyyy-mm-ddTHH:MM:SS.sssssssss
-    Calendar c = GregorianCalendar.getInstance(new SimpleTimeZone(0,"UT"));
-    SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-    sf.setCalendar(c);
-    Date d = new Date(timeMillis);
-    String v = sf.format(d) + MILLI_TO_NANO_TIMESTAMP_EXTENSION;
-    return v;
+  /**
+   * @deprecated Use {@link #nanoSecondsFromMillis(Long, Locale)}
+   *
+   * @param timeMillis
+   * @return
+   */
+  @Deprecated
+  public static String nanoSecondsFromMillis(Long timeMillis) {
+    return nanoSecondsFromMillis(timeMillis, null);
   }
 
-  public static Long milliSecondsFromNanos(String timeNanos ) {
+  /**
+   * Converts an unix timestamp to a nanosecond-extended iso8601-style UTC date yyyy-mm-ddTHH:MM:SS.sssssssss.
+   * When {@code locale} is null, the system default locale is used.
+   *
+   * @param timeMillis
+   * @param locale
+   * @return
+   */
+  public static String nanoSecondsFromMillis(Long timeMillis, Locale locale) {
+    if ( timeMillis == null ) return null;
+
+    // convert to a nanosecond-extended iso8601-style UTC date yyyy-mm-ddTHH:MM:SS.sssssssss
+    Date d = new Date(timeMillis);
+    return getDateFormat(locale).format(d) + MILLI_TO_NANO_TIMESTAMP_EXTENSION;
+  }
+
+  /**
+   * @deprecated Use {@link #milliSecondsFromNanos(String, Locale)}
+   *
+   * @param timeNanos
+   * @return
+   */
+  @Deprecated
+  public static Long milliSecondsFromNanos(String timeNanos) {
+    return milliSecondsFromNanos(timeNanos, null);
+  }
+
+  /**
+   * Converts a nanosecond-extended iso8601-style UTC date yyyy-mm-ddTHH:MM:SS.sssssssss to an unix timestamp.
+   * When {@code locale} is null, the system default locale is used.
+   *
+   * @param timeNanos
+   * @param locale
+   * @return
+   */
+  public static Long milliSecondsFromNanos(String timeNanos, Locale locale) {
     if ( timeNanos == null ) return null;
+
     // convert from a nanosecond-extended iso8601-style UTC date yyyy-mm-ddTHH:MM:SS.sssssssss
-    Calendar c = GregorianCalendar.getInstance(new SimpleTimeZone(0,"UT"));
-    SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-    sf.setCalendar(c);
-    String truncated = timeNanos.substring(0, timeNanos.length()-MILLI_TO_NANO_TIMESTAMP_EXTENSION.length());
     Date d;
     try {
-      d = sf.parse(truncated);
-    } catch (ParseException e) {
+      String truncated = timeNanos.substring(0, timeNanos.length() - MILLI_TO_NANO_TIMESTAMP_EXTENSION.length());
+      d = getDateFormat(locale).parse(truncated);
+    } catch (ParseException | StringIndexOutOfBoundsException e) {
       e.printStackTrace();
       throw new IllegalArgumentException("Unrecognized time format: " + timeNanos);
     }
-    Long v = d.getTime();
-    return v;
+    return d.getTime();
+  }
+
+  /**
+   * Builds an iso8601-style SimpleDateFormat without the nanosecond extension.
+   * When {@code locale} is null, the system default locale is used.
+   *
+   * @param locale
+   * @return
+   */
+  private static SimpleDateFormat getDateFormat(Locale locale) {
+    if (locale == null) {
+      locale = Locale.getDefault();
+    }
+
+    String partialPattern = "yyyy-MM-dd'T'HH:mm:ss.SSS";
+    Calendar calendar = GregorianCalendar.getInstance(new SimpleTimeZone(0, "UT"));
+
+    SimpleDateFormat fmt = new SimpleDateFormat(partialPattern, locale);
+    fmt.setCalendar(calendar);
+
+    return fmt;
   }
 }
