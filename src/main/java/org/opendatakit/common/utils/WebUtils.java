@@ -176,6 +176,8 @@ public class WebUtils {
         b = Boolean.TRUE;
       } else if (value.compareToIgnoreCase("Y") == 0) {
         b = Boolean.TRUE;
+      } else if (value.compareToIgnoreCase("1") == 0) {
+        b = Boolean.TRUE;
       }
     }
     return b;
