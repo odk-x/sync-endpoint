@@ -189,6 +189,10 @@ public class DefaultLdapAuthenticationProvider
                 new String[] { GROUP_MEMBER_ATTR, getGroupRoleAttribute() } :
                 new String[] { GROUP_MEMBER_ATTR };
 
+        SearchControls searchControls = new SearchControls();
+        searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+        getLdapTemplate().setSearchControls(searchControls);
+
         // get all groups under the group prefix
         // and their member list
         Set<Map<String, List<String>>> groups = getLdapTemplate()
