@@ -448,6 +448,7 @@
 				<beans:property name="rolePrefix" value=""/> <!-- role prefix added in mapper -->
 				<beans:property name="groupSearchFilter" value="${security.server.memberOfGroupSearchFilter}"/>
 				<beans:property name="groupRoleAttribute" value="${security.server.groupRoleAttribute}"/>
+				<beans:property name="searchSubtree" value="true"/>
 			</beans:bean>
 		</beans:constructor-arg>
 		<beans:constructor-arg index="3" ref="ldapAuthMapper"/>

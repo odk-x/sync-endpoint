@@ -34,9 +34,8 @@ public class DefaultLdapAuthenticationProvider
     private static final String GROUP_MEMBER_ATTR = "memberUid";
     private static final String USER_DEFAULT_GROUP_ATTR = "gidNumber";
 
-    private final SpringSecurityLdapTemplate ldapTemplate;
-    private final SearchControls searchControls = new SearchControls();
     private final GroupPrefixAwareAuthoritiesMapper authoritiesMapper;
+    private final ContextSource contextSource;
 
     private String groupSearchBase;
     private String userSearchBase;
@@ -46,16 +45,12 @@ public class DefaultLdapAuthenticationProvider
     private String userDnPattern;
     private String groupRoleAttribute;
 
-    public SpringSecurityLdapTemplate getLdapTemplate() {
-        return this.ldapTemplate;
-    }
-
-    public SearchControls getSearchControls() {
-        return this.searchControls;
-    }
-
     public GroupPrefixAwareAuthoritiesMapper getAuthoritiesMapper() {
         return this.authoritiesMapper;
+    }
+
+    public ContextSource getContextSource() {
+        return contextSource;
     }
 
     public String getGroupSearchBase() {
@@ -124,10 +119,8 @@ public class DefaultLdapAuthenticationProvider
         Assert.notNull(contextSource);
         Assert.notNull(authoritiesMapper);
 
-        this.ldapTemplate = new SpringSecurityLdapTemplate(contextSource);
-        ldapTemplate.setSearchControls(searchControls);
-
         this.authoritiesMapper = authoritiesMapper;
+        this.contextSource = contextSource;
     }
 
     /**
@@ -150,14 +143,24 @@ public class DefaultLdapAuthenticationProvider
     public String getDefaultGroup(CallingContext cc) {
         String uid = cc.getCurrentUser().getUriUser();
 
+        SearchControls searchControls = new SearchControls();
+        searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+
+        SpringSecurityLdapTemplate ldapTemplate = new SpringSecurityLdapTemplate(getContextSource());
+        ldapTemplate.setSearchControls(searchControls);
+
         // consider creating posixAccount class that stores gidNumber, this will save 1 ldap call
         InetOrgPerson user = (InetOrgPerson) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String gidNumber = getLdapTemplate()
+        String gidNumber = ldapTemplate
                 .retrieveEntry(user.getDn(), new String[] { USER_DEFAULT_GROUP_ATTR })
                 .getStringAttribute(USER_DEFAULT_GROUP_ATTR);
-        String groupName = getLdapTemplate()
-                .retrieveEntry(USER_DEFAULT_GROUP_ATTR + "=" + gidNumber + "," + groupSearchBase, new String[] { getGroupRoleAttribute() })
-                .getStringAttribute(getGroupRoleAttribute());
+        String groupName = ldapTemplate
+            .searchForSingleEntry(
+                getGroupSearchBase(),
+                USER_DEFAULT_GROUP_ATTR + "=" + gidNumber,
+                new String[] { getGroupRoleAttribute() }
+            )
+            .getStringAttribute(getGroupRoleAttribute());
 
         try {
             String authority = SecurityServiceUtil.resolveAsGroupOrRoleAuthority(
@@ -189,9 +192,15 @@ public class DefaultLdapAuthenticationProvider
                 new String[] { GROUP_MEMBER_ATTR, getGroupRoleAttribute() } :
                 new String[] { GROUP_MEMBER_ATTR };
 
+        SearchControls searchControls = new SearchControls();
+        searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+
+        SpringSecurityLdapTemplate ldapTemplate = new SpringSecurityLdapTemplate(getContextSource());
+        ldapTemplate.setSearchControls(searchControls);
+
         // get all groups under the group prefix
         // and their member list
-        Set<Map<String, List<String>>> groups = getLdapTemplate()
+        Set<Map<String, List<String>>> groups = ldapTemplate
                 .searchForMultipleAttributeValues(
                         getGroupSearchBase(),
                         getGroupSearchFilter(),
@@ -226,7 +235,7 @@ public class DefaultLdapAuthenticationProvider
         List<UserSecurityInfo> usiList = memberUids
                 .parallelStream()
                 .map(uid -> MessageFormat.format(userDnPattern, LdapEncoder.filterEncode(uid)))
-                .map(dn -> getLdapTemplate().retrieveEntry(dn, new String[] { usernameAttribute, userFullnameAttribute }))
+                .map(dn -> ldapTemplate.retrieveEntry(dn, new String[] { usernameAttribute, userFullnameAttribute }))
                 .map(user -> new UserSecurityInfo(
                         user.getStringAttribute(usernameAttribute),
                         user.getStringAttribute(userFullnameAttribute),
