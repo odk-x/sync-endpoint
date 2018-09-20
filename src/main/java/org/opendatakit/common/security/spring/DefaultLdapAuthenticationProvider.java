@@ -155,8 +155,12 @@ public class DefaultLdapAuthenticationProvider
                 .retrieveEntry(user.getDn(), new String[] { USER_DEFAULT_GROUP_ATTR })
                 .getStringAttribute(USER_DEFAULT_GROUP_ATTR);
         String groupName = ldapTemplate
-                .retrieveEntry(USER_DEFAULT_GROUP_ATTR + "=" + gidNumber + "," + groupSearchBase, new String[] { getGroupRoleAttribute() })
-                .getStringAttribute(getGroupRoleAttribute());
+            .searchForSingleEntry(
+                getGroupSearchBase(),
+                USER_DEFAULT_GROUP_ATTR + "=" + gidNumber,
+                new String[] { getGroupRoleAttribute() }
+            )
+            .getStringAttribute(getGroupRoleAttribute());
 
         try {
             String authority = SecurityServiceUtil.resolveAsGroupOrRoleAuthority(
