@@ -74,13 +74,13 @@ public class DbLogTable extends Relation {
       DataType.STRING, true, 50L).setIndexable(IndexType.HASH);
   // limited to 10 characters
   public static final DataField GROUP_READ_ONLY = new DataField(TableConstants.GROUP_READ_ONLY.toUpperCase(),
-      DataType.STRING, true, 50L);
+      DataType.STRING, true, 100L);
   // limited to 50 characters
   public static final DataField GROUP_MODIFY = new DataField(TableConstants.GROUP_MODIFY.toUpperCase(),
-      DataType.STRING, true, 50L).setIndexable(IndexType.HASH);
+      DataType.STRING, true, 100L).setIndexable(IndexType.HASH);
   // limited to 50 characters
   public static final DataField GROUP_PRIVILEGED = new DataField(TableConstants.GROUP_PRIVILEGED.toUpperCase(),
-      DataType.STRING, true, 50L).setIndexable(IndexType.HASH);
+      DataType.STRING, true, 100L).setIndexable(IndexType.HASH);
   // The FormId of the form that was in use when this record was last saved.
   // limited to 50 characters
   public static final DataField FORM_ID = new DataField(TableConstants.FORM_ID.toUpperCase(),
