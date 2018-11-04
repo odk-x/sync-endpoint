@@ -15,13 +15,13 @@
  */
 package org.opendatakit.aggregate.odktables.api;
 
+import org.opendatakit.aggregate.odktables.rest.entity.DataKeyValue;
+import org.opendatakit.aggregate.odktables.rest.entity.RowFilterScope;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
-import org.opendatakit.aggregate.odktables.rest.entity.DataKeyValue;
-import org.opendatakit.aggregate.odktables.rest.entity.RowFilterScope;
 
 /**
  * A SyncRow is an in-between class to map rows in the database to rows in the
@@ -228,14 +228,14 @@ public class SyncRow {
     return this.uriFragments;
   }
 
-  @java.lang.Override
-  public boolean equals(final java.lang.Object o) {
+  @Override
+  public boolean equals(final Object o) {
     if (o == this)
       return true;
     if (!(o instanceof SyncRow))
       return false;
     final SyncRow other = (SyncRow) o;
-    if (!other.canEqual((java.lang.Object) this))
+    if (!other.canEqual((Object) this))
       return false;
     // primary key
     if (this.getRowId() == null ? other.getRowId() != null : !this.getRowId().equals(
@@ -271,16 +271,16 @@ public class SyncRow {
 
     // data
     if (this.getValues() == null ? other.getValues() != null : !this.getValues().equals(
-        (java.lang.Object) other.getValues()))
+        (Object) other.getValues()))
       return false;
     return true;
   }
 
-  public boolean canEqual(final java.lang.Object other) {
+  public boolean canEqual(final Object other) {
     return other instanceof SyncRow;
   }
 
-  @java.lang.Override
+  @Override
   public int hashCode() {
     final int PRIME = 31;
     int result = 1;
@@ -305,8 +305,8 @@ public class SyncRow {
     return result;
   }
 
-  @java.lang.Override
-  public java.lang.String toString() {
+  @Override
+  public String toString() {
     return "SyncRow[rowId=" + this.getRowId() + ", rowETag=" + this.getRowETag() + ", deleted="
         + this.isDeleted() + ", filterScope=" + this.getFilterScope().toString() + ", formId="
         + this.getFormId() + ", locale=" + this.getLocale() + ", savepointType="

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-4.1.xsd">
+
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="ignoreResourceNotFound" value="true"/>
+		<property name="locations">
+			<list>
+				<!-- Supply defaults with jar, override with Docker configs/secrets -->
+				<value>file:/jdbc.properties</value>
+				<value>file:/security.properties</value>
+				<value>file:/logging.properties</value>
+				<value>file:/run/secrets/org.opendatakit.aggregate.jdbc.properties</value>
+				<value>file:/run/secrets/org.opendatakit.aggregate.security.properties</value>
+				<value>file:/run/secrets/org.opendatakit.aggregate.logging.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<beans profile="mysql">
+		<import resource="odk-mysql-settings.xml"/>
+	</beans>
+	<beans profile="postgres">
+		<import resource="odk-postgres-settings.xml"/>
+	</beans>
+	<beans profile="sqlserver">
+		<import resource="odk-sqlserver-settings.xml"/>
+	</beans>
+
+	<beans>
+		<!--  bean to get the siteKey value (which is defined the first time the app starts up) -->
+		<bean id="sitePreferencesBean" class="org.opendatakit.aggregate.server.SitePreferencesBean">
+			<property name="datastore" ref="datastore"/>
+			<property name="userService" ref="user_service"/>
+			<property name="appName" value="${sync.preference.appName}"/>
+			<property name="enableTables" value="true"/> <!-- For Sync Endpoint Tables in always enabled -->
+			<property name="anonTablesSync" value="${sync.preference.anonymousTablesSync}"/>
+			<property name="anonAttachmentsAccess" value="${sync.preference.anonymousAttachmentAccess}"/>
+		</bean>
+	</beans>
+</beans>

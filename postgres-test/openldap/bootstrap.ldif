@@ -1,0 +1,66 @@
+dn: ou=groups,{{ LDAP_BASE_DN }}
+changetype: add
+ou: groups
+objectClass: organizationalUnit
+objectClass: top
+
+dn: ou=people,{{ LDAP_BASE_DN }}
+changetype: add
+ou: people
+objectClass: organizationalUnit
+objectClass: top
+
+dn: ou=default_prefix,ou=groups,{{ LDAP_BASE_DN }}
+changetype: add
+ou: default_prefix
+objectClass: organizationalUnit
+objectClass: top
+
+dn: gidNumber=500,ou=default_prefix,ou=groups,{{ LDAP_BASE_DN }}
+changetype: add
+cn: default_prefix site_admins
+gidNumber: 500
+objectClass: posixGroup
+objectClass: top
+
+dn: gidNumber=501,ou=default_prefix,ou=groups,{{ LDAP_BASE_DN }}
+changetype: add
+cn: default_prefix administer_tables
+gidNumber: 501
+objectClass: posixGroup
+objectClass: top
+
+dn: gidNumber=502,ou=default_prefix,ou=groups,{{ LDAP_BASE_DN }}
+changetype: add
+cn: default_prefix super_user_tables
+gidNumber: 502
+objectClass: posixGroup
+objectClass: top
+
+dn: gidNumber=503,ou=default_prefix,ou=groups,{{ LDAP_BASE_DN }}
+changetype: add
+cn: default_prefix synchronize_tables
+gidNumber: 503
+objectClass: posixGroup
+objectClass: top
+
+dn: gidNumber=504,ou=default_prefix,ou=groups,{{ LDAP_BASE_DN }}
+changetype: add
+cn: default_prefix form_managers
+gidNumber: 504
+objectClass: posixGroup
+objectClass: top
+
+dn: gidNumber=505,ou=default_prefix,ou=groups,{{ LDAP_BASE_DN }}
+changetype: add
+cn: default_prefix data_viewers
+gidNumber: 505
+objectClass: posixGroup
+objectClass: top
+
+dn: gidNumber=506,ou=default_prefix,ou=groups,{{ LDAP_BASE_DN }}
+changetype: add
+cn: default_prefix data_collectors
+gidNumber: 506
+objectClass: posixGroup
+objectClass: top

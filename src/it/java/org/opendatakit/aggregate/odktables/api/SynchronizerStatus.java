@@ -12,5 +12,5 @@ public interface SynchronizerStatus {
    *          true if progressGrains is N/A
    */
   void updateNotification(SyncProgressState state, int textResource, Object[] formatArgVals,
-      Double progressPercentage, boolean indeterminateProgress);
+                          Double progressPercentage, boolean indeterminateProgress);
 }

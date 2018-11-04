@@ -50,8 +50,8 @@ public class Realm implements InitializingBean {
 		Log log = LogFactory.getLog(Realm.class);
 		log.info("Version: " + UIConsts.VERSION_STRING);
 		log.info("Hostname: " + hostname);
-		log.info("Port: " + Integer.toString(port));
-		log.info("SecurePort: " + Integer.toString(securePort));
+		log.info("Port: " + (port == null ? "" : port));
+		log.info("SecurePort: " + (securePort == null ? "" : securePort));
 		log.info("SslIsRequired: " + (sslIsRequired ? "yes" : "no") );
 		log.info("SslIsAvailable: " + (sslIsAvailable ? "yes" : "no") );
 		log.info("RealmString: " + realmString);

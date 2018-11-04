@@ -15,12 +15,7 @@
  */
 package org.opendatakit.aggregate.odktables.api;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * An object for measuring the results of a synchronization call. This is
