@@ -37,7 +37,7 @@
         <org.apache.wink.version>1.4</org.apache.wink.version>
         <maven.surefire.report.plugin.version>2.22.1</maven.surefire.report.plugin.version>
         <maven.surefire.plugin.version>2.22.1</maven.surefire.plugin.version>
-        <surefire.argLine>-Xms300m -Xmx3048m -XX:+UseParallelGC -XX:+UseParallelOldGC</surefire.argLine> <!-- JVM size can probably be reduced -->
+        <surefire.argLine>-Xms300m -Xmx3048m </surefire.argLine> <!-- JVM size can probably be reduced -->
         <maven.failsafe.plugin.version>2.22.1</maven.failsafe.plugin.version>
         <build.helper.maven.plugin.version>1.10</build.helper.maven.plugin.version>
         <maven.jar.plugin.version>3.1.0</maven.jar.plugin.version>

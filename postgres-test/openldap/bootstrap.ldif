@@ -22,6 +22,7 @@ cn: default_prefix site_admins
 gidNumber: 500
 objectClass: posixGroup
 objectClass: top
+memberUid: john
 
 dn: gidNumber=501,ou=default_prefix,ou=groups,{{ LDAP_BASE_DN }}
 changetype: add
@@ -29,6 +30,7 @@ cn: default_prefix administer_tables
 gidNumber: 501
 objectClass: posixGroup
 objectClass: top
+memberUid: john
 
 dn: gidNumber=502,ou=default_prefix,ou=groups,{{ LDAP_BASE_DN }}
 changetype: add
@@ -64,3 +66,16 @@ cn: default_prefix data_collectors
 gidNumber: 506
 objectClass: posixGroup
 objectClass: top
+
+dn: uid=john,ou=people,{{ LDAP_BASE_DN }}
+changetype: add
+cn: john
+gidnumber: 501
+homedirectory: /home/users/john
+objectclass: inetOrgPerson
+objectclass: posixAccount
+objectclass: top
+sn: john
+uid: john
+uidnumber: 1000
+userpassword: {MD5}JdVa0oOqQAr0ZMdtcTwHrQ==

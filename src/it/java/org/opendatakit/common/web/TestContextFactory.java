@@ -99,7 +99,6 @@ public class TestContextFactory {
 			}
 			//	datastore = (Datastore) applicationContext.getBean(DATASTORE_BEAN);
 			//	userService = (UserService) applicationContext.getBean(USER_BEAN);
-			System.err.println("WAYLON WAS HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		}
 
 		@Override

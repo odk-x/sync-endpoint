@@ -9,7 +9,6 @@ RUN chmod +x /tmp/init.sh && \
     unzip /sync-endpoint-war.war -d /usr/local/tomcat/webapps/ROOT && \
     rm /sync-endpoint-war.war
 
-EXPOSE 8080
 EXPOSE 8888
 EXPOSE 8443
 ENTRYPOINT ["/tmp/init.sh"]

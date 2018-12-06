@@ -78,7 +78,7 @@ public abstract class AbstractServiceTest {
   // call this from any Before action in derived class
   public void abstractServiceSetUp() throws Exception, Throwable {
     String hostname = System.getProperty("test.server.hostname");
-    baseUrl = System.getProperty("test.server.baseUrl");
+    baseUrl = System.getProperty("test.server.baseUrl", "/");
     String port = System.getProperty("test.server.port");
 
     this.baseUri = URI.create("http://" + hostname + ":" + port + baseUrl + "odktables/" + appId + "/");

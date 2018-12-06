@@ -66,7 +66,7 @@
          APR (HTTP/AJP) Connector: /docs/apr.html
          Define a non-SSL/TLS HTTP/1.1 Connector on port 80
     -->
-    <Connector port="8080" protocol="HTTP/1.1"
+    <Connector port="8888" protocol="HTTP/1.1"
                connectionTimeout="20000"
                redirectPort="8443" 
                maxPostSize="33554432" />
@@ -86,10 +86,10 @@
          the SSLImplementation selected. JSSE style configuration is used below.
     -->
 
-<Connector protocol="org.apache.coyote.http11.Http11NioProtocol" port="8443"
+<!--<Connector protocol="org.apache.coyote.http11.Http11NioProtocol" port="8443"
 	maxThreads="150" scheme="https" secure="true" maxPostSize="33554432"
 	SSLEnabled="true" keystoreFile="/run/secrets/odksync-tomcat.keystore" 
-	keystorePass="changeit" clientAuth="false" sslProtocol="TLS"/>
+	keystorePass="changeit" clientAuth="false" sslProtocol="TLS"/> -->
  
     <!-- Define a SSL/TLS HTTP/1.1 Connector on port 8443 with HTTP/2
          This connector uses the APR/native implementation which always uses

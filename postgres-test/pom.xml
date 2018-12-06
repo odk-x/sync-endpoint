@@ -27,7 +27,6 @@
                     <executions>
                         <execution>
                             <id>copy-resources</id>
-                            <!-- here the phase you need -->
                             <phase>process-test-resources</phase>
                             <goals>
                                 <goal>copy-resources</goal>
@@ -65,7 +64,7 @@
             <plugin>
                 <groupId>io.fabric8</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
-                <version>0.26.0</version>
+                <version>0.27.2</version>
                 <executions>
                     <execution>
                         <id>start</id>
@@ -82,11 +81,12 @@
                             <goal>stop</goal>
                         </goals>
                         <configuration>
-                            <keepContainer>true</keepContainer>
+                            <keepContainer>false</keepContainer>
                         </configuration>
                     </execution>
                 </executions>
                 <configuration>
+					<autoCreateCustomNetworks>true</autoCreateCustomNetworks>
                     <images>
                         <image>
                             <name>odk/db-${project.name}</name>
@@ -110,6 +110,12 @@
                             </build>
 
                             <run>
+								<network>
+                                    <mode>custom</mode>
+                                    <name>odk-network</name>
+                                    <alias>odkdatabase</alias>
+                                </network>
+                                <hostname>odkdatabase</hostname>
                                 <env>
                                     <POSTGRES_USER>postgres</POSTGRES_USER>
                                     <POSTGRES_PASSWORD>postgresPostgresPassword</POSTGRES_PASSWORD>
@@ -120,7 +126,7 @@
                                 </ports>
 
                                 <wait>
-                                    <time>5000</time>
+                                    <time>10000</time>
                                     <exec>
                                         <postStart>psql -U postgres -f /tmp/create_db_and_user.sql</postStart>
                                     </exec>
@@ -130,12 +136,18 @@
                         <image>
                             <name>odk/openldap-${project.name}</name>
                             <alias>ldap-service</alias>
-
                             <build>
                                 <dockerFile>${project.basedir}/openldap/Dockerfile</dockerFile >
                             </build>
 
                             <run>
+								<network>
+                                    <mode>custom</mode>
+                                    <name>odk-network</name>
+                                    <alias>odkldap</alias>
+                                </network>
+
+                                <hostname>odkldap</hostname>
                                 <env>
                                     <LDAP_ORGANISATION>Open Data Kit</LDAP_ORGANISATION>
                                     <LDAP_DOMAIN>example.org</LDAP_DOMAIN>
@@ -155,6 +167,12 @@
                             <alias>sync</alias>
 
                             <run>
+								<network>
+                                    <mode>custom</mode>
+                                    <name>odk-network</name>
+                                </network>
+
+                                <hostname>odksync</hostname>
                                 <env>
                                     <SPRING_PROFILES_ACTIVE>postgres</SPRING_PROFILES_ACTIVE>
                                 </env>
@@ -163,10 +181,6 @@
                                     <port>8443:8443</port>
                                     <port>8888:8888</port>
                                 </ports>
-
-                                <network>
-                                    <mode>host</mode>
-                                </network>
 
                                 <wait>
                                     <time>10000</time>
@@ -217,19 +231,32 @@
                 <artifactId>maven-compiler-plugin</artifactId>
             </plugin>
             <plugin>
-                <!-- This configures the running of odktables integration tests. -->
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven.surefire.plugin.version}</version>
-                <inherited>true</inherited>
-                <configuration>
+			    <configuration>
+					<trimStackTrace>false</trimStackTrace>								  
                     <argLine>${surefire.argLine}</argLine>
-                </configuration>
+                    <systemPropertyVariables>
+                        <test.server.port>8888</test.server.port>
+                        <test.server.hostname>localhost</test.server.hostname>
+                        <test.server.username>john</test.server.username>
+                        <test.server.password>12345678</test.server.password>
+                    </systemPropertyVariables>
+				</configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>${maven.failsafe.plugin.version}</version>
                 <configuration>
                     <testSourceDirectory>${toplevel.directory}/src/it/java</testSourceDirectory>
+					<forkedProcessExitTimeoutInSeconds>600</forkedProcessExitTimeoutInSeconds>																		  
+					<systemPropertyVariables>
+                        <test.server.port>8888</test.server.port>
+                        <test.server.hostname>localhost</test.server.hostname>
+                        <test.server.username>john</test.server.username>
+                        <test.server.password>12345678</test.server.password>
+                    </systemPropertyVariables>																			  
                 </configuration>
                 <executions>
                     <execution>
