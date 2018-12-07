@@ -11,9 +11,6 @@
 		<property name="locations">
 			<list>
 				<!-- Supply defaults with jar, override with Docker configs/secrets -->
-				<value>file:/jdbc.properties</value>
-				<value>file:/security.properties</value>
-				<value>file:/logging.properties</value>
 				<value>file:/run/secrets/org.opendatakit.aggregate.jdbc.properties</value>
 				<value>file:/run/secrets/org.opendatakit.aggregate.security.properties</value>
 				<value>file:/run/secrets/org.opendatakit.aggregate.logging.properties</value>
