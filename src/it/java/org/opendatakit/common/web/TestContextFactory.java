@@ -27,20 +27,17 @@ import org.opendatakit.common.security.User;
 import org.opendatakit.common.security.UserService;
 import org.opendatakit.common.security.spring.UserServiceImpl;
 import org.opendatakit.common.web.constants.BasicConsts;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
 
 @Ignore("not a test")
 public class TestContextFactory {
 
-//	  public static final String USER_BEAN = "user_service";
-//	  public static final String DATASTORE_BEAN = "datastore";
-
 	/**
 	 * Singleton of the application context
 	 */
-//	    private static final String APP_CONTEXT_PATH = "odk-settings.xml";
-//	    private static final ApplicationContext applicationContext = new ClassPathXmlApplicationContext(APP_CONTEXT_PATH);
 
 	@Ignore("not a test")
 	public static final class CallingContextImpl implements CallingContext {
@@ -52,22 +49,47 @@ public class TestContextFactory {
 		boolean asDaemon = true; // otherwise there isn't a current user...
 
 		CallingContextImpl() {
-			String baseUrl = System.getProperty("test.server.baseUrl","");
+			Properties appProps = new Properties();
+
+			try {
+				appProps.load(new FileInputStream("external-resources/integration.properties"));
+			} catch (IOException e) {
+				System.err.println("PROBLEM FINDING PROPERTY FILE!!!!!!!!!!!!");
+				try {
+					String current = new java.io.File(".").getCanonicalPath();
+					System.err.println("Current dir:" + current);
+				} catch (Exception e2) {
+					e2.printStackTrace();
+				}
+				e.printStackTrace();
+			}
+
+			String baseUrl = appProps.getProperty("test.server.baseUrl","");
 			if ( baseUrl.length() > 0 && !baseUrl.startsWith(BasicConsts.FORWARDSLASH)) {
 				baseUrl = BasicConsts.FORWARDSLASH + baseUrl;
 			}
 			webApplicationBase = baseUrl;
-			String hostname = System.getProperty("test.server.hostname", "localhost");
-			String port = System.getProperty("test.server.port","8888");
-			String secureport = System.getProperty("test.server.secure.port","8443");
+
+			String hostname = appProps.getProperty("test.server.hostname", "localhost");
+			String port = appProps.getProperty("test.server.port","8888");
+			String secureport = appProps.getProperty("test.server.secure.port","8443");
+
+			String jdbcDriver = appProps.getProperty("jdbc.driverClassName");
+			String jdbcUrl = appProps.getProperty("jdbc.url");
+
+			String dbUsername =  appProps.getProperty("jdbc.username");
+			String dbPassword =  appProps.getProperty("jdbc.password");
+			String dbSchema =  appProps.getProperty("jdbc.schema");
+
 			serverUrl = "http://" + hostname + ":" + port + webApplicationBase;
 			secureServerUrl = "https://" + hostname + ":" + secureport + webApplicationBase;
+
 			try {
 				BasicDataSource dataSource = new BasicDataSource();
-				dataSource.setDriverClassName("org.postgresql.Driver");
-				dataSource.setUrl("jdbc:postgresql://localhost/postgres?autoDeserialize=true");
-				dataSource.setUsername("odk");
-				dataSource.setPassword("odk");
+				dataSource.setDriverClassName(jdbcDriver);
+				dataSource.setUrl(jdbcUrl);
+				dataSource.setUsername(dbUsername);
+				dataSource.setPassword(dbPassword);
 				dataSource.setMaxIdle(10);
 				dataSource.setMinIdle(5);
 				dataSource.setMaxTotal(100);
@@ -76,17 +98,18 @@ public class TestContextFactory {
 				dataSource.setValidationQuery("select schema_name from information_schema.schemata limit 1");
 				dataSource.setValidationQueryTimeout(1);
 				dataSource.setTestOnBorrow(true);
+
 				DatastoreImpl db = new DatastoreImpl();
 				db.setDataSource(dataSource);
-				db.setSchemaName("odk_sync");
+				db.setSchemaName(dbSchema);
 				datastore = db;
 
 				Realm realm = new Realm();
 				realm.setIsGaeEnvironment(false);
 				realm.setRealmString("opendatakit.org ODK Aggregate");
-				realm.setHostname("localhost");
-				realm.setPort(8888);
-				realm.setSecurePort(8443);
+				realm.setHostname(hostname);
+				realm.setPort(Integer.parseInt(port));
+				realm.setSecurePort(Integer.parseInt(secureport));
 				realm.setChannelType("REQUIRES_INSECURE_CHANNEL");
 				realm.setSecureChannelType("REQUIRES_INSECURE_CHANNEL");
 
@@ -97,8 +120,6 @@ public class TestContextFactory {
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
-			//	datastore = (Datastore) applicationContext.getBean(DATASTORE_BEAN);
-			//	userService = (UserService) applicationContext.getBean(USER_BEAN);
 		}
 
 		@Override

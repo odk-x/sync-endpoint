@@ -24,42 +24,6 @@
                 <plugin>
                     <artifactId>maven-resources-plugin</artifactId>
                     <version>3.1.0</version>
-                    <executions>
-                        <execution>
-                            <id>copy-resources</id>
-                            <phase>process-test-resources</phase>
-                            <goals>
-                                <goal>copy-resources</goal>
-                            </goals>
-                            <configuration>
-                                <outputDirectory>${basedir}/target/odk-resources</outputDirectory>
-                                <resources>
-                                <resource>
-                                    <directory>${toplevel.directory}/src/it/resources</directory>
-                                    <filtering>true</filtering>
-                                    <includes>
-                                        <include>**/*.properties</include>
-                                        <include>**/*.xml</include>
-                                    </includes>
-                                </resource>
-                                <resource>
-                                    <directory>${toplevel.directory}/src/main/resources</directory>
-                                    <filtering>true</filtering>
-                                    <includes>
-                                        <include>**/*.xml</include>
-                                    </includes>
-                                </resource>
-                                <resource>
-                                    <directory>${project.basedir}/resources</directory>
-                                    <filtering>true</filtering>
-                                    <includes>
-                                        <include>**/*.properties</include>
-                                    </includes>
-                                    </resource>
-                                </resources>
-                            </configuration>
-                        </execution>
-                    </executions>
                 </plugin>
             <plugin>
                 <groupId>io.fabric8</groupId>
