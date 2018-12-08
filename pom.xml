@@ -64,6 +64,7 @@
         <module>odk-rest-interface</module>
         <module>postgres-test</module>
         <module>sync-endpoint-docker</module>
+        <module>mysql-test</module>
     </modules>
     <dependencies>
         <dependency>
