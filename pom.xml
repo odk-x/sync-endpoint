@@ -62,8 +62,9 @@
     <modules>
         <module>sync-endpoint-war</module>
         <module>odk-rest-interface</module>
+		<module>sync-endpoint-docker-swarm</module>
+        <module>sync-endpoint-docker-test</module>
         <module>postgres-test</module>
-        <module>sync-endpoint-docker</module>
         <module>mysql-test</module>
     </modules>
     <dependencies>

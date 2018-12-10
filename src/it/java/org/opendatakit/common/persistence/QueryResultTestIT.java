@@ -38,7 +38,6 @@ import org.opendatakit.common.web.CallingContext;
 import org.opendatakit.common.web.TestContextFactory;
 
 @RunWith(org.junit.runners.JUnit4.class)
-@Ignore
 public class QueryResultTestIT {
 
 	static int SET_SIZE = 2000;

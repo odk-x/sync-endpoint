@@ -21,7 +21,6 @@ import javax.servlet.ServletContext;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.junit.Ignore;
 import org.opendatakit.common.persistence.Datastore;
-import org.opendatakit.common.persistence.engine.pgres.DatastoreImpl;
 import org.opendatakit.common.security.Realm;
 import org.opendatakit.common.security.User;
 import org.opendatakit.common.security.UserService;
@@ -99,10 +98,19 @@ public class TestContextFactory {
 				dataSource.setValidationQueryTimeout(1);
 				dataSource.setTestOnBorrow(true);
 
-				DatastoreImpl db = new DatastoreImpl();
-				db.setDataSource(dataSource);
-				db.setSchemaName(dbSchema);
-				datastore = db;
+				if(jdbcDriver.equals("org.postgresql.Driver")) {
+					org.opendatakit.common.persistence.engine.pgres.DatastoreImpl db = new org.opendatakit.common.persistence.engine.pgres.DatastoreImpl();
+					db.setDataSource(dataSource);
+					db.setSchemaName(dbSchema);
+					datastore = db;
+				} else if (jdbcDriver.equals("com.mysql.jdbc.Driver")) {
+					org.opendatakit.common.persistence.engine.mysql.DatastoreImpl db = new org.opendatakit.common.persistence.engine.mysql.DatastoreImpl();
+					db.setDataSource(dataSource);
+					db.setSchemaName(dbSchema);
+					datastore = db;
+				} else {
+					throw new RuntimeException("UNABLE TO DETERMINE DATABASE TYPE for TextContextFactory");
+				}
 
 				Realm realm = new Realm();
 				realm.setIsGaeEnvironment(false);

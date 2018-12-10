@@ -127,7 +127,7 @@
                             </run>
                         </image>
                         <image>
-                            <name>odk/sync-endpoint</name>
+                            <name>odk/sync-endpoint-test</name>
                             <alias>sync</alias>
 
                             <run>
@@ -242,7 +242,7 @@
     <dependencies>
         <dependency>
             <groupId>org.opendatakit</groupId>
-            <artifactId>sync-endpoint-docker</artifactId>
+            <artifactId>sync-endpoint-docker-test</artifactId>
             <version>2.1.0</version>
             <type>pom</type>
         </dependency>
