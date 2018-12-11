@@ -1,9 +1,9 @@
 package org.opendatakit.aggregate.odktables.api;
 
-import java.util.ArrayList;
-
 import org.opendatakit.aggregate.odktables.rest.ElementDataType;
 import org.opendatakit.aggregate.odktables.rest.entity.DataKeyValue;
+
+import java.util.ArrayList;
 
 /**
  * Tracks the data values for the local and server row so that we

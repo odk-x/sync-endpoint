@@ -1,0 +1,603 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.2.xsd">
+
+	<!--	Configure the access policy to the pages here	-->
+	<!--	You can do things like this: and hasAuthority('AUTH_LOCAL') -->
+
+<!--	NOTE: for debugging applets, it is useful to allow anonymous access to the pages-->
+<!--	they utilize.  This means that the isFullyAuthenticated() criteria cannot be used-->
+<!--	for those pages.  -->
+	<filter-security-metadata-source id="securityPolicy" use-expressions="true">
+        <intercept-url pattern="/Aggregate.html" access="hasRole('ROLE_USER') or hasRole('ROLE_SITE_ACCESS_ADMIN')" />
+
+		<!--  grant clients access to all GWT code (/aggregateui), images, javascripts, resources, css -->
+		<intercept-url pattern="/images/**" access="true" />
+		<intercept-url pattern="/javascript/**" access="true" />
+		<intercept-url pattern="/res/**" access="true" />
+		<intercept-url pattern="/stylesheets/**" access="true" />
+
+		<!-- grant access to all routing pages -->
+		<intercept-url pattern="/access-denied.html" access="true" />
+		<intercept-url pattern="/over-quota.html" access="true" />
+		<intercept-url pattern="/robots.txt" access="true" />
+		<intercept-url pattern="/service-error.html" access="true" />
+		<intercept-url pattern="/AggregateUI.css" access="true" />
+		<intercept-url pattern="/favicon.ico" access="true" />
+		<intercept-url pattern="/index.html" access="true" />
+		<intercept-url pattern="/logout.html" access="true" />
+		<intercept-url pattern="/odk_color.png" access="true" />
+		<intercept-url pattern="/multimode_login.html" access="true" />
+		<intercept-url pattern="/relogin.html" access="true" />
+		<intercept-url pattern="/local_login.html" access="isFullyAuthenticated() and (hasAuthority('AUTH_LOCAL') or hasAuthority('AUTH_ACTIVE_DIRECTORY') or hasAuthority('AUTH_LDAP'))" />
+
+		<!-- grant access to various servlets -->
+		<intercept-url pattern="/formList" access="hasRole('ROLE_DATA_COLLECTOR') or hasRole('ROLE_DATA_VIEWER')" />
+		<intercept-url pattern="/formXml" access="hasRole('ROLE_DATA_COLLECTOR') or hasRole('ROLE_DATA_VIEWER')" />
+		<intercept-url pattern="/submission" access="hasRole('ROLE_DATA_COLLECTOR') or hasRole('ROLE_DATA_OWNER')" />
+		<intercept-url pattern="/formUpload" access="hasRole('ROLE_DATA_OWNER')" /> <!--  NEW form upload url -->
+		<intercept-url pattern="/upload" access="hasRole('ROLE_DATA_OWNER')" /> <!--  OLD form upload url -->
+		<intercept-url pattern="/xformsDownload" access="hasRole('ROLE_DATA_COLLECTOR') or hasRole('ROLE_DATA_VIEWER')" />
+		<intercept-url pattern="/xformsList" access="hasRole('ROLE_DATA_COLLECTOR') or hasRole('ROLE_DATA_VIEWER')" />
+		<intercept-url pattern="/xformsManifest" access="hasRole('ROLE_DATA_COLLECTOR') or hasRole('ROLE_DATA_VIEWER')" />
+
+		<intercept-url pattern="/www/**" access="hasRole('ROLE_USER')" />
+
+		<intercept-url pattern="/view/binaryData" access="hasRole('ROLE_DATA_VIEWER') or hasRole('ROLE_ATTACHMENT_VIEWER')" />
+		<intercept-url pattern="/view/**" access="hasRole('ROLE_DATA_VIEWER')" />
+
+        <intercept-url pattern="/auth/**" access="hasRole('ROLE_DATA_OWNER')" />
+
+        <intercept-url pattern="/ssl/**" access="hasRole('ROLE_SITE_ACCESS_ADMIN')" />
+        <intercept-url pattern="/enk/**" access="hasRole('ROLE_DATA_COLLECTOR') or hasRole('ROLE_DATA_VIEWER') or hasRole('ROLE_SITE_ACCESS_ADMIN')" />
+
+		<!--	GAE access is controlled in web.xml -->
+		<intercept-url pattern="/gae/**" access="true" />
+		<!--	RemoteAPI access is controlled in web.xml -->
+		<intercept-url pattern="/remote_api" access="true" />
+
+		<!-- ODK Tables API (order is important) -->
+		<!-- FileManifestService -->
+		<intercept-url pattern="/odktables/*/manifest/**" access="hasRole('ROLE_SYNCHRONIZE_TABLES')" method="GET" />
+		<!--  FileService -->
+		<intercept-url pattern="/odktables/*/files/**" access="hasRole('ROLE_SYNCHRONIZE_TABLES')" method="GET" />
+		<!--  TableService -->
+		<intercept-url pattern="/odktables/*/tables/*" access="hasRole('ROLE_SYNCHRONIZE_TABLES')" method="GET" />
+		<intercept-url pattern="/odktables/*/tables/*/properties/*" access="hasRole('ROLE_SYNCHRONIZE_TABLES')" method="GET" />
+		<!-- RealizedTableService -->
+		<intercept-url pattern="/odktables/*/tables/*/ref/*" access="hasRole('ROLE_SYNCHRONIZE_TABLES')" method="GET" />
+		<!-- OdkTables -->
+		<intercept-url pattern="/odktables/*/clientVersions" access="hasRole('ROLE_SYNCHRONIZE_TABLES')" method="GET" />
+		<!--  obtain roles and default group for this user -->
+		<intercept-url pattern="/odktables/*/privilegesInfo" access="isFullyAuthenticated() and hasRole('ROLE_USER')" method="GET" />
+		<!--  obtain users and roles on this server -->
+		<intercept-url pattern="/odktables/*/usersInfo" access="isFullyAuthenticated() and hasRole('ROLE_USER')" method="GET" />
+		<intercept-url pattern="/odktables/*/tables" access="hasRole('ROLE_SYNCHRONIZE_TABLES')" method="GET" />
+		<!-- OdkTables installationInfo -->
+		<intercept-url pattern="/odktables/*/installationInfo" access="hasRole('ROLE_SYNCHRONIZE_TABLES')" method="POST" />
+		<!--  TableAclService (not exposed) -->
+		<!--  
+		   <intercept-url pattern="/odktables/*/tables/*/acl/**" access="hasRole('ROLE_SYNCHRONIZE_TABLES')" method="GET" />
+		   <intercept-url pattern="/odktables/*/tables/*/acl" access="hasRole('ROLE_SYNCHRONIZE_TABLES')" method="GET" />
+		 -->
+		<!--  DiffService -->
+		<intercept-url pattern="/odktables/*/tables/*/ref/*/diff/**" access="hasRole('ROLE_SYNCHRONIZE_TABLES')" method="GET" />
+		<intercept-url pattern="/odktables/*/tables/*/ref/*/diff" access="hasRole('ROLE_SYNCHRONIZE_TABLES')" method="GET" />
+		<!--  QueryService -->
+		<intercept-url pattern="/odktables/*/tables/*/ref/*/query/**" access="hasRole('ROLE_SYNCHRONIZE_TABLES')" method="GET" />
+		<!-- InstanceFileService -->
+		<intercept-url pattern="/odktables/*/tables/*/ref/*/attachments/*/manifest" access="hasRole('ROLE_SYNCHRONIZE_TABLES')" method="GET" />
+		<intercept-url pattern="/odktables/*/tables/*/ref/*/attachments/*/download" access="hasRole('ROLE_SYNCHRONIZE_TABLES')" method="POST" />
+		<intercept-url pattern="/odktables/*/tables/*/ref/*/attachments/*/upload" access="hasRole('ROLE_SYNCHRONIZE_TABLES')" method="POST" />
+		<intercept-url pattern="/odktables/*/tables/*/ref/*/attachments/*/file/**" access="hasRole('ROLE_SYNCHRONIZE_TABLES')" />
+		<!--  DataService -->
+		<intercept-url pattern="/odktables/*/tables/*/ref/*/rows/**" access="hasRole('ROLE_SYNCHRONIZE_TABLES')" />
+		<intercept-url pattern="/odktables/*/tables/*/ref/*/rows" access="hasRole('ROLE_SYNCHRONIZE_TABLES')" />
+		<!--  InstallationStatus -->
+		<intercept-url pattern="/odktables/*/tables/*/ref/*/installationStatus" access="hasRole('ROLE_SYNCHRONIZE_TABLES')" method="POST" />
+
+		<!--  all other APIs require administer-tables permissions -->		
+		<intercept-url pattern="/odktables/*/**" access="hasRole('ROLE_ADMINISTER_TABLES')" />
+		
+		<!--  except the get-supported-application-names API does not require much at all -->
+		<intercept-url pattern="/odktables/" access="hasRole('ROLE_USER')" />
+		<intercept-url pattern="/odktables" access="hasRole('ROLE_USER')" />
+
+		<!-- odk tables file upload and download stuff -->
+		<intercept-url pattern="/appLevelFileUpload/**" access="hasRole('ROLE_SYNCHRONIZE_TABLES') or hasRole('ROLE_ADMINISTER_TABLES')" />
+		<intercept-url pattern="/tableFileUpload/**" access="hasRole('ROLE_SYNCHRONIZE_TABLES') or hasRole('ROLE_ADMINISTER_TABLES')" />
+		<intercept-url pattern="/tableFileDownload/**" access="hasRole('ROLE_SYNCHRONIZE_TABLES') or hasRole('ROLE_ADMINISTER_TABLES')" />
+		<intercept-url pattern="/tableKeyValueManifest/**" access="hasRole('ROLE_SYNCHRONIZE_TABLES') or hasRole('ROLE_ADMINISTER_TABLES')" />
+		<!-- odk tables upload file from CSV -->
+		<intercept-url pattern="/uploadTableFromCSV/**" access="hasRole('ROLE_ADMINISTER_TABLES')" />
+
+		<!-- in case we forgot to mention something... -->
+		<intercept-url pattern="/**" access="isAnonymous()" />
+	</filter-security-metadata-source>
+
+	<!-- Pages being filtered and the filters applied to them (everything). -->
+	<!-- Prerequisite for the applying of the access policies above.   -->
+	<!-- We are stateless except for login screen. If that can be reworked, we can remove requestCacheAwareFilter -->
+	<beans:bean id="serverSpringSecurityFilterChain"
+		class="org.springframework.security.web.FilterChainProxy">
+		<beans:constructor-arg>
+			<beans:list>
+				<beans:bean class="org.springframework.security.web.DefaultSecurityFilterChain">
+					<beans:constructor-arg>
+						<beans:bean class="org.springframework.security.web.util.matcher.AntPathRequestMatcher">
+							<beans:constructor-arg type="java.lang.String" value="/local_login.html"/>
+						</beans:bean>
+					</beans:constructor-arg>
+					<beans:constructor-arg>
+						<beans:list>
+							<beans:ref bean="channelProcessingFilter"/>
+							<beans:ref bean="securityContextPersistenceFilter"/>
+							<beans:ref bean="logoutFilter"/>
+							<beans:ref bean="${security.server.authenticationMethod}AuthFilter"/>
+							<beans:ref bean="requestCacheAwareFilter"/>
+							<beans:ref bean="anonymousFilter"/>
+							<beans:ref bean="securityContextHolderAwareFilter"/>
+							<beans:ref bean="sessionManagerFilter"/>
+							<beans:ref bean="localExceptionTranslationFilter"/>
+							<beans:ref bean="filterSecurityInterceptor"/>
+						</beans:list>
+					</beans:constructor-arg>
+				</beans:bean>
+				<beans:bean class="org.springframework.security.web.DefaultSecurityFilterChain">
+					<beans:constructor-arg>
+						<beans:bean class="org.springframework.security.web.util.matcher.AntPathRequestMatcher">
+							<beans:constructor-arg type="java.lang.String" value="/**"/>
+						</beans:bean>
+					</beans:constructor-arg>
+					<beans:constructor-arg>
+						<beans:list>
+							<beans:ref bean="channelProcessingFilter"/>
+							<beans:ref bean="securityContextPersistenceFilter"/>
+							<beans:ref bean="logoutFilter"/>
+							<beans:ref bean="${security.server.authenticationMethod}AuthFilter"/>
+							<beans:ref bean="requestCacheAwareFilter"/> 
+							<beans:ref bean="anonymousFilter"/>
+							<beans:ref bean="securityContextHolderAwareFilter"/>
+							<beans:ref bean="sessionManagerFilter"/>
+							<beans:ref bean="exceptionTranslationFilter"/>
+							<beans:ref bean="filterSecurityInterceptor"/>
+						</beans:list>
+					</beans:constructor-arg>
+				</beans:bean>
+			</beans:list>
+		</beans:constructor-arg>
+	</beans:bean>
+
+    <!-- Secure channel processing -->
+
+	<beans:bean id="channelProcessingFilter" class="org.springframework.security.web.access.channel.ChannelProcessingFilter">
+	  <beans:property name="channelDecisionManager" ref="channelDecisionManager"/>
+	  <beans:property name="securityMetadataSource">
+	    <filter-security-metadata-source request-matcher="ant" use-expressions="false">
+	        <intercept-url pattern="/_ah/**" access="ANY_CHANNEL" /> <!-- local GAE admin console -->
+        	<intercept-url pattern="/favicon.ico" access="ANY_CHANNEL" />
+	        <intercept-url pattern="/odk_color.png" access="ANY_CHANNEL" />
+			<intercept-url pattern="/images/**" access="ANY_CHANNEL" />
+	        <intercept-url pattern="/res/**" access="ANY_CHANNEL" />
+			<intercept-url pattern="/stylesheets/**" access="ANY_CHANNEL" />
+			<intercept-url pattern="/AggregateUI.css" access="ANY_CHANNEL" />
+			<intercept-url pattern="/over-quota.html" access="ANY_CHANNEL" />
+			<intercept-url pattern="/service-error.html" access="ANY_CHANNEL" />
+			<intercept-url pattern="/access-denied.html" access="${security.server.channelType}" />
+	        <intercept-url pattern="/index.html" access="${security.server.channelType}" />
+	        <intercept-url pattern="/logout.html" access="${security.server.channelType}" />
+	        <intercept-url pattern="/multimode_login.html" access="${security.server.channelType}" />
+	        <intercept-url pattern="/relogin.html" access="${security.server.channelType}" />
+		    <intercept-url pattern="/ssl/**" access="${security.server.secureChannelType}"/>
+            <intercept-url pattern="/local_login.html" access="${security.server.channelType}" />
+	        <intercept-url pattern="/gae/**" access="ANY_CHANNEL" /> <!-- GAE picks the scheme -->
+	        <intercept-url pattern="/remote_api/**" access="ANY_CHANNEL" /> <!-- GAE picks the scheme -->
+	        <intercept-url pattern="/**" access="${security.server.channelType}"/>
+	    </filter-security-metadata-source>
+	  </beans:property>
+	</beans:bean>
+
+	<beans:bean id="channelDecisionManager" class="org.springframework.security.web.access.channel.ChannelDecisionManagerImpl">
+	  <beans:property name="channelProcessors">
+	    <beans:list>
+		    <beans:ref bean="secureChannelProcessor"/>
+		    <beans:ref bean="insecureChannelProcessor"/>
+	    </beans:list>
+	  </beans:property>
+	</beans:bean>
+
+	<!-- left to its own devices, spring will try to guess at the scheme-to-port mapping.  Force the port mappings below -->
+	<beans:bean id="portMapper" class="org.springframework.security.web.PortMapperImpl">
+	  <beans:property name="portMappings">
+	  	<beans:map>
+	  		<beans:entry key="${security.server.port:#{80}}" value="${security.server.securePort:#{443}}"/>
+	  	</beans:map>
+	  </beans:property>
+	</beans:bean>
+
+	<beans:bean id="portResolver" class="org.opendatakit.common.security.spring.PortResolverBySchemeImpl">
+		<beans:property name="port" value="${security.server.port:#{80}}"/>
+		<beans:property name="securePort" value="${security.server.securePort:#{443}}"/>
+	</beans:bean>
+
+	<beans:bean id="secureChannelProcessor" class="org.springframework.security.web.access.channel.SecureChannelProcessor">
+	  <beans:property name="entryPoint">
+		<beans:bean class="org.opendatakit.common.security.spring.RetryWithDefinedEntryPoint">
+			<beans:constructor-arg type="java.lang.String" value="https://"/>
+			<beans:constructor-arg type="int" value="${security.server.securePort:#{443}}"/>
+			<beans:property name="portMapper" ref="portMapper"/>
+			<beans:property name="portResolver" ref="portResolver"/>
+		</beans:bean>
+	  </beans:property>
+	</beans:bean>
+	<beans:bean id="insecureChannelProcessor" class="org.springframework.security.web.access.channel.InsecureChannelProcessor">
+	  <beans:property name="entryPoint">
+		<beans:bean class="org.opendatakit.common.security.spring.RetryWithDefinedEntryPoint">
+			<beans:constructor-arg type="java.lang.String" value="http://"/>
+			<beans:constructor-arg type="int" value="${security.server.port:#{80}}"/>
+			<beans:property name="portMapper" ref="portMapper"/>
+			<beans:property name="portResolver" ref="portResolver"/>
+		</beans:bean>
+	  </beans:property>
+	</beans:bean>
+
+	<beans:bean id="securityContextPersistenceFilter"
+		class="org.springframework.security.web.context.SecurityContextPersistenceFilter">
+		<beans:constructor-arg ref="securityContextRepository" />
+	</beans:bean>
+
+	<beans:bean id="securityContextRepository"
+		class="org.springframework.security.web.context.HttpSessionSecurityContextRepository" />
+
+	<beans:bean id="logoutFilter"
+		class="org.springframework.security.web.authentication.logout.LogoutFilter">
+		<beans:constructor-arg name="logoutSuccessUrl" value="/logout.html" />
+		<beans:constructor-arg name="handlers">
+			<beans:list>
+				<beans:bean
+					class="org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler">
+					<!--
+						Active Directory, LDAP, Basic and Digest Auth don't have server side
+						 logout (may want to invalidate session to work around this).
+					-->
+					<!-- OAuth2 logins can be disabled through this mechanism.  -->
+					<beans:property name="invalidateHttpSession" value="true"/>
+				</beans:bean>
+			</beans:list>
+		</beans:constructor-arg>
+		<beans:property name="filterProcessesUrl" value="/j_spring_security_logout"/>
+	</beans:bean>
+
+	<beans:bean id="requestCacheAwareFilter"
+		class="org.springframework.security.web.savedrequest.RequestCacheAwareFilter">
+	</beans:bean>
+
+	<!--  <beans:bean id="securityContextHolderAwareFilter"
+		class="org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter" /> -->
+	<beans:bean id="securityContextHolderAwareFilter"
+		class="org.opendatakit.common.security.spring.SecurityContextHolderAwareAuthPreservingRequestFilter" />
+
+	<beans:bean id="sessionManagerFilter"
+		class="org.springframework.security.web.session.SessionManagementFilter">
+		<beans:constructor-arg ref="securityContextRepository" />
+	</beans:bean>
+
+	<!--	This class determines what authentication to initiate.  It uses the -->
+	<!--	User-Agent header value to determine whether it is being accessed by a -->
+	<!--	browser or the device.  If it is not a browser, it does activeDirectory, ldap, basic or digest auth.-->
+	<beans:bean id="exceptionTranslationFilter"
+		class="org.springframework.security.web.access.ExceptionTranslationFilter">
+		<beans:constructor-arg ref="delegatingAuthenticationEntryPoint"/>
+		<beans:property name="accessDeniedHandler">
+			<beans:bean	class="org.springframework.security.web.access.AccessDeniedHandlerImpl">
+				<beans:property name="errorPage" value="/access-denied.html" />
+			</beans:bean>
+		</beans:property>
+	</beans:bean>
+
+	<beans:bean id="delegatingAuthenticationEntryPoint"
+		class="org.springframework.security.web.authentication.DelegatingAuthenticationEntryPoint">
+		<beans:constructor-arg name="entryPoints">
+			<beans:map>
+                      <beans:entry key="hasHeader('X-OpenRosa-Version','1.0')" value-ref="${security.server.authenticationMethod}EntryPoint" />
+                      <beans:entry key="hasHeader('X-OpenDataKit-Version','2.0')" value-ref="${security.server.authenticationMethod}EntryPoint" />
+			</beans:map>
+		</beans:constructor-arg>
+		<beans:property name="defaultEntryPoint" ref="${security.server.authenticationMethod}EntryPoint" />
+	</beans:bean>
+
+	<!-- This forces the login to use the configured locally-held credential mechanism -->
+	<beans:bean id="localExceptionTranslationFilter"
+		class="org.springframework.security.web.access.ExceptionTranslationFilter">
+		<beans:constructor-arg ref="${security.server.authenticationMethod}EntryPoint" />
+	</beans:bean>
+
+	<!-- 			Anonymous User -->
+
+	<beans:bean id="anonymousFilter"
+		class="org.opendatakit.common.security.spring.AnonymousAuthenticationFilter">
+		<beans:constructor-arg>
+		    <beans:bean id="sitePreferencesBean.siteKey" class="org.springframework.beans.factory.config.PropertyPathFactoryBean"/>
+		</beans:constructor-arg>
+	    <beans:constructor-arg value="anonymousUser"/>
+	</beans:bean>
+
+	<beans:bean id="anonymousProvider"
+		class="org.springframework.security.authentication.AnonymousAuthenticationProvider">
+		<beans:constructor-arg type="java.lang.String">
+		    <beans:bean id="sitePreferencesBean.siteKey" class="org.springframework.beans.factory.config.PropertyPathFactoryBean"/>
+		</beans:constructor-arg>
+	</beans:bean>
+
+	<!--			Active Directory (Azure ADDS) Authentication -->
+
+	<beans:bean id="activeDirectoryAuthFilter"
+		class="org.opendatakit.common.security.spring.BasicAuthenticationFilter">
+		<beans:constructor-arg>
+			<beans:bean class="org.springframework.security.authentication.ProviderManager">
+				<beans:constructor-arg>
+					<beans:list>
+						<beans:ref bean="activeDirectoryAuthenticationProvider" />
+						<beans:ref bean="anonymousProvider" />
+					</beans:list>
+				</beans:constructor-arg>
+			</beans:bean>
+		</beans:constructor-arg>
+		<beans:constructor-arg ref="activeDirectoryEntryPoint" />
+	</beans:bean>
+
+	<beans:bean id="activeDirectoryEntryPoint"
+		class="org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint">
+		<beans:property name="realmName" value="${security.server.realm.realmString}" />
+	</beans:bean>
+ 
+	<beans:bean id="activeDirectoryAuthenticationProvider"
+		class="org.opendatakit.common.security.spring.ActiveDirectoryLdapAuthenticationProvider">
+		<beans:constructor-arg index="0" value="${security.server.ldapDomain}" />
+		<beans:constructor-arg index="1" value="${security.server.ldapDomainControllerUrl}" />
+		<beans:constructor-arg index="2" value="${security.server.ldapDomainDC}" />
+		<beans:property name="ldapUser" value="${security.server.ldapQueryUsername}" />
+		<beans:property name="ldapPassword" value="${security.server.ldapQueryPassword}" />
+		<beans:property name="convertSubErrorCodesToExceptions" value="true" />
+		<beans:property name="authoritiesMapper">
+			<beans:bean class="org.opendatakit.common.security.spring.PrefixedAuthoritiesMapper">
+				<beans:constructor-arg index="0" value="${security.server.groupPrefix}" />
+				<beans:constructor-arg index="1">
+					<beans:list>
+						<beans:value>AUTH_ACTIVE_DIRECTORY</beans:value>
+						<beans:value>USER_IS_REGISTERED</beans:value>
+						<beans:value>ROLE_USER</beans:value>
+					</beans:list>
+				</beans:constructor-arg>
+			</beans:bean>
+		</beans:property>
+	</beans:bean>
+
+	<!-- LDAP Authentication -->
+
+	<beans:bean id="ldapAuthCtxSource" class="org.springframework.ldap.core.support.LdapContextSource">
+		<beans:property name="url" value="${security.server.ldapUrl}" />
+		<beans:property name="base" value="${security.server.ldapBaseDn}" />
+		<beans:property name="userDn" value="${security.server.ldapQueryUsername}" />
+		<beans:property name="password" value="${security.server.ldapQueryPassword}" />
+		<beans:property name="pooled" value="${security.server.ldapPooled}"/>
+	</beans:bean>
+
+	<beans:bean id="ldapAuthMapper"
+				class="org.opendatakit.common.security.spring.PrefixedAuthoritiesMapper">
+		<beans:constructor-arg index="0" value="${security.server.groupPrefix}"/>
+		<beans:constructor-arg index="1">
+			<beans:list>
+				<beans:value>AUTH_LDAP</beans:value>
+				<beans:value>USER_IS_REGISTERED</beans:value>
+				<beans:value>ROLE_USER</beans:value>
+			</beans:list>
+		</beans:constructor-arg>
+	</beans:bean>
+
+	<beans:bean id="ldapAuthenticationProvider"
+				class="org.opendatakit.common.security.spring.DefaultLdapAuthenticationProvider">
+		<beans:constructor-arg index="0" ref="ldapAuthCtxSource"/>
+		<beans:constructor-arg index="1">
+			<beans:bean class="org.springframework.security.ldap.authentication.BindAuthenticator">
+				<beans:constructor-arg ref="ldapAuthCtxSource"/>
+				<beans:property name="userDnPatterns">
+					<beans:list>
+						<beans:value>${security.server.userDnPattern}</beans:value>
+					</beans:list>
+				</beans:property>
+			</beans:bean>
+		</beans:constructor-arg>
+		<beans:constructor-arg index="2">
+			<beans:bean class="org.springframework.security.ldap.userdetails.DefaultLdapAuthoritiesPopulator">
+				<beans:constructor-arg index="0" ref="ldapAuthCtxSource"/>
+				<beans:constructor-arg index="1" value="${security.server.groupSearchBase}"/>
+				<beans:property name="rolePrefix" value=""/> <!-- role prefix added in mapper -->
+				<beans:property name="groupSearchFilter" value="${security.server.memberOfGroupSearchFilter}"/>
+				<beans:property name="groupRoleAttribute" value="${security.server.groupRoleAttribute}"/>
+				<beans:property name="searchSubtree" value="true"/>
+			</beans:bean>
+		</beans:constructor-arg>
+		<beans:constructor-arg index="3" ref="ldapAuthMapper"/>
+		<beans:property name="userDetailsContextMapper">
+			<beans:bean class="org.springframework.security.ldap.userdetails.InetOrgPersonContextMapper"/>
+		</beans:property>
+		<beans:property name="authoritiesMapper" ref="ldapAuthMapper"/>
+		<beans:property name="groupSearchBase" value="${security.server.groupSearchBase}"/>
+		<beans:property name="userSearchBase" value="${security.server.userSearchBase}"/>
+		<beans:property name="groupSearchFilter" value="${security.server.serverGroupSearchFilter}"/>
+		<beans:property name="userFullnameAttribute" value="${security.server.userFullnameAttribute}"/>
+		<beans:property name="usernameAttribute" value="${security.server.usernameAttribute}"/>
+		<beans:property name="userDnPattern" value="${security.server.userDnPattern}"/>
+		<beans:property name="groupRoleAttribute" value="${security.server.groupRoleAttribute}"/>
+	</beans:bean>
+
+	<beans:bean id="ldapAuthFilter"
+				class="org.opendatakit.common.security.spring.BasicAuthenticationFilter">
+		<beans:constructor-arg>
+			<beans:bean class="org.springframework.security.authentication.ProviderManager">
+				<beans:constructor-arg>
+					<beans:list>
+						<beans:ref bean="ldapAuthenticationProvider" />
+						<beans:ref bean="anonymousProvider" />
+					</beans:list>
+				</beans:constructor-arg>
+			</beans:bean>
+		</beans:constructor-arg>
+		<beans:constructor-arg ref="ldapEntryPoint" />
+	</beans:bean>
+
+	<beans:bean id="ldapEntryPoint"
+				class="org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint">
+		<beans:property name="realmName" value="${security.server.realm.realmString}" />
+	</beans:bean>
+
+	<!-- DHIS2 Authentication -->
+
+	<beans:bean id="dhis2AuthMapper"
+				class="org.opendatakit.common.security.spring.Dhis2AuthoritiesMapper">
+		<beans:constructor-arg index="0">
+			<beans:list>
+				<beans:value>AUTH_DHIS2</beans:value>
+				<beans:value>ROLE_USER</beans:value>
+			</beans:list>
+		</beans:constructor-arg>
+        <beans:constructor-arg index="1">
+            <beans:map>
+                <beans:entry key="${security.server.dhis2SiteAdmins}" value="site_admins"/>
+                <beans:entry key="${security.server.dhis2AdministerTables}" value="administer_tables"/>
+                <beans:entry key="${security.server.dhis2SuperUserTables}" value="super_user_tables"/>
+                <beans:entry key="${security.server.dhis2SyncTables}" value="synchronize_tables"/>
+                <beans:entry key="${security.server.dhis2FormManagers}" value="form_managers"/>
+                <beans:entry key="${security.server.dhis2DataViewers}" value="data_viewers"/>
+                <beans:entry key="${security.server.dhis2DataCollectors}" value="data_collectors"/>
+            </beans:map>
+        </beans:constructor-arg>
+	</beans:bean>
+
+	<beans:bean id="dhis2AuthenticationProvider"
+				class="org.opendatakit.common.security.spring.Dhis2AuthenticationProvider">
+        <beans:constructor-arg index="0" value="${security.server.dhis2ApiUrl}"/>
+        <beans:constructor-arg index="1" ref="dhis2AuthMapper"/>
+		<beans:constructor-arg index="2">
+			<beans:bean class="org.springframework.web.client.RestTemplate">
+				<beans:property name="interceptors">
+					<beans:list>
+						<beans:bean class="org.springframework.http.client.support.BasicAuthorizationInterceptor">
+							<beans:constructor-arg index="0" value="${security.server.dhis2AdminUsername}"/>
+							<beans:constructor-arg index="1" value="${security.server.dhis2AdminPassword}"/>
+						</beans:bean>
+					</beans:list>
+				</beans:property>
+			</beans:bean>
+		</beans:constructor-arg>
+    </beans:bean>
+
+	<beans:bean id="dhis2AuthFilter"
+				class="org.opendatakit.common.security.spring.BasicAuthenticationFilter">
+		<beans:constructor-arg>
+			<beans:bean class="org.springframework.security.authentication.ProviderManager">
+				<beans:constructor-arg>
+					<beans:list>
+						<beans:ref bean="dhis2AuthenticationProvider" />
+						<beans:ref bean="anonymousProvider" />
+					</beans:list>
+				</beans:constructor-arg>
+			</beans:bean>
+		</beans:constructor-arg>
+		<beans:constructor-arg ref="dhis2EntryPoint" />
+	</beans:bean>
+
+	<beans:bean id="dhis2EntryPoint"
+				class="org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint">
+		<beans:property name="realmName" value="${security.server.realm.realmString}" />
+	</beans:bean>
+
+	<!-- Store the currently selected AuthenticationProvider for SecurityServiceUtil -->
+	<beans:alias name="${security.server.authenticationMethod}AuthenticationProvider" alias="directoryAwareAuthProvider"/>
+
+	<!--
+		Digest Authentication configuration. This is used for device access.
+	-->
+
+	<!--		This enforces the security applied to specific URLs   -->
+	<!--		This enforces the security applied to specific URLs   -->
+	<!--		This enforces the security applied to specific URLs   -->
+	<!--		This enforces the security applied to specific URLs   -->
+
+	<beans:bean id="filterSecurityInterceptor"
+		class="org.springframework.security.web.access.intercept.FilterSecurityInterceptor">
+		<beans:property name="securityMetadataSource" ref="securityPolicy"/>
+		<beans:property name="authenticationManager" ref="authenticationManager" />
+		<beans:property name="accessDecisionManager" ref="accessDecisionManager" />
+	</beans:bean>
+
+	<beans:bean id="accessDecisionManager"
+		class="org.springframework.security.access.vote.AffirmativeBased">
+		<beans:constructor-arg>
+			<beans:list>
+				<beans:bean class="org.springframework.security.web.access.expression.WebExpressionVoter">
+		        	<beans:property name="expressionHandler">
+		        		<beans:bean	class="org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler" />
+		        	</beans:property>
+		        </beans:bean>
+		        <beans:bean class="org.springframework.security.access.vote.RoleVoter" />
+				<beans:bean	class="org.springframework.security.access.vote.AuthenticatedVoter" />
+			</beans:list>
+		</beans:constructor-arg>
+	</beans:bean>
+	<beans:bean id="webPrivilegeEvaluator"
+		class="org.springframework.security.web.access.DefaultWebInvocationPrivilegeEvaluator">
+		<beans:constructor-arg name="securityInterceptor" ref="filterSecurityInterceptor" />
+	</beans:bean>
+
+	<beans:bean id="authenticationManager"
+		class="org.springframework.security.authentication.ProviderManager">
+		<beans:constructor-arg>
+			<beans:list>
+				<beans:ref bean="${security.server.authenticationMethod}AuthenticationProvider"/>
+				<beans:ref bean="anonymousProvider" />
+			</beans:list>
+		</beans:constructor-arg>
+	</beans:bean>
+
+
+	<!--	CONFIGURATION TO APPLY ACCESS RESTRICTIONS TO BEANS    -->
+	<!--	CONFIGURATION TO APPLY ACCESS RESTRICTIONS TO BEANS    -->
+	<!--	CONFIGURATION TO APPLY ACCESS RESTRICTIONS TO BEANS    -->
+	<!--	CONFIGURATION TO APPLY ACCESS RESTRICTIONS TO BEANS    -->
+	<!--	CONFIGURATION TO APPLY ACCESS RESTRICTIONS TO BEANS    -->
+<!---->
+<!--	<beans:bean id="authorizations"-->
+<!--		class="org.springframework.security.access.intercept.aopalliance.MethodSecurityInterceptor">-->
+<!--		<beans:property name="authenticationManager" ref="authenticationManager" />-->
+<!--		<beans:property name="accessDecisionManager" ref="accessDecisionManager" />-->
+<!--		<beans:property name="afterInvocationManager" ref="afterInvocationManager" />  -->
+<!--		<beans:property name="securityMetadataSource" ref="securityMetadataSource"/>-->
+<!--	</beans:bean>-->
+<!--	-->
+	<!--	<global-method-security pre-post-annotations="enabled">-->
+	<!-- 		<expression-handler ref="expressionHandler" />-->
+	<!--	</global-method-security>-->
+<!---->
+	<!--	<beans:bean id="expressionHandler"-->
+	<!--
+		class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
+	-->
+	<!--
+		<beans:property name="permissionEvaluator"
+		ref="aggregatePermissionEvaluator" />
+	-->
+	<!--	</beans:bean>-->
+<!---->
+	<!--	<beans:bean id="aggregatePermissionEvaluator"-->
+	<!--
+		class="org.opendatakit.common.security.SecurityPermissionEvaluatorImpl">
+	-->
+	<!--	</beans:bean>-->
+<!---->
+
+</beans:beans>

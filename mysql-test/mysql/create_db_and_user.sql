@@ -1,0 +1,4 @@
+CREATE USER 'odk_unit'@'%' IDENTIFIED BY 'odk_unit';
+GRANT ALL PRIVILEGES ON odk_unit.* TO 'odk_unit'@'%' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+

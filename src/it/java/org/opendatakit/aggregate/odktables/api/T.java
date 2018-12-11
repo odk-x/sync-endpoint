@@ -1,8 +1,5 @@
 package org.opendatakit.aggregate.odktables.api;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.Ignore;
 import org.opendatakit.aggregate.odktables.rest.SavepointTypeManipulator;
 import org.opendatakit.aggregate.odktables.rest.TableConstants;
@@ -10,6 +7,9 @@ import org.opendatakit.aggregate.odktables.rest.entity.Column;
 import org.opendatakit.aggregate.odktables.rest.entity.DataKeyValue;
 import org.opendatakit.aggregate.odktables.rest.entity.Row;
 import org.opendatakit.aggregate.odktables.rest.entity.RowFilterScope;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Ignore
 public class T {
@@ -81,7 +81,7 @@ public class T {
       return alist;
     }
 
-    @java.lang.SuppressWarnings("all")
+    @SuppressWarnings("all")
     private Data(final String id, final String name, final String age, final String weight) {
       this.id = id;
       this.name = name;
@@ -89,22 +89,22 @@ public class T {
       this.weight = weight;
     }
 
-    @java.lang.SuppressWarnings("all")
+    @SuppressWarnings("all")
     public String getId() {
       return this.id;
     }
 
-    @java.lang.SuppressWarnings("all")
+    @SuppressWarnings("all")
     public String getName() {
       return this.name;
     }
 
-    @java.lang.SuppressWarnings("all")
+    @SuppressWarnings("all")
     public String getAge() {
       return this.age;
     }
 
-    @java.lang.SuppressWarnings("all")
+    @SuppressWarnings("all")
     public String getWeight() {
       return this.weight;
     }
