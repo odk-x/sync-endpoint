@@ -19,7 +19,7 @@
     </organization>
     <name>ODK Sync-Endpoint</name>
     <properties>
-        <revision>2.1.0</revision>
+        <revision>2.1.1</revision>
         <toplevel.directory>${project.basedir}/../</toplevel.directory>
         <war.directory>${project.basedir}/../war-base</war.directory>
         <scriptSourceDirectory>${project.basedir}/../src/test/scripts</scriptSourceDirectory>
