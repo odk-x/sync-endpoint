@@ -35,10 +35,10 @@
         <google.api-services-sheets.version>v4-rev553-1.25.0</google.api-services-sheets.version>
         <google.api-services-drive.version>v3-rev136-1.25.0</google.api-services-drive.version>
         <org.apache.wink.version>1.4</org.apache.wink.version>
-        <maven.surefire.report.plugin.version>3.0.0-M3</maven.surefire.report.plugin.version>
-        <maven.surefire.plugin.version>3.0.0-M3</maven.surefire.plugin.version>
+        <maven.surefire.report.plugin.version>2.22.1</maven.surefire.report.plugin.version>
+        <maven.surefire.plugin.version>2.22.1</maven.surefire.plugin.version>
         <surefire.argLine>-Xms300m -Xmx3048m </surefire.argLine> <!-- JVM size can probably be reduced -->
-        <maven.failsafe.plugin.version>3.0.0-M3</maven.failsafe.plugin.version>
+        <maven.failsafe.plugin.version>2.22.1</maven.failsafe.plugin.version>
         <build.helper.maven.plugin.version>3.0.0</build.helper.maven.plugin.version>
         <maven.jar.plugin.version>3.1.1</maven.jar.plugin.version>
         <maven.javadoc.plugin.version>3.0.1</maven.javadoc.plugin.version>
@@ -466,11 +466,6 @@
           <version>${org.springframework.version}</version>
           <scope>compile</scope>
         </dependency>
-		<dependency>
-		  <groupId>org.springframework.ldap</groupId>
-		  <artifactId>spring-ldap-core</artifactId>
-		  <version>2.3.2.RELEASE</version>
-		</dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-config</artifactId>
