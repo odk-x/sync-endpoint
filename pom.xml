@@ -27,32 +27,32 @@
         <itSubmissionsDirectory>${project.basedir}/../src/test/testfiles/submissions</itSubmissionsDirectory>
         <itSyncDirectory>${project.basedir}/../src/test/testfiles/sync</itSyncDirectory>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <apache.httpclient.version>4.5.2</apache.httpclient.version>
-        <apache.httpcore.version>4.4.5</apache.httpcore.version>
-        <apache.httpmime.version>4.5.2</apache.httpmime.version>
-        <findbugs.jsr305.version>3.0.1</findbugs.jsr305.version>
-        <google.api-client.version>1.22.0</google.api-client.version>
-        <google.api-services-sheets.version>v4-rev38-1.22.0</google.api-services-sheets.version>
-        <google.api-services-drive.version>v3-rev52-1.22.0</google.api-services-drive.version>
+        <apache.httpclient.version>4.5.7</apache.httpclient.version>
+        <apache.httpcore.version>4.4.11</apache.httpcore.version>
+        <apache.httpmime.version>4.5.7</apache.httpmime.version>
+        <findbugs.jsr305.version>3.0.2</findbugs.jsr305.version>
+        <google.api-client.version>1.28.0</google.api-client.version>
+        <google.api-services-sheets.version>v4-rev553-1.25.0</google.api-services-sheets.version>
+        <google.api-services-drive.version>v3-rev136-1.25.0</google.api-services-drive.version>
         <org.apache.wink.version>1.4</org.apache.wink.version>
         <maven.surefire.report.plugin.version>2.22.1</maven.surefire.report.plugin.version>
         <maven.surefire.plugin.version>2.22.1</maven.surefire.plugin.version>
         <surefire.argLine>-Xms300m -Xmx3048m </surefire.argLine> <!-- JVM size can probably be reduced -->
         <maven.failsafe.plugin.version>2.22.1</maven.failsafe.plugin.version>
-        <build.helper.maven.plugin.version>1.10</build.helper.maven.plugin.version>
-        <maven.jar.plugin.version>3.1.0</maven.jar.plugin.version>
+        <build.helper.maven.plugin.version>3.0.0</build.helper.maven.plugin.version>
+        <maven.jar.plugin.version>3.1.1</maven.jar.plugin.version>
         <maven.javadoc.plugin.version>3.0.1</maven.javadoc.plugin.version>
         <maven.source.plugin.version>3.0.1</maven.source.plugin.version>
         <maven.war.plugin.version>3.2.2</maven.war.plugin.version>
         <maven.compiler.plugin.version>3.8.0</maven.compiler.plugin.version>
         <junit.version>4.12</junit.version>
-        <com.fasterxml.jackson.base.version>2.8.5</com.fasterxml.jackson.base.version>
-        <com.fasterxml.jackson.core.version>2.8.5</com.fasterxml.jackson.core.version>
-        <com.fasterxml.jackson.version>2.8.5</com.fasterxml.jackson.version>
-        <org.springframework.version>4.3.4.RELEASE</org.springframework.version>
-        <org.slf4j.version>1.7.22</org.slf4j.version>
+        <com.fasterxml.jackson.base.version>2.9.8</com.fasterxml.jackson.base.version>
+        <com.fasterxml.jackson.core.version>2.9.8</com.fasterxml.jackson.core.version>
+        <com.fasterxml.jackson.version>2.9.8</com.fasterxml.jackson.version>
+        <org.springframework.version>4.3.22.RELEASE</org.springframework.version>
+        <org.slf4j.version>1.7.25</org.slf4j.version>
         <!-- log4j is not used -->
-        <org.springframework.security.version>4.2.0.RELEASE</org.springframework.security.version>
+        <org.springframework.security.version>4.2.11.RELEASE</org.springframework.security.version>
         <!--
             keystore.propertyfile - define this in your settings.xml - the
             location of the properties file for the keystore
@@ -71,26 +71,26 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-pool2</artifactId>
-            <version>2.4.2</version>
+            <version>2.6.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-dbcp2</artifactId>
-            <version>2.1.1</version>
+            <version>2.5.0</version>
         </dependency>
 		<!-- https://mvnrepository.com/artifact/com.microsoft.sqlserver/mssql-jdbc -->
 		<!-- https://github.com/Microsoft/mssql-jdbc/blob/master/pom.xml -->
 		<dependency>
 			<groupId>com.microsoft.sqlserver</groupId>
 			<artifactId>mssql-jdbc</artifactId>
-			<version>6.1.5.jre8-preview</version>
+			<version>7.0.0.jre8</version>
           <scope>compile</scope>
 		</dependency>
 		<!-- required by mssql-jdbc -->
 		<dependency>
 			<groupId>com.microsoft.azure</groupId>
 			<artifactId>adal4j</artifactId>
-			<version>1.2.0</version>
+			<version>1.6.3</version>
             <scope>compile</scope>
             <exclusions>
                 <exclusion>
@@ -107,34 +107,34 @@
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcprov-jdk15on</artifactId>
-			<version>1.56</version>
+			<version>1.60</version>
             <scope>compile</scope>
 		</dependency>
 		<!-- required by mssql-jdbc -->
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcpkix-jdk15on</artifactId>
-			<version>1.56</version>
+			<version>1.60</version>
             <scope>compile</scope>
 		</dependency>
         <dependency> <!-- required by spring-security -->
           <groupId>commons-codec</groupId>
           <artifactId>commons-codec</artifactId> <!-- note: java 1.6 -->
-          <version>1.10</version>
+          <version>1.11</version>
           <type>jar</type>
           <scope>compile</scope>
         </dependency>
         <dependency>
           <groupId>commons-fileupload</groupId>
           <artifactId>commons-fileupload</artifactId>
-          <version>1.3.2</version>
+          <version>1.4</version>
           <type>jar</type>
           <scope>compile</scope>
         </dependency>
         <dependency>
           <groupId>commons-io</groupId>
           <artifactId>commons-io</artifactId>
-          <version>2.5</version>
+          <version>2.6</version>
           <type>jar</type>
           <scope>compile</scope>
         </dependency>
@@ -188,14 +188,14 @@
         <dependency>
           <groupId>com.google.code.gson</groupId>
           <artifactId>gson</artifactId>
-          <version>2.8.0</version>
+          <version>2.8.5</version>
           <type>jar</type>
           <scope>compile</scope>
         </dependency>
         <dependency>
           <groupId>com.google.guava</groupId>
           <artifactId>guava</artifactId>
-          <version>21.0</version>
+          <version>27.0.1-jre</version>
           <type>jar</type>
           <scope>compile</scope>
         </dependency>
@@ -286,19 +286,19 @@
         <dependency>
             <groupId>com.github.jai-imageio</groupId>
             <artifactId>jai-imageio-core</artifactId>
-            <version>1.3.0</version>
+            <version>1.4.0</version>
         </dependency>
         <dependency>
 		  <groupId>org.opendatakit</groupId>
 		  <artifactId>opendatakit-javarosa</artifactId>
-		  <version>2.2.0</version>
+		  <version>2.8.1</version>
           <type>jar</type>
           <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
-            <version>2.9.9</version>
+            <version>2.10.1</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
@@ -317,20 +317,20 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.40</version>
+            <version>5.1.47</version>
             <scope>test</scope>
         </dependency>
         <dependency>
           <groupId>org.postgresql</groupId>
           <artifactId>postgresql</artifactId>
-          <version>9.4.1211.jre7</version>
+          <version>42.2.5.jre7</version>
           <type>jar</type>
           <scope>compile</scope>
         </dependency>
         <dependency>
           <groupId>javax.servlet</groupId>
           <artifactId>javax.servlet-api</artifactId>
-          <version>3.1.0</version>
+          <version>4.0.1</version>
           <type>jar</type>
           <scope>provided</scope>
         </dependency>
@@ -466,11 +466,6 @@
           <version>${org.springframework.version}</version>
           <scope>compile</scope>
         </dependency>
-		<dependency>
-		  <groupId>org.springframework.ldap</groupId>
-		  <artifactId>spring-ldap-core</artifactId>
-		  <version>2.2.0.RELEASE</version>
-		</dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-config</artifactId>
@@ -519,7 +514,7 @@
         <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
-            <version>2.2</version>
+            <version>2.3.1</version>
         </dependency>
         <!-- /for odktables api -->
         <!-- Test dependencies -->
@@ -533,7 +528,7 @@
         <dependency>
             <groupId>net.lightbody.bmp</groupId>
             <artifactId>browsermob-core</artifactId>
-            <version>2.1.4</version>
+            <version>2.1.5</version>
             <scope>test</scope>
             <exclusions>
                 <exclusion>
@@ -560,13 +555,13 @@
 		<dependency>
 		  <groupId>xml-apis</groupId>
 		  <artifactId>xml-apis</artifactId>
-		  <version>1.4.01</version>
+		  <version>2.0.2</version>
 		  <scope>test</scope>
 		</dependency>
         <dependency>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>flatten-maven-plugin</artifactId>
-            <version>1.0.1</version>
+            <version>1.1.0</version>
         </dependency>
     </dependencies>
     <build>
