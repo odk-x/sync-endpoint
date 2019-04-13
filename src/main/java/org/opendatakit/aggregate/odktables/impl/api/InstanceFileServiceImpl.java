@@ -67,6 +67,7 @@ import org.opendatakit.aggregate.odktables.rest.ApiConstants;
 import org.opendatakit.aggregate.odktables.rest.entity.OdkTablesFileManifest;
 import org.opendatakit.aggregate.odktables.rest.entity.OdkTablesFileManifestEntry;
 import org.opendatakit.aggregate.odktables.security.TablesUserPermissions;
+import org.opendatakit.common.persistence.CommonFieldsBase;
 import org.opendatakit.common.persistence.PersistenceUtils;
 import org.opendatakit.common.persistence.exception.ODKDatastoreException;
 import org.opendatakit.common.persistence.exception.ODKEntityNotFoundException;
@@ -328,7 +329,7 @@ public class InstanceFileServiceImpl implements InstanceFileService {
           }
 
           ResponseBuilder rBuild = Response.ok(blob, fi.contentType)
-              .header(HttpHeaders.ETAG, fi.contentHash)
+              .header(HttpHeaders.ETAG, CommonFieldsBase.newMD5HashUri(blob))
               .header(HttpHeaders.CONTENT_LENGTH, (long) blob.length)
               .header(ApiConstants.OPEN_DATA_KIT_VERSION_HEADER, ApiConstants.OPEN_DATA_KIT_VERSION)
               .header("Access-Control-Allow-Origin", "*")
