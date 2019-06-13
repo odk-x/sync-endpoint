@@ -50,6 +50,9 @@ public class OdkTablesFileManifestEntry implements Comparable<OdkTablesFileManif
   @JsonProperty(required = false)
   public String contentType;
 
+  @JsonProperty(required = false)
+  public String reduceFileSize;
+
   /**
    * This is the md5hash of the file, which will be used
    * for checking whether or not the version of the file
@@ -72,6 +75,7 @@ public class OdkTablesFileManifestEntry implements Comparable<OdkTablesFileManif
     result = prime * result + ((filename == null) ? 0 : filename.hashCode());
     result = prime * result + ((contentLength == null) ? 0 : contentLength.hashCode());
     result = prime * result + ((contentType == null) ? 0 : contentType.hashCode());
+    result = prime * result + ((reduceFileSize == null) ? 0 : reduceFileSize.hashCode());
     result = prime * result + ((md5hash == null) ? 0 : md5hash.hashCode());
     result = prime * result + ((downloadUrl == null) ? 0 : downloadUrl.hashCode());
     return result;
@@ -93,6 +97,7 @@ public class OdkTablesFileManifestEntry implements Comparable<OdkTablesFileManif
         && (contentLength == null ? other.contentLength == null : contentLength
             .equals(other.contentLength))
         && (contentType == null ? other.contentType == null : contentType.equals(other.contentType))
+        && (reduceFileSize == null ? other.reduceFileSize == null : reduceFileSize.equals(other.reduceFileSize))
         && (md5hash == null ? other.md5hash == null : md5hash.equals(other.md5hash))
         && (downloadUrl == null ? other.downloadUrl == null : downloadUrl.equals(other.downloadUrl));
   }

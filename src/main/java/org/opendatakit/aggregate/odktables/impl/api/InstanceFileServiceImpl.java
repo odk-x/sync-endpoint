@@ -311,20 +311,7 @@ public class InstanceFileServiceImpl implements InstanceFileService {
               ImageWriter writer = ImageIO.getImageWritersByMIMEType(fi.contentType).next();
 
               float ratio = Float.parseFloat(reduceSize);
-              int width = (int) (fullSizeImage.getWidth() * ratio);
-              int height = (int) (fullSizeImage.getHeight() * ratio);
-
-              Image scaledImage = fullSizeImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-              BufferedImage imageBuff = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-              imageBuff.getGraphics().drawImage(scaledImage, 0, 0, new Color(0,0,0), null);
-
-              ByteArrayOutputStream resized = new ByteArrayOutputStream();
-              ImageOutputStream ios = ImageIO.createImageOutputStream(resized);
-              writer.setOutput(ios);
-
-              writer.write(new IIOImage(imageBuff, null, null));
-
-              blob = resized.toByteArray();
+              blob = getReducedBytes(fullSizeImage, writer, ratio);
             }
           }
 
@@ -416,9 +403,13 @@ public class InstanceFileServiceImpl implements InstanceFileService {
           // see if the server's file entry is in the requested set of files.
           //
           int entryIndex = -1;
+          boolean reduceSize = false;
           for (int i = 0; i < manifest.getFiles().size(); ++i) {
             OdkTablesFileManifestEntry entry = manifest.getFiles().get(i);
             if (entry.filename.equals(content.partialPath)) {
+              if (entry.reduceFileSize != null) {
+                reduceSize = entry.reduceFileSize.equals("t");
+              }
               entryIndex = i;
               break;
             }
@@ -440,6 +431,22 @@ public class InstanceFileServiceImpl implements InstanceFileService {
                 // silently ignore this -- error in this record
                 fileBlob = null;
               }
+
+              if (reduceSize && fileBlob != null && content.contentType.startsWith("image")) {
+                try {
+                  InputStream in = new ByteArrayInputStream(fileBlob);
+                  BufferedImage fullSizeImage = ImageIO.read(in);
+
+                  ImageWriter writer = ImageIO.getImageWritersByMIMEType(content.contentType)
+                                              .next();
+
+                  float ratio = (float) 0.4;
+                  fileBlob = getReducedBytes(fullSizeImage, writer, ratio);
+                } catch (IOException e) {
+                  e.printStackTrace();
+                }
+              }
+
 
               if (fileBlob != null) {
                 // we got the content -- create an OutPart to hold it
@@ -479,6 +486,27 @@ public class InstanceFileServiceImpl implements InstanceFileService {
           .header("Access-Control-Allow-Origin", "*")
           .header("Access-Control-Allow-Credentials", "true").build();
     }
+  }
+
+  private byte[] getReducedBytes(BufferedImage fullSizeImage, ImageWriter writer,
+                                 float ratio) throws IOException {
+    int width = (int) (fullSizeImage.getWidth() * ratio);
+    int height = (int) (fullSizeImage.getHeight() * ratio);
+
+    Image scaledImage = fullSizeImage.getScaledInstance(width, height,
+                                                        Image.SCALE_SMOOTH);
+    BufferedImage imageBuff = new BufferedImage(width, height,
+                                                BufferedImage.TYPE_INT_RGB);
+    imageBuff.getGraphics().drawImage(scaledImage, 0, 0, new Color(0, 0, 0), null);
+
+    ByteArrayOutputStream resized = new ByteArrayOutputStream();
+    ImageOutputStream ios = ImageIO.createImageOutputStream(resized);
+    writer.setOutput(ios);
+
+    writer.write(new IIOImage(imageBuff, null, null));
+
+    byte[] fileBlob = resized.toByteArray();
+    return fileBlob;
   }
 
   @Override
