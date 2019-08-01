@@ -31,7 +31,7 @@
         <apache.httpcore.version>4.4.11</apache.httpcore.version>
         <apache.httpmime.version>4.5.9</apache.httpmime.version>
         <findbugs.jsr305.version>3.0.2</findbugs.jsr305.version>
-        <google.api-client.version>1.28.1</google.api-client.version>
+        <google.api-client.version>1.28.0</google.api-client.version>
         <google.api-services-sheets.version>v4-rev553-1.25.0</google.api-services-sheets.version>
         <google.api-services-drive.version>v3-rev136-1.25.0</google.api-services-drive.version>
         <org.apache.wink.version>1.4</org.apache.wink.version>
