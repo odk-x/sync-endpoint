@@ -17,7 +17,7 @@
     <name>Sync Endpoint WAR</name>
 
     <build>
-        <sourceDirectory>${toplevel.directory}/src/main/java</sourceDirectory>
+
 
         <plugins>
             <plugin>
