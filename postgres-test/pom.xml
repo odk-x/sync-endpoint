@@ -16,7 +16,6 @@
     <version>2.1.3</version>
     <packaging>jar</packaging>
     <build>
-        <sourceDirectory>${toplevel.directory}/src/main/java</sourceDirectory>
         <testSourceDirectory>${toplevel.directory}/src/test/java</testSourceDirectory>
 
         <plugins>

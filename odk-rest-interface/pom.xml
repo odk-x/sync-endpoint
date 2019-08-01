@@ -11,78 +11,76 @@
   <artifactId>odk-rest-interface</artifactId>
   <version>2.1.3</version>
   <packaging>jar</packaging>
-  <!--
-  <dependencies>
-    <dependency>
-      <groupId>org.opendatakit</groupId>
-      <artifactId>aggregate-src</artifactId>
-      <version>latest</version>
-    </dependency>
-  </dependencies>
-  -->
+
   <build>
-      <sourceDirectory>../src/main/java</sourceDirectory>
-      <plugins>
+      <sourceDirectory>${project.basedir}/../src/main/java</sourceDirectory>
+    <directory>${project.basedir}/target</directory>
 
-        <plugin>
-          <artifactId>maven-jar-plugin</artifactId>
-          <configuration>
-            <includes>
-                <include>**/odktables/rest/**</include>
-            </includes>
+  <plugins>
+         <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+         <configuration>
+              <includes>
+                  <include>org/opendatakit/aggregate/odktables/rest/**</include>
+              </includes>
           </configuration>
-        </plugin>
+      </plugin>
 
-        <plugin>
-          <artifactId>maven-javadoc-plugin</artifactId>
-          <executions>
-            <execution>
-              <phase>package</phase>
-              <goals>
-                <goal>jar</goal>
-              </goals>
-              <configuration>
-                  <sourcepath>../src/main/java</sourcepath>
-                  <subpackages>org.opendatakit.aggregate.odktables.rest</subpackages>
-                  <failOnError>false</failOnError>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-jar-plugin</artifactId>
+          </plugin>
 
-        <plugin>
-            <artifactId>maven-source-plugin</artifactId>
-            <executions>
-                <execution>
-                    <phase>package</phase>
-                    <goals>
-                        <goal>jar</goal>
-                    </goals>
-                    <configuration>
-                        <includes>
-                            <include>**/odktables/rest/**</include>
-                        </includes>
-                    </configuration>
-                </execution>
-            </executions>
-        </plugin>
+                <plugin>
+                 <artifactId>maven-javadoc-plugin</artifactId>
+                 <executions>
+                   <execution>
+                     <phase>package</phase>
+                     <goals>
+                       <goal>jar</goal>
+                     </goals>
+                     <configuration>
+                         <sourcepath>../src/main/java/</sourcepath>
+                         <subpackages>org.opendatakit.aggregate.odktables.rest</subpackages>
+                         <failOnError>false</failOnError>
+                     </configuration>
+                   </execution>
+                 </executions>
+                 </plugin>
+                   <plugin>
+                       <artifactId>maven-source-plugin</artifactId>
+                       <executions>
+                           <execution>
+                               <phase>package</phase>
+                               <goals>
+                                   <goal>jar</goal>
+                               </goals>
+                               <configuration>
+                                   <includes>
+                                       <include>org/opendatakit/aggregate/odktables/rest/**</include>
+                                   </includes>
+                               </configuration>
+                           </execution>
+                       </executions>
+                   </plugin>
 
-        <plugin>
-          <artifactId>maven-dependency-plugin</artifactId>
-          <executions>
-              <execution>
-                  <phase>package</phase>
-                  <goals>
-                      <goal>copy-dependencies</goal>
-                  </goals>
-                  <configuration>
-                      <outputDirectory>${project.build.directory}</outputDirectory>
-                      <includeArtifactIds>simple-xml,joda-time,commons-lang3</includeArtifactIds>
-					  <!-- also uses spring framework components (but uses different android artifact) -->
-                  </configuration>
-              </execution>
-          </executions>
-        </plugin>
+
+            <plugin>
+              <artifactId>maven-dependency-plugin</artifactId>
+              <executions>
+                  <execution>
+                      <phase>package</phase>
+                      <goals>
+                          <goal>copy-dependencies</goal>
+                      </goals>
+                      <configuration>
+                          <outputDirectory>${project.build.directory}</outputDirectory>
+                          <includeArtifactIds>simple-xml,joda-time,commons-lang3</includeArtifactIds>
+
+                </configuration>
+           </execution>
+       </executions>
+     </plugin>
 
       </plugins>
   </build>
