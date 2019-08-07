@@ -303,7 +303,7 @@ public class DataManager {
    * @throws PermissionDeniedException
    * @throws BadColumnNameException
    */
-  public WebsafeRows getRowsSince(String dataETag, QueryResumePoint startCursor, int fetchLimit)
+  public WebsafeRows getRowsSince(String dataETag, QueryResumePoint startCursor, int fetchLimit, boolean fullLog)
       throws ODKDatastoreException, ODKTaskLockException, InconsistentStateException,
       PermissionDeniedException, BadColumnNameException {
 
@@ -377,7 +377,7 @@ public class DataManager {
         rows.add(row);
       }
     }
-    return new WebsafeRows(computeDiff(rows), currentDataETag, result.websafeRefetchCursor,
+    return new WebsafeRows(fullLog ? rows : computeDiff(rows), currentDataETag, result.websafeRefetchCursor,
         result.websafeBackwardCursor, result.websafeResumeCursor, result.hasMore, result.hasPrior);
   }
   

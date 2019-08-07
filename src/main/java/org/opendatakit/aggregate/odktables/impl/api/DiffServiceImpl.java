@@ -62,10 +62,11 @@ public class DiffServiceImpl implements DiffService {
   }
 
   @Override
-  public Response getRowsSince(@QueryParam(QUERY_DATA_ETAG) String dataETag, @QueryParam(CURSOR_PARAMETER) String cursor, @QueryParam(FETCH_LIMIT) String fetchLimit) throws ODKDatastoreException,
+  public Response getRowsSince(@QueryParam(QUERY_DATA_ETAG) String dataETag, @QueryParam(CURSOR_PARAMETER) String cursor, @QueryParam(FETCH_LIMIT) String fetchLimit, @QueryParam(GET_FULL_LOG) String getFullLog) throws ODKDatastoreException,
       PermissionDeniedException, InconsistentStateException, ODKTaskLockException, BadColumnNameException {
     int limit = (fetchLimit == null || fetchLimit.length() == 0) ? 2000 : Integer.valueOf(fetchLimit);
-    WebsafeRows websafeResult = dm.getRowsSince(dataETag, QueryResumePoint.fromWebsafeCursor(WebUtils.safeDecode(cursor)), limit);
+    boolean fullLog = (getFullLog == null) ? false : getFullLog.equalsIgnoreCase("true");
+    WebsafeRows websafeResult = dm.getRowsSince(dataETag, QueryResumePoint.fromWebsafeCursor(WebUtils.safeDecode(cursor)), limit, fullLog);
     RowResourceList rowResourceList = new RowResourceList(getResources(websafeResult.rows),
         websafeResult.dataETag, getTableUri(),
         WebUtils.safeEncode(websafeResult.websafeRefetchCursor),
