@@ -46,9 +46,9 @@
         <maven.war.plugin.version>3.2.3</maven.war.plugin.version>
         <maven.compiler.plugin.version>3.8.1</maven.compiler.plugin.version>
         <junit.version>4.12</junit.version>
-        <com.fasterxml.jackson.base.version>2.9.9</com.fasterxml.jackson.base.version>
-        <com.fasterxml.jackson.core.version>2.9.9</com.fasterxml.jackson.core.version>
-        <com.fasterxml.jackson.version>2.9.9.2</com.fasterxml.jackson.version>
+        <com.fasterxml.jackson.base.version>2.10.0</com.fasterxml.jackson.base.version>
+        <com.fasterxml.jackson.core.version>2.10.0</com.fasterxml.jackson.core.version>
+        <com.fasterxml.jackson.version>2.10.0</com.fasterxml.jackson.version>
         <org.springframework.version>4.3.24.RELEASE</org.springframework.version>
         <org.slf4j.version>1.7.26</org.slf4j.version>
         <!-- log4j is not used -->
