@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.opendatakit</groupId>
     <artifactId>sync-endpoint</artifactId>
-    <version>2.1.4</version>
+    <version>2.1.5</version>
     <packaging>pom</packaging>
     <licenses>
       <license>
@@ -19,7 +19,7 @@
     </organization>
     <name>ODK Sync-Endpoint</name>
     <properties>
-        <revision>2.1.4</revision>
+        <revision>2.1.5</revision>
         <toplevel.directory>${project.basedir}/../</toplevel.directory>
         <war.directory>${project.basedir}/../war-base</war.directory>
         <scriptSourceDirectory>${project.basedir}/../src/test/scripts</scriptSourceDirectory>
