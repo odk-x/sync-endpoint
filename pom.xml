@@ -45,7 +45,7 @@
         <maven.source.plugin.version>3.0.1</maven.source.plugin.version>
         <maven.war.plugin.version>3.2.3</maven.war.plugin.version>
         <maven.compiler.plugin.version>3.8.1</maven.compiler.plugin.version>
-        <junit.version>4.12</junit.version>
+        <junit.version>4.13.1</junit.version>
         <com.fasterxml.jackson.base.version>2.10.0</com.fasterxml.jackson.base.version>
         <com.fasterxml.jackson.core.version>2.10.0</com.fasterxml.jackson.core.version>
         <com.fasterxml.jackson.version>2.10.0</com.fasterxml.jackson.version>
