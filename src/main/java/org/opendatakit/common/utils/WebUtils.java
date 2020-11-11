@@ -461,25 +461,6 @@ public class WebUtils {
     return b.toString();
   }
 
-  public static String readResponse(HttpResponse resp) throws IOException {
-
-    HttpEntity e = resp.getEntity();
-    if (e != null) {
-      return WebUtils.readResponseHelper(e.getContent());
-    }
-
-    return BasicConsts.EMPTY_STRING;
-  }
-
-  public static String readGoogleResponse(com.google.api.client.http.HttpResponse resp)
-      throws IOException {
-    if (resp != null) {
-      return WebUtils.readResponseHelper(resp.getContent());
-    }
-
-    return BasicConsts.EMPTY_STRING;
-  }
-
   private static String readResponseHelper(InputStream content) {
     StringBuffer response = new StringBuffer();
 
