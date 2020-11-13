@@ -6,16 +6,14 @@
     <parent>
         <groupId>org.opendatakit</groupId>
         <artifactId>sync-endpoint</artifactId>
-        <version>1.0.1</version>
+        <version>2.1.7</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <groupId>org.opendatakit</groupId>
     <artifactId>sync-endpoint-common-dependencies</artifactId>
     <packaging>pom</packaging>
-    <name>Sync Endpoint Common Depedencies</name>
-    <version>1.0.1</version>
-
+    <name>Sync Endpoint Common Dependencies</name>
     <dependencies>
         <dependency>
             <groupId>org.opendatakit</groupId>

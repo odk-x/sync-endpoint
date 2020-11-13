@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.opendatakit</groupId>
         <artifactId>sync-endpoint-common-dependencies</artifactId>
-        <version>1.0.1</version>
+        <version>2.1.7</version>
         <relativePath>../sync-endpoint-common-dependencies/pom.xml</relativePath>
     </parent>
 
@@ -14,7 +14,6 @@
     <artifactId>sync-endpoint-war</artifactId>
     <packaging>war</packaging>
     <name>Sync Endpoint WAR</name>
-    <version>2.1.7</version>
     <build>
         <sourceDirectory>${project.basedir}/../src/main/java</sourceDirectory>
         <plugins>
@@ -60,4 +59,13 @@
 
         </plugins>
     </build>
+    <dependencies>
+        <dependency>
+            <groupId>org.opendatakit</groupId>
+            <artifactId>sync-endpoint-common-dependencies</artifactId>
+            <version>${release.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
 </project>
