@@ -32,17 +32,17 @@
         <java.version>1.8</java.version>
 
         <findbugs.jsr305.version>3.0.2</findbugs.jsr305.version>
-        <junit.version>4.12</junit.version>
+        <junit.version>4.13.1</junit.version>
         <xml-aips.version>2.0.2</xml-aips.version>
         <org.slf4j.version>1.7.26</org.slf4j.version>
-        <org.bouncycastle.version>1.62</org.bouncycastle.version>
-        <com.google.code.gson.version>2.8.5</com.google.code.gson.version>
-        <com.google.guava.version>27.1-jre</com.google.guava.version>
+        <org.bouncycastle.version>1.65</org.bouncycastle.version>
+        <com.google.code.gson.version>2.8.6</com.google.code.gson.version>
+        <com.google.guava.version>30.0-jre</com.google.guava.version>
         <jai-imageio-core.version>1.4.0</jai-imageio-core.version>
-        <joda-time.version>2.10.3</joda-time.version>
+        <joda-time.version>2.10.8</joda-time.version>
         <net.sf.kxml.kxml2.version>2.3.0</net.sf.kxml.kxml2.version>
 
-        <io.netty.netty-all.version>4.1.42.Final</io.netty.netty-all.version>
+        <io.netty.netty-all.version>4.1.54.Final</io.netty.netty-all.version>
         <net.lightbody.bmp.browsermob-core.version>2.1.5</net.lightbody.bmp.browsermob-core.version>
 
         <mysql.mysql-connector-java.version>5.1.47</mysql.mysql-connector-java.version>
@@ -52,18 +52,18 @@
         <javax.transaction.transaction-api.version>1.1</javax.transaction.transaction-api.version>
         <javax.xml.bind.jaxb-api.version>2.3.1</javax.xml.bind.jaxb-api.version>
 
-        <io.fabric8.docker-maven-plugin.version>0.27.2</io.fabric8.docker-maven-plugin.version>
+        <io.fabric8.docker-maven-plugin.version>0.34.1</io.fabric8.docker-maven-plugin.version>
 
         <!-- apache -->
-        <apache.httpclient.version>4.5.9</apache.httpclient.version>
-        <apache.httpcore.version>4.4.11</apache.httpcore.version>
-        <apache.httpmime.version>4.5.9</apache.httpmime.version>
+        <apache.httpclient.version>4.5.13</apache.httpclient.version>
+        <apache.httpcore.version>4.4.13</apache.httpcore.version>
+        <apache.httpmime.version>4.5.13</apache.httpmime.version>
         <org.apache.wink.version>1.4</org.apache.wink.version>
-        <org.apache.commons.commons-pools2.version>2.6.2</org.apache.commons.commons-pools2.version>
-        <org.apache.commons.commons-dhcp2.version>2.6.0</org.apache.commons.commons-dhcp2.version>
+        <org.apache.commons.commons-pools2.version>2.8.1</org.apache.commons.commons-pools2.version>
+        <org.apache.commons.commons-dhcp2.version>2.8.0</org.apache.commons.commons-dhcp2.version>
         <org.apache.commons.commons-fileupload.version>1.4</org.apache.commons.commons-fileupload.version>
-        <org.apache.commons.commons-io.version>2.6</org.apache.commons.commons-io.version>
-        <org.apache.commons.commons-lang3.version>3.5</org.apache.commons.commons-lang3.version>
+        <org.apache.commons.commons-io.version>2.8.0</org.apache.commons.commons-io.version>
+        <org.apache.commons.commons-lang3.version>3.11</org.apache.commons.commons-lang3.version>
         <org.apache.commons.commons-logging.version>1.2</org.apache.commons.commons-logging.version>
         <org.apache.geronimo.specs.geronimo-jaxrs_1.1_spec.version>1.0
         </org.apache.geronimo.specs.geronimo-jaxrs_1.1_spec.version>
@@ -85,13 +85,13 @@
         <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
 
         <!-- jackson -->
-        <com.fasterxml.jackson.base.version>2.10.0</com.fasterxml.jackson.base.version>
-        <com.fasterxml.jackson.core.version>2.10.0</com.fasterxml.jackson.core.version>
-        <com.fasterxml.jackson.version>2.10.0</com.fasterxml.jackson.version>
+        <com.fasterxml.jackson.base.version>2.11.1</com.fasterxml.jackson.base.version>
+        <com.fasterxml.jackson.core.version>2.11.1</com.fasterxml.jackson.core.version>
+        <com.fasterxml.jackson.version>2.11.1</com.fasterxml.jackson.version>
 
         <!-- spring -->
         <org.springframework.version>5.2.10.RELEASE</org.springframework.version>
-        <org.springframework.security.version>4.2.13.RELEASE</org.springframework.security.version>
+        <org.springframework.security.version>5.1.13.RELEASE</org.springframework.security.version>
         <org.springframework.ldap.version>2.3.3.RELEASE</org.springframework.ldap.version>
         <org.springframework.instrument-tomcat.version>4.3.29.RELEASE</org.springframework.instrument-tomcat.version>
         <!--
@@ -107,6 +107,7 @@
         <module>sync-endpoint-docker-test</module>
         <module>postgres-test</module>
         <module>mysql-test</module>
+        <module>sync-endpoint-common-dependencies</module>
     </modules>
     <dependencyManagement>
         <dependencies>
