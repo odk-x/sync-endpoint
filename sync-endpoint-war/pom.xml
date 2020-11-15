@@ -31,10 +31,6 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
                     <webResources>
@@ -65,7 +61,6 @@
             <artifactId>sync-endpoint-common-dependencies</artifactId>
             <version>${release.version}</version>
             <type>pom</type>
-            <scope>import</scope>
         </dependency>
     </dependencies>
 </project>
