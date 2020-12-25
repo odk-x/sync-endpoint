@@ -23,8 +23,6 @@ import org.apache.http.config.ConnectionConfig;
 import org.apache.http.config.SocketConfig;
 import org.apache.http.impl.client.CloseableHttpClient;
 
-import com.google.api.client.http.HttpTransport;
-
 /**
  * Interface for the bean that will construct an HttpClient that is appropriate
  * for the GAE or Tomcat container in which the application runs. The GAE
@@ -46,6 +44,4 @@ public interface HttpClientFactory {
 	 * @return
 	 */
   public CloseableHttpClient createHttpClient(SocketConfig socketConfig, ConnectionConfig connectionConfig, RequestConfig requestConfig);
-
-  public HttpTransport getGoogleOAuth2Transport() throws GeneralSecurityException, IOException;
 }

@@ -24,15 +24,8 @@ package org.opendatakit.aggregate.constants;
 public class BeanDefs {
 
   public static final String HTTP_CLIENT_FACTORY = "http_client_factory";
-  public static final String FORM_DELETE_BEAN = "form_delete";
-  public static final String PURGE_OLDER_SUBMISSIONS_BEAN = "purge_submissions";
   public static final String USER_BEAN = "user_service";
   public static final String DATASTORE_BEAN = "datastore";
-  public static final String UPLOAD_TASK_BEAN = "upload_task";
-  public static final String KML_BEAN = "kml_task";
-  public static final String CSV_BEAN = "csv_task";
-  public static final String JSON_FILE_BEAN = "json_file_task";
-  public static final String WORKSHEET_BEAN = "worksheet_creator";
   public static final String IMAGE_UTIL = "image_util";
   public static final String WATCHDOG = "watchdog";
 }

@@ -207,52 +207,6 @@ public class BackendActionsTable extends CommonFieldsBase {
     }
   }
 
-  public static final synchronized boolean triggerPublisher(String uriFsc, CallingContext cc) {
-    boolean wasDaemon = cc.getAsDeamon();
-    cc.setAsDaemon(true);
-    try {
-      Datastore ds = cc.getDatastore();
-      User user = cc.getCurrentUser();
-      long now = System.currentTimeMillis();
-      if (lastHashmapCleanTimestamp + HASHMAP_LIFETIME_MILLISECONDS < now) {
-        lastPublisherRevision.clear();
-        lastHashmapCleanTimestamp = now;
-      }
-
-      BackendActionsTable t = null;
-      Long oldTime = lastPublisherRevision.get(uriFsc);
-      if (oldTime == null) {
-        // see if we have anything in the table (created if missing).
-        t = BackendActionsTable.getSingletonRecord(uriFsc, ds, user);
-        oldTime = t.getLastRevisionDate().getTime();
-        lastPublisherRevision.put(uriFsc, oldTime);
-      }
-
-      boolean publish = false;
-      if (oldTime + PUBLISHING_DELAY_MILLISECONDS < now) {
-        // fetch actual record if not yet fetched
-        if (t == null) {
-          t = BackendActionsTable.getSingletonRecord(uriFsc, ds, user);
-          oldTime = t.getLastRevisionDate().getTime();
-          lastPublisherRevision.put(uriFsc, oldTime);
-        }
-
-        // and double-check that we still meet the condition...
-        if (oldTime + PUBLISHING_DELAY_MILLISECONDS < now) {
-          t.setLastRevisionDate(new Date(now));
-          ds.putEntity(t, user);
-          lastPublisherRevision.put(uriFsc, now);
-          publish = true;
-        }
-      }
-      return publish;
-    } catch (ODKDatastoreException e) {
-      e.printStackTrace();
-      return false;
-    } finally {
-      cc.setAsDaemon(wasDaemon);
-    }
-  }
 
   /**
    * Updates the time the watchdog last ran. Called only from within the

@@ -6,28 +6,27 @@
 
     <parent>
         <groupId>org.opendatakit</groupId>
-        <artifactId>sync-endpoint</artifactId>
-        <version>2.1.6</version>
-        <relativePath>../pom.xml</relativePath>
+        <artifactId>sync-endpoint-common-dependencies</artifactId>
+        <version>2.1.7</version>
+        <relativePath>../sync-endpoint-common-dependencies/pom.xml</relativePath>
     </parent>
 
     <groupId>org.opendatakit</groupId>
     <artifactId>mysql-test</artifactId>
-    <version>2.1.6</version>
     <packaging>jar</packaging>
     <build>
-
-
         <plugins>
-
-                <plugin>
-                    <artifactId>maven-resources-plugin</artifactId>
-                    <version>3.1.0</version>
-                </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+            </plugin>
             <plugin>
                 <groupId>io.fabric8</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
-                <version>0.27.2</version>
                 <executions>
                     <execution>
                         <id>start</id>
@@ -49,7 +48,7 @@
                     </execution>
                 </executions>
                 <configuration>
-					<autoCreateCustomNetworks>true</autoCreateCustomNetworks>
+                    <autoCreateCustomNetworks>true</autoCreateCustomNetworks>
                     <images>
                         <image>
                             <name>odk/db-${project.name}</name>
@@ -57,22 +56,22 @@
 
                             <build>
                                 <from>mysql:5.7</from>
-                               <assembly>
-                                   <name>SetupScripts</name>
-                                   <inline>
-                                   <files>
-                                       <file>
-                                           <source>${project.basedir}/mysql/create_db_and_user.sql</source>
-                                           <fileMode>777</fileMode>
-                                           <lineEnding>unix</lineEnding>
-                                       </file>
-                                       <file>
-                                           <source>${project.basedir}/mysql/executeMysql.sh</source>
-                                           <fileMode>777</fileMode>
-                                           <lineEnding>unix</lineEnding>
-                                       </file>
-                                   </files>
-                                   </inline>
+                                <assembly>
+                                    <name>SetupScripts</name>
+                                    <inline>
+                                        <files>
+                                            <file>
+                                                <source>${project.basedir}/mysql/create_db_and_user.sql</source>
+                                                <fileMode>777</fileMode>
+                                                <lineEnding>unix</lineEnding>
+                                            </file>
+                                            <file>
+                                                <source>${project.basedir}/mysql/executeMysql.sh</source>
+                                                <fileMode>777</fileMode>
+                                                <lineEnding>unix</lineEnding>
+                                            </file>
+                                        </files>
+                                    </inline>
                                     <targetDir>/tmp</targetDir>
                                     <mode>dir</mode>
                                     <permissions>auto</permissions>
@@ -80,7 +79,7 @@
                             </build>
 
                             <run>
-								<network>
+                                <network>
                                     <mode>custom</mode>
                                     <name>odk-network</name>
                                     <alias>odkdatabase</alias>
@@ -106,11 +105,11 @@
                             <name>odk/openldap-${project.name}</name>
                             <alias>ldap-service</alias>
                             <build>
-                                <dockerFile>${project.basedir}/openldap/Dockerfile</dockerFile >
+                                <dockerFile>${project.basedir}/openldap/Dockerfile</dockerFile>
                             </build>
 
                             <run>
-								<network>
+                                <network>
                                     <mode>custom</mode>
                                     <name>odk-network</name>
                                     <alias>odkldap</alias>
@@ -135,7 +134,7 @@
                             <name>odk/sync-endpoint-test</name>
 
                             <run>
-								<network>
+                                <network>
                                     <mode>custom</mode>
                                     <name>odk-network</name>
                                 </network>
@@ -200,31 +199,18 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>${maven.surefire.plugin.version}</version>
-			    <configuration>
-					<trimStackTrace>false</trimStackTrace>								  
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <configuration>
+                    <trimStackTrace>false</trimStackTrace>
                     <argLine>${surefire.argLine}</argLine>
+                    <testSourceDirectory>${toplevel.directory}/src/it/java</testSourceDirectory>
+                    <forkedProcessExitTimeoutInSeconds>600</forkedProcessExitTimeoutInSeconds>
                     <systemPropertyVariables>
                         <test.server.port>8888</test.server.port>
                         <test.server.hostname>localhost</test.server.hostname>
                         <test.server.username>john</test.server.username>
                         <test.server.password>12345678</test.server.password>
                     </systemPropertyVariables>
-				</configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <version>${maven.failsafe.plugin.version}</version>
-                <configuration>
-                    <testSourceDirectory>${toplevel.directory}/src/it/java</testSourceDirectory>
-					<forkedProcessExitTimeoutInSeconds>600</forkedProcessExitTimeoutInSeconds>																		  
-					<systemPropertyVariables>
-                        <test.server.port>8888</test.server.port>
-                        <test.server.hostname>localhost</test.server.hostname>
-                        <test.server.username>john</test.server.username>
-                        <test.server.password>12345678</test.server.password>
-                    </systemPropertyVariables>																			  
                 </configuration>
                 <executions>
                     <execution>
@@ -247,18 +233,12 @@
         <dependency>
             <groupId>org.opendatakit</groupId>
             <artifactId>sync-endpoint-docker-test</artifactId>
-            <version>2.1.6</version>
+            <version>${release.version}</version>
             <type>pom</type>
         </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
     </dependencies>
-   <!-- <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-report-plugin</artifactId>
-                <version>${maven.surefire.report.plugin.version}</version>
-                <inherited>true</inherited>
-            </plugin>
-        </plugins>
-    </reporting> -->
 </project>

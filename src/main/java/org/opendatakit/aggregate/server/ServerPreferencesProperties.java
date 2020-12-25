@@ -19,7 +19,6 @@ package org.opendatakit.aggregate.server;
 import java.util.Date;
 import java.util.List;
 
-import org.opendatakit.aggregate.client.preferences.PreferenceSummary;
 import org.opendatakit.common.persistence.CommonFieldsBase;
 import org.opendatakit.common.persistence.DataField;
 import org.opendatakit.common.persistence.Datastore;
@@ -53,18 +52,11 @@ public class ServerPreferencesProperties extends CommonFieldsBase {
                                                                              // Maps
                                                                              // only
 
-  private static final String ENKETO_API_URL = "ENKETO_API_URL";
-  private static final String ENKETO_API_TOKEN = "ENKETO_API_TOKEN";
 
   // other keys...
   private static final String SITE_KEY = "SITE_KEY";
   private static final String LAST_KNOWN_REALM_STRING = "LAST_KNOWN_REALM_STRING";
 
-  public static final String GOOGLE_FUSION_TABLE_OAUTH2_ACCESS_TOKEN = "GOOGLE_FUSION_TABLE_OAUTH2_ACCESS_TOKEN";
-
-  public static final String OAUTH2_ACCESS_TOKEN_POSTFIX = "_OAUTH2_ACCESS_TOKEN";
-  public static final String OAUTH2_REFRESH_TOKEN_POSTFIX = "_OAUTH2_REFRESH_TOKEN";
-  public static final String OAUTH2_EXPIRATION_TIME_POSTFIX = "_OAUTH2_EXPIRATION_TIME";
 
   private static final String ODK_TABLES_ENABLED = "ODK_TABLES_ENABLED";
   private static final String FASTER_WATCHDOG_CYCLE_ENABLED = "FASTER_WATCHDOG_CYCLE_ENABLED";
@@ -84,21 +76,12 @@ public class ServerPreferencesProperties extends CommonFieldsBase {
   /**
    * Construct a relation prototype.
    *
-   * @param databaseSchema
-   * @param tableName
+   * @param schemaName
    */
   private ServerPreferencesProperties(String schemaName) {
     super(schemaName, TABLE_NAME);
     fieldList.add(KEY);
     fieldList.add(VALUE);
-  }
-
-  public static PreferenceSummary getPreferenceSummary(CallingContext cc)
-      throws ODKEntityNotFoundException, ODKOverQuotaException {
-    return new PreferenceSummary(getGoogleSimpleApiKey(cc), getGoogleApiClientId(cc),
-        getEnketoApiUrl(cc), getEnketoApiToken(cc), getOdkTablesEnabled(cc),
-        getOdkTablesAppId(cc), getFasterBackgroundActionsDisabled(cc), getSkipMalformedSubmissions(cc),
-        getAnonymousAccessToAttachments(cc), getAnonymousDataCollection(cc), getAnonymousTablesSynchronization(cc));
   }
 
   /**
@@ -160,27 +143,6 @@ public class ServerPreferencesProperties extends CommonFieldsBase {
     return value;
   }
 
-  public static String getEnketoApiUrl(CallingContext cc) throws ODKEntityNotFoundException,
-      ODKOverQuotaException {
-    String value = getServerPreferencesProperty(cc, ENKETO_API_URL);
-    return value;
-  }
-
-  public static void setEnketoApiUrl(CallingContext cc, String enketoApiUrl)
-      throws ODKEntityNotFoundException, ODKOverQuotaException {
-    setServerPreferencesProperty(cc, ENKETO_API_URL, enketoApiUrl);
-  }
-
-  public static String getEnketoApiToken(CallingContext cc) throws ODKEntityNotFoundException,
-      ODKOverQuotaException {
-    String value = getServerPreferencesProperty(cc, ENKETO_API_TOKEN);
-    return value;
-  }
-
-  public static void setEnketoApiToken(CallingContext cc, String enketoApiToken)
-      throws ODKEntityNotFoundException, ODKOverQuotaException {
-    setServerPreferencesProperty(cc, ENKETO_API_TOKEN, enketoApiToken);
-  }
 
   public static Boolean getOdkTablesEnabled(CallingContext cc) throws ODKEntityNotFoundException,
       ODKOverQuotaException {
