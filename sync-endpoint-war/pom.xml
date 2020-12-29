@@ -5,41 +5,42 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.opendatakit</groupId>
-        <artifactId>sync-endpoint</artifactId>
-        <version>2.1.6</version>
-        <relativePath>../pom.xml</relativePath>
+        <artifactId>sync-endpoint-common-dependencies</artifactId>
+        <version>2.1.7</version>
+        <relativePath>../sync-endpoint-common-dependencies/pom.xml</relativePath>
     </parent>
 
     <groupId>org.opendatakit</groupId>
     <artifactId>sync-endpoint-war</artifactId>
-    <version>2.1.6</version>
     <packaging>war</packaging>
     <name>Sync Endpoint WAR</name>
-
     <build>
-
-
+        <sourceDirectory>${project.basedir}/../src/main/java</sourceDirectory>
         <plugins>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
             </plugin>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
                     <webResources>
-                            <resource>
-                                <filtering>false</filtering>
-                                <directory>${toplevel.directory}/src/main/resources/</directory>
-                                <includes>
-                                    <include>**/*.xml</include>
-                                </includes>
-                            </resource>
+                        <resource>
+                            <filtering>false</filtering>
+                            <directory>${toplevel.directory}/src/main/resources/</directory>
+                            <includes>
+                                <include>**/*.xml</include>
+                            </includes>
+                        </resource>
                         <!-- comment this out if building for swarm -->
                         <resource>
                             <filtering>false</filtering>
@@ -54,5 +55,12 @@
 
         </plugins>
     </build>
-
+    <dependencies>
+        <dependency>
+            <groupId>org.opendatakit</groupId>
+            <artifactId>sync-endpoint-common-dependencies</artifactId>
+            <version>${release.version}</version>
+            <type>pom</type>
+        </dependency>
+    </dependencies>
 </project>

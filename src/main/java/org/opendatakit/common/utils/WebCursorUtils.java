@@ -13,12 +13,6 @@
  */
 package org.opendatakit.common.utils;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-
 import org.javarosa.xform.parse.XFormParser;
 import org.kxml2.io.KXmlParser;
 import org.kxml2.io.KXmlSerializer;
@@ -28,6 +22,12 @@ import org.kxml2.kdom.Node;
 import org.opendatakit.common.persistence.QueryResumePoint;
 import org.opendatakit.common.web.constants.HtmlConsts;
 import org.xmlpull.v1.XmlPullParser;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 
 /**
  * Useful methods for parsing boolean and date values and formatting dates.

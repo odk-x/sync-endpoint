@@ -25,15 +25,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.opendatakit.aggregate.constants.BeanDefs;
 import org.opendatakit.aggregate.server.ServerPreferencesProperties;
-import org.opendatakit.aggregate.task.CsvGenerator;
-import org.opendatakit.aggregate.task.FormDelete;
-import org.opendatakit.aggregate.task.JsonFileGenerator;
-import org.opendatakit.aggregate.task.KmlGenerator;
-import org.opendatakit.aggregate.task.PurgeOlderSubmissions;
-import org.opendatakit.aggregate.task.UploadSubmissions;
 import org.opendatakit.aggregate.task.Watchdog;
 import org.opendatakit.aggregate.task.WatchdogWorkerImpl;
-import org.opendatakit.aggregate.task.WorksheetCreator;
 import org.opendatakit.aggregate.util.BackendActionsTable;
 import org.opendatakit.aggregate.util.ImageUtil;
 import org.opendatakit.common.persistence.Datastore;
@@ -77,13 +70,6 @@ public class WatchdogImpl implements Watchdog, SmartLifecycle, InitializingBean,
   TaskScheduler taskScheduler = null;
   Datastore datastore = null;
   UserService userService = null;
-  UploadSubmissions uploadSubmissions = null;
-  CsvGenerator csvGenerator = null;
-  KmlGenerator kmlGenerator = null;
-  JsonFileGenerator jsonFileGenerator = null;
-  PurgeOlderSubmissions purgeSubmissions = null;
-  FormDelete formDelete = null;
-  WorksheetCreator worksheetCreator = null;
   ServletContext ctxt = null;
   HttpClientFactory httpClientFactory = null;
   ImageUtil imageUtil = null;
@@ -168,25 +154,11 @@ public class WatchdogImpl implements Watchdog, SmartLifecycle, InitializingBean,
     public Object getBean(String beanName) {
       if (BeanDefs.WATCHDOG.equals(beanName)) {
         return WatchdogImpl.this;
-      } else if (BeanDefs.CSV_BEAN.equals(beanName)) {
-        return csvGenerator;
-      } else if ( BeanDefs.JSON_FILE_BEAN.equals(beanName) ) {
-        return jsonFileGenerator;
       } else if (BeanDefs.DATASTORE_BEAN.equals(beanName)) {
         return datastore;
-      } else if (BeanDefs.FORM_DELETE_BEAN.equals(beanName)) {
-        return formDelete;
-      } else if (BeanDefs.PURGE_OLDER_SUBMISSIONS_BEAN.equals(beanName)) {
-        return purgeSubmissions;
-      } else if (BeanDefs.KML_BEAN.equals(beanName)) {
-        return kmlGenerator;
-      } else if (BeanDefs.UPLOAD_TASK_BEAN.equals(beanName)) {
-        return uploadSubmissions;
       } else if (BeanDefs.USER_BEAN.equals(beanName)) {
         return userService;
-      } else if (BeanDefs.WORKSHEET_BEAN.equals(beanName)) {
-        return worksheetCreator;
-      } else if (BeanDefs.HTTP_CLIENT_FACTORY.equals(beanName)) {
+      }  else if (BeanDefs.HTTP_CLIENT_FACTORY.equals(beanName)) {
         return httpClientFactory;
       } else if (BeanDefs.IMAGE_UTIL.equals(beanName)) {
         return imageUtil;
@@ -372,62 +344,6 @@ public class WatchdogImpl implements Watchdog, SmartLifecycle, InitializingBean,
     this.userService = userService;
   }
 
-  public UploadSubmissions getUploadSubmissions() {
-    return uploadSubmissions;
-  }
-
-  public void setUploadSubmissions(UploadSubmissions uploadSubmissions) {
-    this.uploadSubmissions = uploadSubmissions;
-  }
-
-  public CsvGenerator getCsvGenerator() {
-    return csvGenerator;
-  }
-
-  public void setCsvGenerator(CsvGenerator csvGenerator) {
-    this.csvGenerator = csvGenerator;
-  }
-
-  public KmlGenerator getKmlGenerator() {
-    return kmlGenerator;
-  }
-
-  public void setKmlGenerator(KmlGenerator kmlGenerator) {
-    this.kmlGenerator = kmlGenerator;
-  }
-
-  public JsonFileGenerator getJsonFileGenerator() {
-    return jsonFileGenerator;
-  }
-
-  public void setJsonFileGenerator(JsonFileGenerator jsonFileGenerator) {
-    this.jsonFileGenerator = jsonFileGenerator;
-  }
-
-  public FormDelete getFormDelete() {
-    return formDelete;
-  }
-
-  public void setFormDelete(FormDelete formDelete) {
-    this.formDelete = formDelete;
-  }
-
-  public PurgeOlderSubmissions getPurgeSubmissions() {
-    return purgeSubmissions;
-  }
-
-  public void setPurgeSubmissions(PurgeOlderSubmissions purgeSubmissions) {
-    this.purgeSubmissions = purgeSubmissions;
-  }
-
-  public WorksheetCreator getWorksheetCreator() {
-    return worksheetCreator;
-  }
-
-  public void setWorksheetCreator(WorksheetCreator worksheetCreator) {
-    this.worksheetCreator = worksheetCreator;
-  }
-
   public HttpClientFactory HttpClientFactory() {
     return httpClientFactory;
   }
@@ -453,20 +369,6 @@ public class WatchdogImpl implements Watchdog, SmartLifecycle, InitializingBean,
       throw new IllegalStateException("no datastore specified");
     if (userService == null)
       throw new IllegalStateException("no user service specified");
-    if (uploadSubmissions == null)
-      throw new IllegalStateException("no uploadSubmissions specified");
-    if (csvGenerator == null)
-      throw new IllegalStateException("no csvGenerator specified");
-    if (kmlGenerator == null)
-      throw new IllegalStateException("no kmlGenerator specified");
-    if ( jsonFileGenerator == null )
-      throw new IllegalStateException("no jsonFileGenerator specified");
-    if (formDelete == null)
-      throw new IllegalStateException("no formDelete specified");
-    if (purgeSubmissions == null)
-      throw new IllegalStateException("no purgeSubmissions specified");
-    if (worksheetCreator == null)
-      throw new IllegalStateException("no worksheetCreator specified");
     if (httpClientFactory == null)
       throw new IllegalStateException("no httpClientFactory specified");
     if (imageUtil == null)

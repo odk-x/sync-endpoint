@@ -25,9 +25,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.opendatakit.common.utils.HttpClientFactory;
 
-import com.google.api.client.googleapis.apache.GoogleApacheHttpTransport;
-import com.google.api.client.http.HttpTransport;
-
 /**
  * Implementation that just uses Apache's default http client.
  * 
@@ -53,11 +50,6 @@ public class TomcatHttpClientFactoryImpl implements HttpClientFactory {
       builder.setDefaultRequestConfig(requestConfig);
     }
     return builder.build();
-  }
-
-  @Override
-  public HttpTransport getGoogleOAuth2Transport() throws GeneralSecurityException, IOException {
-    return GoogleApacheHttpTransport.newTrustedTransport();
   }
 
 }
