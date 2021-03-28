@@ -16,8 +16,6 @@
 
 package org.opendatakit.aggregate.odktables.rest.entity;
 
-import org.apache.commons.lang3.Validate;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class RowFilterScope implements Comparable<RowFilterScope> {
@@ -76,7 +74,10 @@ public class RowFilterScope implements Comparable<RowFilterScope> {
    */
   public RowFilterScope(Access access, String rowOwner, String groupReadOnly, String groupModify,
       String groupPrivileged) {
-    Validate.notNull(access);
+
+    if(access == null) {
+      throw new NullPointerException("Access object is null");
+    }
 
     initFields(access, rowOwner, groupReadOnly, groupModify, groupPrivileged);
   }
