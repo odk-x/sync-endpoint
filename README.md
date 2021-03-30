@@ -1,4 +1,4 @@
-# sync-endpoint
+# ODK-X Sync Endpoint
 
 This project is __*actively maintained*__
 
