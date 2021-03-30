@@ -2,9 +2,7 @@
 
 This project is __*actively maintained*__
 
-The developer [wiki](https://github.com/opendatakit/opendatakit/wiki) (including release notes) and
-[issues tracker](https://github.com/opendatakit/opendatakit/issues) are located under
-the [**opendatakit**](https://github.com/opendatakit/opendatakit) project.
+The developer [wiki](https://github.com/odk-x/tool-suite-X/wiki) (including release notes) and [issues tracker](https://github.com/odk-x/tool-suite-X/issues) are located under the [**ODK-X Tool Suite**](https://github.com/odk-x) project.
 
 ## Setting up Your Environment
 
