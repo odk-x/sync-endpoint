@@ -43,7 +43,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.commons.lang3.CharEncoding;
+import com.nimbusds.jose.util.StandardCharset;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.opendatakit.aggregate.odktables.ConfigFileChangeDetail;
@@ -338,7 +338,7 @@ public class TableServiceImpl implements TableService {
       RFC4180CsvReader csvReader = null;
       ArrayList<PropertyEntryXml> properties = new ArrayList<PropertyEntryXml>();
       try {
-        rdr = new InputStreamReader(bas, CharEncoding.UTF_8);
+        rdr = new InputStreamReader(bas, StandardCharset.UTF_8);
         csvReader = new RFC4180CsvReader(rdr);
 
         String[] entries = csvReader.readNext();
@@ -586,7 +586,7 @@ public class TableServiceImpl implements TableService {
     RFC4180CsvWriter csvWtr = null;
 
     try {
-      wtr = new OutputStreamWriter(bas, CharEncoding.UTF_8);
+      wtr = new OutputStreamWriter(bas, StandardCharset.UTF_8);
       csvWtr = new RFC4180CsvWriter(wtr);
       String[] entry = new String[5];
       entry[0] = "_partition";

@@ -16,8 +16,6 @@
 
 package org.opendatakit.aggregate.odktables.rest.entity;
 
-import org.apache.commons.lang3.Validate;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Scope implements Comparable<Scope> {
@@ -70,9 +68,15 @@ public class Scope implements Comparable<Scope> {
    *          ignored (set to null).
    */
   public Scope(Type type, String value) {
-    Validate.notNull(type);
+    if(type == null) {
+      throw new NullPointerException("Type object is null");
+    }
     if (type.equals(Type.GROUP)) {
-      Validate.notEmpty(value);
+      if(value == null) {
+        throw new NullPointerException("Value object is null");
+      } else if (value.isEmpty()) {
+        throw new IllegalArgumentException("Value object is empty");
+      }
     } else if (type.equals(Type.DEFAULT)) {
       value = null;
     }
