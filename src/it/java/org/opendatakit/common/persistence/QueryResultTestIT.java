@@ -309,7 +309,7 @@ public class QueryResultTestIT {
 		for ( CommonFieldsBase cb : result.getResultList() ) {
 			assertEquals(false, pkSet.contains(cb.getUri()));
 			pkSet.add(cb.getUri());
-			((MyRelation) cb).print();
+			//((MyRelation) cb).print();
 		}
 		boolean done = false;
 		QueryResumePoint startCursor = result.getResumeCursor();
@@ -323,7 +323,7 @@ public class QueryResultTestIT {
 			for ( CommonFieldsBase cb : result.getResultList() ) {
 				assertEquals(false, pkSet.contains(cb.getUri()));
 				pkSet.add(cb.getUri());
-				((MyRelation) cb).print();
+				//((MyRelation) cb).print();
 			}
 		}	
 		
@@ -372,7 +372,7 @@ public class QueryResultTestIT {
 			assertEquals(false, pkTotalSet.contains(cb.getUri()));
 			pkOrdering.add(cb.getUri());
 			pkTotalSet.add(cb.getUri());
-			((MyRelation) cb).print();
+			//((MyRelation) cb).print();
 		}
 		
 		System.out.println("Verifying initial backward query is empty");
@@ -398,7 +398,7 @@ public class QueryResultTestIT {
 			assertEquals( pkOrdering.size(), backResult.getResultList().size());
 			for ( int i = 0 ; i < pkOrdering.size() ; ++i ) {
 				CommonFieldsBase cb = backResult.getResultList().get(i);
-				((MyRelation) cb).print();
+				//((MyRelation) cb).print();
 				assertEquals( pkOrdering.get(pkOrdering.size()-i-1), cb.getUri());
 			}
 			
@@ -409,7 +409,7 @@ public class QueryResultTestIT {
 				assertEquals(false, pkTotalSet.contains(cb.getUri()));
 				pkOrdering.add(cb.getUri());
 				pkTotalSet.add(cb.getUri());
-				((MyRelation) cb).print();
+			//	((MyRelation) cb).print();
 			}
 		}	
 		
@@ -427,7 +427,7 @@ public class QueryResultTestIT {
 		assertEquals( pkOrdering.size(), backResult.getResultList().size());
 		for ( int i = 0 ; i < pkOrdering.size() ; ++i ) {
 			CommonFieldsBase cb = backResult.getResultList().get(i);
-			((MyRelation) cb).print();
+		//	((MyRelation) cb).print();
 			assertEquals( pkOrdering.get(pkOrdering.size()-i-1), cb.getUri());
 		}
 		
@@ -448,7 +448,7 @@ public class QueryResultTestIT {
 		assertEquals( pkOrdering.size(), backResult.getResultList().size());
 		for ( int i = 0 ; i < pkOrdering.size() ; ++i ) {
 			CommonFieldsBase cb = backResult.getResultList().get(i);
-			((MyRelation) cb).print();
+		//	((MyRelation) cb).print();
 			assertEquals( pkOrdering.get(pkOrdering.size()-i-1), cb.getUri());
 		}
 		
