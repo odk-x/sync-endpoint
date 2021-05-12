@@ -91,7 +91,7 @@
 
         <!-- spring -->
         <org.springframework.version>5.2.13.RELEASE</org.springframework.version>
-        <org.springframework.security.version>5.1.13.RELEASE</org.springframework.security.version>
+        <org.springframework.security.version>5.2.10.RELEASE</org.springframework.security.version>
         <org.springframework.ldap.version>2.3.3.RELEASE</org.springframework.ldap.version>
         <!--
             keystore.propertyfile - define this in your settings.xml - the
