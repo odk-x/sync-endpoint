@@ -169,7 +169,7 @@ public class FileManager {
 
       FileContentInfo fo = new FileContentInfo(blobEntitySet.getUnrootedFilename(1, cc),
           blobEntitySet.getContentType(1, cc), blobEntitySet.getContentLength(1, cc),
-          blobEntitySet.getContentHash(1, cc), blobEntitySet.getBlob(1, cc));
+          blobEntitySet.getContentHash(1, cc), blobEntitySet.getReducedImageContentHash(1, cc), blobEntitySet.getBlob(1, cc));
       return fo;
 
     } finally {

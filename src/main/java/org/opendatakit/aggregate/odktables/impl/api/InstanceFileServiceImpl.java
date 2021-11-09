@@ -57,6 +57,7 @@ import org.opendatakit.aggregate.odktables.rest.ApiConstants;
 import org.opendatakit.aggregate.odktables.rest.entity.OdkTablesFileManifest;
 import org.opendatakit.aggregate.odktables.rest.entity.OdkTablesFileManifestEntry;
 import org.opendatakit.aggregate.odktables.security.TablesUserPermissions;
+import org.opendatakit.aggregate.util.ImageManipulation;
 import org.opendatakit.common.persistence.PersistenceUtils;
 import org.opendatakit.common.persistence.exception.ODKDatastoreException;
 import org.opendatakit.common.persistence.exception.ODKEntityNotFoundException;
@@ -267,6 +268,7 @@ public class InstanceFileServiceImpl implements InstanceFileService {
 
           ResponseBuilder rBuild = Response.ok(fi.fileBlob, fi.contentType)
               .header(HttpHeaders.ETAG, fi.contentHash)
+              .header(HttpHeaders.ETAG, fi.reducedImageContentHash)
               .header(HttpHeaders.CONTENT_LENGTH, fi.contentLength)
               .header(ApiConstants.OPEN_DATA_KIT_VERSION_HEADER, ApiConstants.OPEN_DATA_KIT_VERSION)
               .header("Access-Control-Allow-Origin", "*")
@@ -336,7 +338,7 @@ public class InstanceFileServiceImpl implements InstanceFileService {
     String boundary = "boundary-" + UUID.randomUUID().toString();
 
     InstanceFileManager fm = new InstanceFileManager(appId, cc);
-
+    //TODO (omkar) no reducedimagemd5hash here?
     try {
 
       BufferedOutMultiPart mpEntity = new BufferedOutMultiPart();
@@ -459,12 +461,24 @@ public class InstanceFileServiceImpl implements InstanceFileService {
     // appid/data/attachments/tableid/instances/instanceId/rest/of/path
     String partialPath = constructPathFromSegments(segments);
     String contentType = req.getContentType();
-    String md5Hash = PersistenceUtils.newMD5HashUri(content);
+    String contentHash = PersistenceUtils.newMD5HashUri(content);
+    byte[] reducedBytes = content;
+    if (contentType.startsWith("image")) {
+      try {
+        reducedBytes = ImageManipulation.reducedImage(content, contentType);
+      } catch (java.io.IOException e) {
+        Log log = LogFactory.getLog(InstanceFileServiceImpl.class);
+        log.error("Image reduction threw IO exception!");
+      }
+    }
+    String reducedImageMd5Hash = PersistenceUtils.newMD5HashUri(reducedBytes);
 
     InstanceFileManager fm = new InstanceFileManager(appId, cc);
 
+    // TODO (omkar) don't actually need to populate fi with reducedImageMd5Hash, since hte hash
+    // is recomputed later. Howerver, good to maintain consistency of the fi object?
     FileContentInfo fi = new FileContentInfo(partialPath, contentType, (long) content.length,
-        md5Hash, content);
+            contentHash, reducedImageMd5Hash, content);
     InstanceFileChangeDetail outcome = fm.putFile(tableId, rowId, fi, userPermissions);
 
     UriBuilder ub = info.getBaseUriBuilder();

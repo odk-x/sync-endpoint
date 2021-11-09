@@ -19,14 +19,18 @@ public class FileContentInfo {
   public final String partialPath;
   public final String contentType;
   public final Long contentLength;
+  //TODO og name: contentHash
   public final String contentHash;
+  public final String reducedImageContentHash;
   public final byte[] fileBlob;
 
-  public FileContentInfo(String partialPath, String contentType, Long contentLength, String contentHash, byte[] blob) {
+  public FileContentInfo(String partialPath, String contentType, Long contentLength, String contentHash, String reducedImageContentHash, byte[] blob) {
     this.partialPath = partialPath;
     this.contentType = contentType;
     this.contentLength = contentLength;
     this.contentHash = contentHash;
+    this.reducedImageContentHash = reducedImageContentHash;
     this.fileBlob = blob;
+
   }
 }

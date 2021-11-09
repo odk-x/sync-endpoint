@@ -119,6 +119,7 @@ public class InstanceFileManager {
             byte[] fileBlob = instance.getBlob(i, cc);
             String contentType = instance.getContentType(i, cc);
             String contentHash = instance.getContentHash(i, cc);
+            String reducedImageContentHash = instance.getReducedImageContentHash(i, cc);
             Long contentLength = instance.getContentLength(i, cc);
 
             // And now prepare everything to be returned to the caller.
@@ -126,7 +127,7 @@ public class InstanceFileManager {
                 && contentLength != 0L) {
 
               FileContentInfo fo = new FileContentInfo(path, contentType, contentLength,
-                  contentHash, fileBlob);
+                  contentHash, reducedImageContentHash, fileBlob);
               return fo;
             } else {
               return null;
@@ -215,7 +216,7 @@ public class InstanceFileManager {
           if (path != null && path.equals(fi.partialPath)) {
             // we already have this in our store -- check that it is identical.
             // if not, we have a problem!!!
-            if (fi.contentHash.equals(instance.getContentHash(i, cc))) {
+            if (fi.contentHash.equals(instance.getContentHash(i, cc))) { //TODO omkar no change here I think?
               return InstanceFileChangeDetail.FILE_PRESENT;
             } else {
               return InstanceFileChangeDetail.FILE_INCOMPATIBLE;
@@ -308,7 +309,7 @@ public class InstanceFileManager {
           final int iSafe = i;
           FileContentInfo info = new FileContentInfo(instance.getUnrootedFilename(i, cc),
               instance.getContentType(i, cc), instance.getContentLength(i, cc),
-              instance.getContentHash(i, cc), null);
+              instance.getContentHash(i, cc), instance.getReducedImageContentHash(i, cc), null);
 
           cb.processFileContent(info, new FetchBlobHandler() {
             @Override

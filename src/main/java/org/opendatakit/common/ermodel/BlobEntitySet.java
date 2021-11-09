@@ -99,6 +99,19 @@ public interface BlobEntitySet {
   public String getContentHash(int ordinal, CallingContext cc) throws ODKDatastoreException;
 
   /**
+   * Get the hash string of the "ordinal'th" blob. This is an md5 hash. If the
+   * content type is an image, the output is a hash of the byte contents of the image
+   * after scaling the image down. Otherwise, the output is equal to getContentHash.
+   *
+   * @param ordinal
+   *          [1..]
+   * @param cc
+   *          - the calling context
+   * @return
+   */
+  public String getReducedImageContentHash(int ordinal, CallingContext cc) throws ODKDatastoreException;
+
+  /**
    * Get the byte length of the "ordinal'th" blob.
    * 
    * @param ordinal
