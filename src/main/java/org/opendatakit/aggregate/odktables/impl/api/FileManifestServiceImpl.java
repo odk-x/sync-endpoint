@@ -15,12 +15,8 @@
  */
 package org.opendatakit.aggregate.odktables.impl.api;
 
-import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import javax.ws.rs.PathParam;
@@ -108,7 +104,7 @@ public class FileManifestServiceImpl implements FileManifestService {
           .header("Access-Control-Allow-Origin", "*")
           .header("Access-Control-Allow-Credentials", "true").build();
     } else {
-      String newETag = FileManifestUtils.calculateUpdatedEtagFromManifest(manifest);
+      String newETag = FileManifestUtils.calculateUpdatedETagFromManifest(manifest);
       // update eTagEntity if there is a conflict
       if (!newETag.equals(eTagValue)) {
         Log log = LogFactory.getLog(FileManifestServiceImpl.class);
@@ -174,7 +170,7 @@ public class FileManifestServiceImpl implements FileManifestService {
           .header("Access-Control-Allow-Origin", "*")
           .header("Access-Control-Allow-Credentials", "true").build();
     } else {
-      String newETag = FileManifestUtils.calculateUpdatedEtagFromManifest(manifest);
+      String newETag = FileManifestUtils.calculateUpdatedETagFromManifest(manifest);
       // update eTagEntity if there is a conflict
       if (!newETag.equals(eTagValue)) {
         Log log = LogFactory.getLog(FileManifestServiceImpl.class);

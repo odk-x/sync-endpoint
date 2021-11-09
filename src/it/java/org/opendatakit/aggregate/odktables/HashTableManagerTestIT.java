@@ -19,6 +19,7 @@ package org.opendatakit.aggregate.odktables;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,519 +51,510 @@ import static org.junit.Assert.assertTrue;
 @RunWith(org.junit.runners.JUnit4.class)
 public class HashTableManagerTestIT extends AbstractServiceTest {
 
-  private static final String ODK_CLIENT_VERSION = "2";
-  private static final String TEXT_PLAIN = "text/plain";
-  private static final String EMPTY_MD5_HASH = "d41d8cd98f00b204e9800998ecf8427e";
-  private static final String TEST_FILE_1 = "\n" +
-          "\n" +
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean non justo efficitur, hendrerit felis nec, laoreet urna. Sed consectetur, est eu facilisis aliquam, mauris turpis consequat dolor, ac euismod quam mauris in justo. Nam tempor porta lorem vel sollicitudin. Nam tincidunt risus id congue scelerisque. Integer luctus, orci a consectetur pellentesque, nulla nisl semper augue, eu suscipit arcu arcu non neque. Etiam a sodales nibh, non bibendum neque. Integer sit amet ligula volutpat, volutpat velit vel, lacinia arcu. Vivamus a malesuada urna. Nullam vitae lacinia ante.\n" +
-          "\n" +
-          "Sed massa libero, finibus ut orci eu, lacinia semper nulla. Cras quam massa, interdum at nisi non, ultricies lobortis turpis. Vivamus sit amet eleifend leo. Aenean imperdiet fermentum convallis. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas condimentum felis vitae nibh viverra, vel mattis neque mattis. Vivamus sit amet dictum elit, vel aliquam nunc. Cras bibendum viverra dolor, at iaculis nunc.\n" +
-          "\n" +
-          "Ut tincidunt pellentesque efficitur. In porttitor sodales feugiat. Quisque quis enim tortor. Donec sagittis odio at tortor iaculis porta. Nam turpis mauris, ultricies ut sapien in, viverra laoreet risus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur feugiat diam et ligula bibendum scelerisque.\n" +
-          "\n" +
-          "Suspendisse laoreet augue ut porttitor congue. Proin consectetur sollicitudin auctor. Donec pretium iaculis ipsum vel luctus. Fusce justo justo, fringilla vestibulum diam ac, lobortis lacinia libero. Morbi at metus tellus. Sed venenatis, lacus in luctus convallis, tortor diam sagittis elit, tristique semper justo tortor ut odio. Quisque eu nulla elit. Aenean eu libero sit amet orci ullamcorper hendrerit nec a justo. Nullam urna nunc, placerat quis purus vel, fermentum molestie erat. Nam dui neque, hendrerit sit amet congue vel, convallis vel nibh. Donec sodales lectus turpis, nec luctus dolor congue id.\n" +
-          "\n" +
-          "Aenean porttitor nulla dictum mollis suscipit. Vestibulum eu sollicitudin dolor, ut luctus tellus. In in ultrices turpis. Vestibulum finibus dapibus nisi, commodo volutpat eros egestas eget. Duis auctor tellus vitae mauris malesuada, et dignissim elit aliquet. Ut nibh arcu, dapibus et orci nec, faucibus malesuada tellus. Duis et nulla nulla. Cras ut nisi nec felis ullamcorper interdum. Morbi est nisi, lacinia et convallis quis, bibendum non sapien. Pellentesque nec tellus lectus. Maecenas accumsan vehicula egestas. Suspendisse varius diam eu est dignissim, et pretium felis rhoncus. ";
-  private static final String TEST_FILE_1_PATH = "test1/tmp.txt";
-  private static final String TEST_FILE_2 = "alkjfdkladjfklajdlkfjsal;dkfjasdlk fj alk";
-  private static final String TEST_FILE_2_PATH = "test2/tmp2.txt";
+    private static final String ODK_CLIENT_VERSION = "2";
+    private static final String TEXT_PLAIN = "text/plain";
+    private static final String EMPTY_MD5_HASH = "d41d8cd98f00b204e9800998ecf8427e";
+    private static final String TEST_FILE_1 = "\n" +
+            "\n" +
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean non justo efficitur, hendrerit felis nec, laoreet urna. Sed consectetur, est eu facilisis aliquam, mauris turpis consequat dolor, ac euismod quam mauris in justo. Nam tempor porta lorem vel sollicitudin. Nam tincidunt risus id congue scelerisque. Integer luctus, orci a consectetur pellentesque, nulla nisl semper augue, eu suscipit arcu arcu non neque. Etiam a sodales nibh, non bibendum neque. Integer sit amet ligula volutpat, volutpat velit vel, lacinia arcu. Vivamus a malesuada urna. Nullam vitae lacinia ante.\n" +
+            "\n" +
+            "Sed massa libero, finibus ut orci eu, lacinia semper nulla. Cras quam massa, interdum at nisi non, ultricies lobortis turpis. Vivamus sit amet eleifend leo. Aenean imperdiet fermentum convallis. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas condimentum felis vitae nibh viverra, vel mattis neque mattis. Vivamus sit amet dictum elit, vel aliquam nunc. Cras bibendum viverra dolor, at iaculis nunc.\n" +
+            "\n" +
+            "Ut tincidunt pellentesque efficitur. In porttitor sodales feugiat. Quisque quis enim tortor. Donec sagittis odio at tortor iaculis porta. Nam turpis mauris, ultricies ut sapien in, viverra laoreet risus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur feugiat diam et ligula bibendum scelerisque.\n" +
+            "\n" +
+            "Suspendisse laoreet augue ut porttitor congue. Proin consectetur sollicitudin auctor. Donec pretium iaculis ipsum vel luctus. Fusce justo justo, fringilla vestibulum diam ac, lobortis lacinia libero. Morbi at metus tellus. Sed venenatis, lacus in luctus convallis, tortor diam sagittis elit, tristique semper justo tortor ut odio. Quisque eu nulla elit. Aenean eu libero sit amet orci ullamcorper hendrerit nec a justo. Nullam urna nunc, placerat quis purus vel, fermentum molestie erat. Nam dui neque, hendrerit sit amet congue vel, convallis vel nibh. Donec sodales lectus turpis, nec luctus dolor congue id.\n" +
+            "\n" +
+            "Aenean porttitor nulla dictum mollis suscipit. Vestibulum eu sollicitudin dolor, ut luctus tellus. In in ultrices turpis. Vestibulum finibus dapibus nisi, commodo volutpat eros egestas eget. Duis auctor tellus vitae mauris malesuada, et dignissim elit aliquet. Ut nibh arcu, dapibus et orci nec, faucibus malesuada tellus. Duis et nulla nulla. Cras ut nisi nec felis ullamcorper interdum. Morbi est nisi, lacinia et convallis quis, bibendum non sapien. Pellentesque nec tellus lectus. Maecenas accumsan vehicula egestas. Suspendisse varius diam eu est dignissim, et pretium felis rhoncus. ";
+    private static final String TEST_FILE_1_PATH = "test1/tmp.txt";
+    private static final String TEST_FILE_2 = "alkjfdkladjfklajdlkfjsal;dkfjasdlk fj alk";
+    private static final String TEST_FILE_2_PATH = "test2/tmp2.txt";
 
-  private CallingContext cc;
-  private TablesUserPermissions userPermissions;
-  private TableManager tm;
-  private String tableId;
-  private String tableId2;
+    private CallingContext cc;
+    private TablesUserPermissions userPermissions;
+    private TableManager tm;
+    private String tableId;
+    private String tableId2;
 
 
-  @SuppressWarnings("unused")
-  private List<Column> columns;
+    @SuppressWarnings("unused")
+    private List<Column> columns;
 
-  private class MockCurrentUserPermissions implements TablesUserPermissions {
+    private class MockCurrentUserPermissions implements TablesUserPermissions {
 
-    @Override
-    public String getOdkTablesUserId() {
-      return "myid";
+        @Override
+        public String getOdkTablesUserId() {
+            return "myid";
+        }
+
+        @Override
+        public void checkPermission(String appId, String tableId, TablePermission permission)
+                throws ODKDatastoreException, PermissionDeniedException {
+            return;
+        }
+
+        @Override
+        public boolean hasPermission(String appId, String tableId, TablePermission permission)
+                throws ODKDatastoreException {
+            return true;
+        }
+
+        @Override
+        public boolean hasFilterScope(String appId, String tableId, TablePermission permission, String rowId, Scope filterScope) {
+            return true;
+        }
+
     }
 
-    @Override
-    public void checkPermission(String appId, String tableId, TablePermission permission)
-        throws ODKDatastoreException, PermissionDeniedException {
-      return;
+    @Before
+    public void setUp() throws Throwable {
+        super.abstractServiceSetUp();
+        this.cc = TestContextFactory.getCallingContext();
+        userPermissions = new MockCurrentUserPermissions();
+
+        this.tm = new TableManager(T.appId, userPermissions, cc);
+        this.tableId = T.tableId;
+        this.tableId2 = T.tableId + "2";
+        this.columns = T.columns;
     }
 
-    @Override
-    public boolean hasPermission(String appId, String tableId, TablePermission permission)
-        throws ODKDatastoreException {
-      return true;
+    @After
+    public void tearDown() throws Exception {
+        // clear table 1
+        try {
+            tm.deleteTable(tableId);
+        } catch (ODKEntityNotFoundException e) {
+            // ignore
+        }
+
+        // clear table 2
+        try {
+            tm.deleteTable(tableId2);
+        } catch (ODKEntityNotFoundException e) {
+            // ignore
+        }
+
+        // clear app files
+        cleanAppLevelFiles();
     }
 
-    @Override
-    public boolean hasFilterScope(String appId, String tableId, TablePermission permission, String rowId, Scope filterScope) {
-      return true;
+
+    @Test
+    public void testGetTablesEmpty() throws ODKDatastoreException {
+        WebsafeTables result = tm.getTables(null, 2000);
+        assertTrue(result.tables.isEmpty());
     }
 
-  }
+    @Test
+    public void testGetTablesWithNoFiles() throws Throwable {
+        createBothTable1N2();
 
-  @Before
-  public void setUp() throws Throwable {
-    super.abstractServiceSetUp();
-    this.cc = TestContextFactory.getCallingContext();
-    userPermissions = new MockCurrentUserPermissions();
+        verifyFileManifestsAreUsingEmptyMD5();
 
-    this.tm = new TableManager(T.appId, userPermissions, cc);
-    this.tableId = T.tableId;
-    this.tableId2 = T.tableId + "2";
-    this.columns = T.columns;
-  }
+        TableResourceList trl = getTables();
+        assertEquals(EMPTY_MD5_HASH, trl.getAppLevelManifestETag());
 
-  @After
-  public void tearDown() throws Exception {
-    // clear table 1
-    try {
-      tm.deleteTable(tableId);
-    } catch (ODKEntityNotFoundException e) {
-      // ignore
+        List<TableResource> tables = trl.getTables();
+        for (TableResource tr : tables) {
+            assertEquals(EMPTY_MD5_HASH, tr.getTableLevelManifestETag());
+        }
     }
 
-    // clear table 2
-    try {
-      tm.deleteTable(tableId2);
-    } catch (ODKEntityNotFoundException e) {
-      // ignore
+
+    @Test
+    public void testAddSingleTableLevelFiles() throws Throwable {
+        // first establish blank table
+        createTable1Only();
+
+        // verify no files yet
+        verifyFileManifestsAreUsingEmptyMD5();
+
+        // add a file
+        byte[] fileContent = TEST_FILE_1.getBytes(StandardCharsets.UTF_8);
+
+        FileManager fm = new FileManager(T.appId, cc);
+        FileContentInfo fi = new FileContentInfo(TEST_FILE_1_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length)
+                , null, fileContent);
+
+        ConfigFileChangeDetail outcome = fm.putFile(ODK_CLIENT_VERSION, tableId, fi, userPermissions);
+        assertEquals(ConfigFileChangeDetail.FILE_NEWLY_CREATED, outcome);
+
+        // verify etags match
+        String table1ManifestETag = FileManifestUtils.getTableLevelManifestETag(tableId, T.appId, cc);
+
+        TableResourceList trl = getTables();
+        assertEquals(EMPTY_MD5_HASH, trl.getAppLevelManifestETag());
+
+        List<TableResource> tables = trl.getTables();
+        for (TableResource tr : tables) {
+            assertEquals(table1ManifestETag, tr.getTableLevelManifestETag());
+            assertNotEquals(EMPTY_MD5_HASH, tr.getTableLevelManifestETag());
+        }
+
     }
 
-    // clear app files
-    cleanAppLevelFiles();
-  }
 
+    @Test
+    public void testAddNRemoveSingleTableLevelFiles() throws Throwable {
+        // first establish blank table
+        createTable1Only();
 
+        // verify no files yet
+        verifyFileManifestsAreUsingEmptyMD5();
 
-  @Test
-  public void testGetTablesEmpty() throws ODKDatastoreException {
-    WebsafeTables result = tm.getTables(null, 2000);
-    assertTrue(result.tables.isEmpty());
-  }
+        // add a file
+        byte[] fileContent = TEST_FILE_1.getBytes(StandardCharsets.UTF_8);
 
-  @Test
-  public void testGetTablesWithNoFiles() throws Throwable {
-    createBothTable1N2();
+        FileManager fm = new FileManager(T.appId, cc);
+        FileContentInfo fi = new FileContentInfo(TEST_FILE_1_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length), null, fileContent);
 
-    verifyFileManifestsAreUsingEmptyMD5();
+        ConfigFileChangeDetail outcome = fm.putFile(ODK_CLIENT_VERSION, tableId, fi, userPermissions);
+        assertEquals(ConfigFileChangeDetail.FILE_NEWLY_CREATED, outcome);
 
-    TableResourceList trl = getTables();
-    assertEquals(EMPTY_MD5_HASH, trl.getAppLevelManifestETag());
+        // verify etags match
+        String table1ManifestETag = FileManifestUtils.getTableLevelManifestETag(tableId, T.appId, cc);
 
-    List<TableResource> tables = trl.getTables();
-    for (TableResource tr : tables) {
-      assertEquals(EMPTY_MD5_HASH, tr.getTableLevelManifestETag());
-    }
-  }
+        TableResourceList trl = getTables();
+        assertEquals(EMPTY_MD5_HASH, trl.getAppLevelManifestETag());
 
+        List<TableResource> tables = trl.getTables();
+        for (TableResource tr : tables) {
+            assertEquals(table1ManifestETag, tr.getTableLevelManifestETag());
+            assertNotEquals(EMPTY_MD5_HASH, tr.getTableLevelManifestETag());
+        }
 
+        // remove file
+        fm.deleteFile(ODK_CLIENT_VERSION, tableId, TEST_FILE_1_PATH);
 
-  @Test
-  public void testAddSingleTableLevelFiles() throws Throwable {
-    // first establish blank table
-    createTable1Only();
+        table1ManifestETag = FileManifestUtils.getTableLevelManifestETag(tableId, T.appId, cc);
+        assertEquals(EMPTY_MD5_HASH, table1ManifestETag);
 
-    // verify no files yet
-    verifyFileManifestsAreUsingEmptyMD5();
+        trl = getTables();
+        assertEquals(EMPTY_MD5_HASH, trl.getAppLevelManifestETag());
 
-    // add a file
-    byte [] fileContent = TEST_FILE_1.getBytes(StandardCharsets.UTF_8);
-
-    FileManager fm = new FileManager(T.appId, cc);
-    FileContentInfo fi = new FileContentInfo(TEST_FILE_1_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length)
-            , null, fileContent);
-
-    ConfigFileChangeDetail outcome = fm.putFile(ODK_CLIENT_VERSION, tableId, fi, userPermissions);
-    assertEquals(ConfigFileChangeDetail.FILE_NEWLY_CREATED, outcome);
-
-    // verify etags match
-    String table1ManifestETag = FileManifestUtils.getTableLevelManifestETag(tableId, T.appId, cc);
-
-    TableResourceList trl = getTables();
-    assertEquals(EMPTY_MD5_HASH, trl.getAppLevelManifestETag());
-
-    List<TableResource> tables = trl.getTables();
-    for (TableResource tr : tables) {
-      assertEquals(table1ManifestETag, tr.getTableLevelManifestETag());
-      assertNotEquals(EMPTY_MD5_HASH, tr.getTableLevelManifestETag());
+        tables = trl.getTables();
+        for (TableResource tr : tables) {
+            assertEquals(EMPTY_MD5_HASH, tr.getTableLevelManifestETag());
+        }
     }
 
-  }
+    @Test
+    public void testAddSameSingleTableLevelFileToBothTables() throws Throwable {
+        // first establish blank tables
+        createBothTable1N2();
 
+        // verify no files yet
+        verifyFileManifestsAreUsingEmptyMD5();
 
+        // add a file
+        byte[] fileContent = TEST_FILE_1.getBytes(StandardCharsets.UTF_8);
 
-  @Test
-  public void testAddNRemoveSingleTableLevelFiles() throws Throwable {
-    // first establish blank table
-    createTable1Only();
+        FileManager fm = new FileManager(T.appId, cc);
+        FileContentInfo fi = new FileContentInfo(TEST_FILE_1_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length), null, fileContent);
 
-    // verify no files yet
-    verifyFileManifestsAreUsingEmptyMD5();
+        // put file for table 1
+        ConfigFileChangeDetail outcome = fm.putFile(ODK_CLIENT_VERSION, tableId, fi, userPermissions);
+        assertEquals(ConfigFileChangeDetail.FILE_NEWLY_CREATED, outcome);
 
-    // add a file
-    byte [] fileContent = TEST_FILE_1.getBytes(StandardCharsets.UTF_8);
+        // put file for table 2
+        outcome = fm.putFile(ODK_CLIENT_VERSION, tableId2, fi, userPermissions);
+        assertEquals(ConfigFileChangeDetail.FILE_NEWLY_CREATED, outcome);
 
-    FileManager fm = new FileManager(T.appId, cc);
-    FileContentInfo fi = new FileContentInfo(TEST_FILE_1_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length)
-            , null, fileContent);
+        // verify etags match
+        String table1ManifestETag = FileManifestUtils.getTableLevelManifestETag(tableId, T.appId, cc);
+        String table2ManifestETag = FileManifestUtils.getTableLevelManifestETag(tableId2, T.appId, cc);
+        assertEquals(table1ManifestETag, table2ManifestETag);
 
-    ConfigFileChangeDetail outcome = fm.putFile(ODK_CLIENT_VERSION, tableId, fi, userPermissions);
-    assertEquals(ConfigFileChangeDetail.FILE_NEWLY_CREATED, outcome);
+        TableResourceList trl = getTables();
+        assertEquals(EMPTY_MD5_HASH, trl.getAppLevelManifestETag());
 
-    // verify etags match
-    String table1ManifestETag = FileManifestUtils.getTableLevelManifestETag(tableId, T.appId, cc);
+        List<TableResource> tables = trl.getTables();
+        for (TableResource tr : tables) {
+            assertEquals(table1ManifestETag, tr.getTableLevelManifestETag());
+            assertNotEquals(EMPTY_MD5_HASH, tr.getTableLevelManifestETag());
+        }
 
-    TableResourceList trl = getTables();
-    assertEquals(EMPTY_MD5_HASH, trl.getAppLevelManifestETag());
-
-    List<TableResource> tables = trl.getTables();
-    for (TableResource tr : tables) {
-      assertEquals(table1ManifestETag, tr.getTableLevelManifestETag());
-      assertNotEquals(EMPTY_MD5_HASH, tr.getTableLevelManifestETag());
     }
 
-    // remove file
-    fm.deleteFile(ODK_CLIENT_VERSION, tableId, TEST_FILE_1_PATH);
+    @Test
+    public void testAddTwoTableLevelFiles() throws Throwable {
+        // first establish blank table
+        createTable1Only();
 
-    table1ManifestETag = FileManifestUtils.getTableLevelManifestETag(tableId, T.appId, cc);
-    assertEquals(EMPTY_MD5_HASH, table1ManifestETag);
+        // verify no files yet
+        verifyFileManifestsAreUsingEmptyMD5();
 
-    trl = getTables();
-    assertEquals(EMPTY_MD5_HASH, trl.getAppLevelManifestETag());
+        // add file 1
+        byte[] fileContent = TEST_FILE_1.getBytes(StandardCharsets.UTF_8);
 
-    tables = trl.getTables();
-    for (TableResource tr : tables) {
-      assertEquals(EMPTY_MD5_HASH, tr.getTableLevelManifestETag());
-    }
-  }
+        FileManager fm = new FileManager(T.appId, cc);
+        FileContentInfo fi = new FileContentInfo(TEST_FILE_1_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length), null, fileContent);
 
-  @Test
-  public void testAddSameSingleTableLevelFileToBothTables() throws Throwable {
-    // first establish blank tables
-    createBothTable1N2();
+        ConfigFileChangeDetail outcome = fm.putFile(ODK_CLIENT_VERSION, tableId, fi, userPermissions);
+        assertEquals(ConfigFileChangeDetail.FILE_NEWLY_CREATED, outcome);
 
-    // verify no files yet
-    verifyFileManifestsAreUsingEmptyMD5();
+        // verify etags match
+        String firstFileManifestEtag = FileManifestUtils.getTableLevelManifestETag(tableId, T.appId, cc);
 
-    // add a file
-    byte [] fileContent = TEST_FILE_1.getBytes(StandardCharsets.UTF_8);
+        TableResourceList trl = getTables();
+        assertEquals(EMPTY_MD5_HASH, trl.getAppLevelManifestETag());
 
-    FileManager fm = new FileManager(T.appId, cc);
-    FileContentInfo fi = new FileContentInfo(TEST_FILE_1_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length)
-            , null, fileContent);
+        List<TableResource> tables = trl.getTables();
+        for (TableResource tr : tables) {
+            assertEquals(firstFileManifestEtag, tr.getTableLevelManifestETag());
+            assertNotEquals(EMPTY_MD5_HASH, tr.getTableLevelManifestETag());
+        }
 
-    // put file for table 1
-    ConfigFileChangeDetail outcome = fm.putFile(ODK_CLIENT_VERSION, tableId, fi, userPermissions);
-    assertEquals(ConfigFileChangeDetail.FILE_NEWLY_CREATED, outcome);
+        // add file 2
+        fileContent = TEST_FILE_2.getBytes(StandardCharsets.UTF_8);
+        fi = new FileContentInfo(TEST_FILE_2_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length), null, fileContent);
+        outcome = fm.putFile(ODK_CLIENT_VERSION, tableId, fi, userPermissions);
+        assertEquals(ConfigFileChangeDetail.FILE_NEWLY_CREATED, outcome);
 
-    // put file for table 2
-    outcome = fm.putFile(ODK_CLIENT_VERSION, tableId2, fi, userPermissions);
-    assertEquals(ConfigFileChangeDetail.FILE_NEWLY_CREATED, outcome);
+        // verify etags match
+        String bothFilesManifestETag = FileManifestUtils.getTableLevelManifestETag(tableId, T.appId, cc);
+        assertNotEquals(firstFileManifestEtag, bothFilesManifestETag);
 
-    // verify etags match
-    String table1ManifestETag = FileManifestUtils.getTableLevelManifestETag(tableId, T.appId, cc);
-    String table2ManifestETag = FileManifestUtils.getTableLevelManifestETag(tableId2, T.appId, cc);
-    assertEquals(table1ManifestETag, table2ManifestETag);
+        trl = getTables();
+        assertEquals(EMPTY_MD5_HASH, trl.getAppLevelManifestETag());
 
-    TableResourceList trl = getTables();
-    assertEquals(EMPTY_MD5_HASH, trl.getAppLevelManifestETag());
+        for (TableResource tr : trl.getTables()) {
+            assertEquals(bothFilesManifestETag, tr.getTableLevelManifestETag());
+            assertNotEquals(EMPTY_MD5_HASH, tr.getTableLevelManifestETag());
+        }
 
-    List<TableResource> tables = trl.getTables();
-    for (TableResource tr : tables) {
-      assertEquals(table1ManifestETag, tr.getTableLevelManifestETag());
-      assertNotEquals(EMPTY_MD5_HASH, tr.getTableLevelManifestETag());
     }
 
-  }
+    @Test
+    public void testAddTwoTableLevelFilesRemoveOne() throws Throwable {
+        // first establish blank table
+        createTable1Only();
 
-  @Test
-  public void testAddTwoTableLevelFiles() throws Throwable {
-    // first establish blank table
-    createTable1Only();
+        // verify no files yet
+        verifyFileManifestsAreUsingEmptyMD5();
 
-    // verify no files yet
-    verifyFileManifestsAreUsingEmptyMD5();
+        // add file 1
+        byte[] fileContent = TEST_FILE_1.getBytes(StandardCharsets.UTF_8);
 
-    // add file 1
-    byte [] fileContent = TEST_FILE_1.getBytes(StandardCharsets.UTF_8);
+        FileManager fm = new FileManager(T.appId, cc);
+        FileContentInfo fi = new FileContentInfo(TEST_FILE_1_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length), null, fileContent);
 
-    FileManager fm = new FileManager(T.appId, cc);
-    FileContentInfo fi = new FileContentInfo(TEST_FILE_1_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length)
-            , null, fileContent);
+        ConfigFileChangeDetail outcome = fm.putFile(ODK_CLIENT_VERSION, tableId, fi, userPermissions);
+        assertEquals(ConfigFileChangeDetail.FILE_NEWLY_CREATED, outcome);
 
-    ConfigFileChangeDetail outcome = fm.putFile(ODK_CLIENT_VERSION, tableId, fi, userPermissions);
-    assertEquals(ConfigFileChangeDetail.FILE_NEWLY_CREATED, outcome);
+        // verify etags match
+        String firstFileManifestEtag = FileManifestUtils.getTableLevelManifestETag(tableId, T.appId, cc);
 
-    // verify etags match
-    String firstFileManifestEtag = FileManifestUtils.getTableLevelManifestETag(tableId, T.appId, cc);
+        TableResourceList trl = getTables();
+        assertEquals(EMPTY_MD5_HASH, trl.getAppLevelManifestETag());
 
-    TableResourceList trl = getTables();
-    assertEquals(EMPTY_MD5_HASH, trl.getAppLevelManifestETag());
+        List<TableResource> tables = trl.getTables();
+        for (TableResource tr : tables) {
+            assertEquals(firstFileManifestEtag, tr.getTableLevelManifestETag());
+            assertNotEquals(EMPTY_MD5_HASH, tr.getTableLevelManifestETag());
+        }
 
-    List<TableResource> tables = trl.getTables();
-    for (TableResource tr : tables) {
-      assertEquals(firstFileManifestEtag, tr.getTableLevelManifestETag());
-      assertNotEquals(EMPTY_MD5_HASH, tr.getTableLevelManifestETag());
+        // add file 2
+        fileContent = TEST_FILE_2.getBytes(StandardCharsets.UTF_8);
+        fi = new FileContentInfo(TEST_FILE_2_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length), null, fileContent);
+        outcome = fm.putFile(ODK_CLIENT_VERSION, tableId, fi, userPermissions);
+        assertEquals(ConfigFileChangeDetail.FILE_NEWLY_CREATED, outcome);
+
+        // verify etags match
+        String bothFilesManifestETag = FileManifestUtils.getTableLevelManifestETag(tableId, T.appId, cc);
+        assertNotEquals(firstFileManifestEtag, bothFilesManifestETag);
+
+        trl = getTables();
+        assertEquals(EMPTY_MD5_HASH, trl.getAppLevelManifestETag());
+
+        for (TableResource tr : trl.getTables()) {
+            assertEquals(bothFilesManifestETag, tr.getTableLevelManifestETag());
+            assertNotEquals(EMPTY_MD5_HASH, tr.getTableLevelManifestETag());
+        }
+
+        // remove file
+        fm.deleteFile(ODK_CLIENT_VERSION, tableId, TEST_FILE_2_PATH);
+
+        String oneRemovedManifestETag = FileManifestUtils.getTableLevelManifestETag(tableId, T.appId, cc);
+        assertNotEquals(EMPTY_MD5_HASH, oneRemovedManifestETag);
+        assertEquals(firstFileManifestEtag, oneRemovedManifestETag);
+
+        trl = getTables();
+        assertEquals(EMPTY_MD5_HASH, trl.getAppLevelManifestETag());
+
+        tables = trl.getTables();
+        for (TableResource tr : tables) {
+            assertEquals(oneRemovedManifestETag, tr.getTableLevelManifestETag());
+        }
     }
 
-    // add file 2
-    fileContent = TEST_FILE_2.getBytes(StandardCharsets.UTF_8);
-    fi = new FileContentInfo(TEST_FILE_2_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length), null, fileContent);
-    outcome = fm.putFile(ODK_CLIENT_VERSION, tableId, fi, userPermissions);
-    assertEquals(ConfigFileChangeDetail.FILE_NEWLY_CREATED, outcome);
+    @Test
+    public void testAddDifferentSingleTableLevelFileToBothTables() throws Throwable {
+        // first establish blank tables
+        createBothTable1N2();
 
-    // verify etags match
-    String bothFilesManifestETag = FileManifestUtils.getTableLevelManifestETag(tableId, T.appId, cc);
-    assertNotEquals(firstFileManifestEtag, bothFilesManifestETag);
+        // verify no files yet
+        verifyFileManifestsAreUsingEmptyMD5();
 
-    trl = getTables();
-    assertEquals(EMPTY_MD5_HASH, trl.getAppLevelManifestETag());
+        // add a file
+        byte[] fileContent = TEST_FILE_1.getBytes(StandardCharsets.UTF_8);
 
-    for (TableResource tr : trl.getTables()) {
-      assertEquals(bothFilesManifestETag, tr.getTableLevelManifestETag());
-      assertNotEquals(EMPTY_MD5_HASH, tr.getTableLevelManifestETag());
+        FileManager fm = new FileManager(T.appId, cc);
+        FileContentInfo fi = new FileContentInfo(TEST_FILE_1_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length), null, fileContent);
+
+        // put file for table 1
+        ConfigFileChangeDetail outcome = fm.putFile(ODK_CLIENT_VERSION, tableId, fi, userPermissions);
+        assertEquals(ConfigFileChangeDetail.FILE_NEWLY_CREATED, outcome);
+
+        // put file for table 2
+        fileContent = TEST_FILE_2.getBytes(StandardCharsets.UTF_8);
+        fi = new FileContentInfo(TEST_FILE_2_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length), null, fileContent);
+        outcome = fm.putFile(ODK_CLIENT_VERSION, tableId2, fi, userPermissions);
+        assertEquals(ConfigFileChangeDetail.FILE_NEWLY_CREATED, outcome);
+
+
+        // verify etags match
+        String table1ManifestETag = FileManifestUtils.getTableLevelManifestETag(tableId, T.appId, cc);
+        String table2ManifestETag = FileManifestUtils.getTableLevelManifestETag(tableId2, T.appId, cc);
+        assertNotEquals(table1ManifestETag, table2ManifestETag);
+
+        TableResourceList trl = getTables();
+        assertEquals(EMPTY_MD5_HASH, trl.getAppLevelManifestETag());
+
+        List<TableResource> tables = trl.getTables();
+        for (TableResource tr : tables) {
+            assertTrue((tr.getTableLevelManifestETag().equals(table1ManifestETag)) ||
+                    (tr.getTableLevelManifestETag().equals(table2ManifestETag)));
+            assertNotEquals(EMPTY_MD5_HASH, tr.getTableLevelManifestETag());
+        }
     }
 
-  }
+    @Test
+    public void testAddSingleAppLevelFiles() throws Throwable {
+        // first establish blank table
+        createTable1Only();
 
-  @Test
-  public void testAddTwoTableLevelFilesRemoveOne() throws Throwable {
-    // first establish blank table
-    createTable1Only();
+        // verify no files yet
+        verifyFileManifestsAreUsingEmptyMD5();
 
-    // verify no files yet
-    verifyFileManifestsAreUsingEmptyMD5();
+        // add a file
+        byte[] fileContent = TEST_FILE_1.getBytes(StandardCharsets.UTF_8);
 
-    // add file 1
-    byte [] fileContent = TEST_FILE_1.getBytes(StandardCharsets.UTF_8);
+        FileManager fm = new FileManager(T.appId, cc);
+        FileContentInfo fi = new FileContentInfo(TEST_FILE_1_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length), null, fileContent);
 
-    FileManager fm = new FileManager(T.appId, cc);
-    FileContentInfo fi = new FileContentInfo(TEST_FILE_1_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length)
-            , null, fileContent);
+        ConfigFileChangeDetail outcome = fm.putFile(ODK_CLIENT_VERSION, DbTableFileInfo.NO_TABLE_ID, fi, userPermissions);
+        assertEquals(ConfigFileChangeDetail.FILE_NEWLY_CREATED, outcome);
 
-    ConfigFileChangeDetail outcome = fm.putFile(ODK_CLIENT_VERSION, tableId, fi, userPermissions);
-    assertEquals(ConfigFileChangeDetail.FILE_NEWLY_CREATED, outcome);
+        // verify etags match
+        String appManifestETag = FileManifestUtils.getAppLevelManifestETag(T.appId, cc);
 
-    // verify etags match
-    String firstFileManifestEtag = FileManifestUtils.getTableLevelManifestETag(tableId, T.appId, cc);
+        TableResourceList trl = getTables();
+        assertEquals(appManifestETag, trl.getAppLevelManifestETag());
 
-    TableResourceList trl = getTables();
-    assertEquals(EMPTY_MD5_HASH, trl.getAppLevelManifestETag());
-
-    List<TableResource> tables = trl.getTables();
-    for (TableResource tr : tables) {
-      assertEquals(firstFileManifestEtag, tr.getTableLevelManifestETag());
-      assertNotEquals(EMPTY_MD5_HASH, tr.getTableLevelManifestETag());
+        List<TableResource> tables = trl.getTables();
+        for (TableResource tr : tables) {
+            assertEquals(EMPTY_MD5_HASH, tr.getTableLevelManifestETag());
+        }
     }
 
-    // add file 2
-    fileContent = TEST_FILE_2.getBytes(StandardCharsets.UTF_8);
-    fi = new FileContentInfo(TEST_FILE_2_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length), null, fileContent);
-    outcome = fm.putFile(ODK_CLIENT_VERSION, tableId, fi, userPermissions);
-    assertEquals(ConfigFileChangeDetail.FILE_NEWLY_CREATED, outcome);
+    @Test
+    public void testAddDifferentSingleTableLevelFileToBothTablesNAddAppLevel() throws Throwable {
+        // first establish blank tables
+        createBothTable1N2();
 
-    // verify etags match
-    String bothFilesManifestETag = FileManifestUtils.getTableLevelManifestETag(tableId, T.appId, cc);
-    assertNotEquals(firstFileManifestEtag, bothFilesManifestETag);
+        // verify no files yet
+        verifyFileManifestsAreUsingEmptyMD5();
 
-    trl = getTables();
-    assertEquals(EMPTY_MD5_HASH, trl.getAppLevelManifestETag());
+        // add a file
+        byte[] fileContent = TEST_FILE_1.getBytes(StandardCharsets.UTF_8);
 
-    for (TableResource tr : trl.getTables()) {
-      assertEquals(bothFilesManifestETag, tr.getTableLevelManifestETag());
-      assertNotEquals(EMPTY_MD5_HASH, tr.getTableLevelManifestETag());
+        FileManager fm = new FileManager(T.appId, cc);
+        FileContentInfo fi = new FileContentInfo(TEST_FILE_1_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length)
+                , null, fileContent);
+
+        // put the app level fiel
+        ConfigFileChangeDetail outcome = fm.putFile(ODK_CLIENT_VERSION, DbTableFileInfo.NO_TABLE_ID, fi, userPermissions);
+        assertEquals(ConfigFileChangeDetail.FILE_NEWLY_CREATED, outcome);
+
+        // put file for table 1
+        outcome = fm.putFile(ODK_CLIENT_VERSION, tableId, fi, userPermissions);
+        assertEquals(ConfigFileChangeDetail.FILE_NEWLY_CREATED, outcome);
+
+        // put file for table 2
+        fileContent = TEST_FILE_2.getBytes(StandardCharsets.UTF_8);
+        fi = new FileContentInfo(TEST_FILE_2_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length), null, fileContent);
+        outcome = fm.putFile(ODK_CLIENT_VERSION, tableId2, fi, userPermissions);
+        assertEquals(ConfigFileChangeDetail.FILE_NEWLY_CREATED, outcome);
+
+        // verify etags match
+        String appManifestETag = FileManifestUtils.getAppLevelManifestETag(T.appId, cc);
+        String table1ManifestETag = FileManifestUtils.getTableLevelManifestETag(tableId, T.appId, cc);
+        String table2ManifestETag = FileManifestUtils.getTableLevelManifestETag(tableId2, T.appId, cc);
+        assertNotEquals(table1ManifestETag, table2ManifestETag);
+        assertEquals(appManifestETag, table1ManifestETag);
+
+        TableResourceList trl = getTables();
+        assertEquals(appManifestETag, trl.getAppLevelManifestETag());
+
+        List<TableResource> tables = trl.getTables();
+        for (TableResource tr : tables) {
+            assertTrue((tr.getTableLevelManifestETag().equals(table1ManifestETag)) ||
+                    (tr.getTableLevelManifestETag().equals(table2ManifestETag)));
+            assertNotEquals(EMPTY_MD5_HASH, tr.getTableLevelManifestETag());
+        }
     }
 
-    // remove file
-    fm.deleteFile(ODK_CLIENT_VERSION, tableId, TEST_FILE_2_PATH);
+    ////////////////////////////////////////////////////////////
+    /////////////// HELPER FUNCTIONS ///////////////////////////
+    ////////////////////////////////////////////////////////////
+    private void createTable1Only() throws ODKDatastoreException, TableAlreadyExistsException, PermissionDeniedException, ODKTaskLockException {
+        List<TableEntry> expected = new ArrayList<TableEntry>();
+        TableEntry entry = tm.createTable(tableId, T.columns);
+        TableEntry one = tm.getTable(tableId);
+        expected.add(one);
 
-    String oneRemovedManifestETag = FileManifestUtils.getTableLevelManifestETag(tableId, T.appId, cc);
-    assertNotEquals(EMPTY_MD5_HASH, oneRemovedManifestETag);
-    assertEquals(firstFileManifestEtag, oneRemovedManifestETag);
+        WebsafeTables result = tm.getTables(null, 2000);
+        List<TableEntry> actual = result.tables;
+        assertEquals(1, actual.size());
 
-    trl = getTables();
-    assertEquals(EMPTY_MD5_HASH, trl.getAppLevelManifestETag());
-
-    tables = trl.getTables();
-    for (TableResource tr : tables) {
-      assertEquals(oneRemovedManifestETag, tr.getTableLevelManifestETag());
+        Util.assertCollectionSameElements(expected, actual);
     }
-  }
 
-  @Test
-  public void testAddDifferentSingleTableLevelFileToBothTables() throws Throwable {
-    // first establish blank tables
-    createBothTable1N2();
+    private void createBothTable1N2() throws ODKDatastoreException, TableAlreadyExistsException, PermissionDeniedException, ODKTaskLockException {
+        List<TableEntry> expected = new ArrayList<TableEntry>();
 
-    // verify no files yet
-    verifyFileManifestsAreUsingEmptyMD5();
+        TableEntry entry = tm.createTable(tableId, T.columns);
+        TableEntry one = tm.getTable(tableId);
 
-    // add a file
-    byte[] fileContent = TEST_FILE_1.getBytes(StandardCharsets.UTF_8);
+        TableEntry entry2 = tm.createTable(tableId2, T.columns);
+        tm.createTable(tableId2, T.columns);
+        TableEntry two = tm.getTable(tableId2);
 
-    FileManager fm = new FileManager(T.appId, cc);
-    FileContentInfo fi = new FileContentInfo(TEST_FILE_1_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length)
-            , null, fileContent);
+        expected.add(one);
+        expected.add(two);
 
-    // put file for table 1
-    ConfigFileChangeDetail outcome = fm.putFile(ODK_CLIENT_VERSION, tableId, fi, userPermissions);
-    assertEquals(ConfigFileChangeDetail.FILE_NEWLY_CREATED, outcome);
+        WebsafeTables result = tm.getTables(null, 2000);
+        List<TableEntry> actual = result.tables;
+        assertEquals(2, actual.size());
 
-    // put file for table 2
-    fileContent = TEST_FILE_2.getBytes(StandardCharsets.UTF_8);
-    fi = new FileContentInfo(TEST_FILE_2_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length), null, fileContent);
-    outcome = fm.putFile(ODK_CLIENT_VERSION, tableId2, fi, userPermissions);
-    assertEquals(ConfigFileChangeDetail.FILE_NEWLY_CREATED, outcome);
-
-
-    // verify etags match
-    String table1ManifestETag = FileManifestUtils.getTableLevelManifestETag(tableId, T.appId, cc);
-    String table2ManifestETag = FileManifestUtils.getTableLevelManifestETag(tableId2, T.appId, cc);
-    assertNotEquals(table1ManifestETag, table2ManifestETag);
-
-    TableResourceList trl = getTables();
-    assertEquals(EMPTY_MD5_HASH, trl.getAppLevelManifestETag());
-
-    List<TableResource> tables = trl.getTables();
-    for (TableResource tr : tables) {
-      assertTrue((tr.getTableLevelManifestETag().equals(table1ManifestETag)) ||
-              (tr.getTableLevelManifestETag().equals(table2ManifestETag)));
-      assertNotEquals(EMPTY_MD5_HASH, tr.getTableLevelManifestETag());
+        Util.assertCollectionSameElements(expected, actual);
     }
-  }
 
-  @Test
-  public void testAddSingleAppLevelFiles() throws Throwable {
-    // first establish blank table
-    createTable1Only();
-
-    // verify no files yet
-    verifyFileManifestsAreUsingEmptyMD5();
-
-    // add a file
-    byte [] fileContent = TEST_FILE_1.getBytes(StandardCharsets.UTF_8);
-
-    FileManager fm = new FileManager(T.appId, cc);
-    FileContentInfo fi = new FileContentInfo(TEST_FILE_1_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length)
-            , null, fileContent);
-
-    ConfigFileChangeDetail outcome = fm.putFile(ODK_CLIENT_VERSION, DbTableFileInfo.NO_TABLE_ID, fi, userPermissions);
-    assertEquals(ConfigFileChangeDetail.FILE_NEWLY_CREATED, outcome);
-
-    // verify etags match
-    String appManifestETag = FileManifestUtils.getAppLevelManifestETag(T.appId, cc);
-
-    TableResourceList trl = getTables();
-    assertEquals(appManifestETag, trl.getAppLevelManifestETag());
-
-    List<TableResource> tables = trl.getTables();
-    for (TableResource tr : tables) {
-      assertEquals(EMPTY_MD5_HASH, tr.getTableLevelManifestETag());
+    private void verifyFileManifestsAreUsingEmptyMD5() throws ODKDatastoreException, ODKTaskLockException {
+        String appManifestETag = FileManifestUtils.getAppLevelManifestETag(T.appId, cc);
+        assertEquals(EMPTY_MD5_HASH, appManifestETag);
+        String table1ManifestETag = FileManifestUtils.getTableLevelManifestETag(tableId, T.appId, cc);
+        assertEquals(EMPTY_MD5_HASH, table1ManifestETag);
+        String table2ManifestETag = FileManifestUtils.getTableLevelManifestETag(tableId2, T.appId, cc);
+        assertEquals(EMPTY_MD5_HASH, table2ManifestETag);
     }
-  }
 
-  @Test
-  public void testAddDifferentSingleTableLevelFileToBothTablesNAddAppLevel() throws Throwable {
-    // first establish blank tables
-    createBothTable1N2();
-
-    // verify no files yet
-    verifyFileManifestsAreUsingEmptyMD5();
-
-    // add a file
-    byte[] fileContent = TEST_FILE_1.getBytes(StandardCharsets.UTF_8);
-
-    FileManager fm = new FileManager(T.appId, cc);
-    FileContentInfo fi = new FileContentInfo(TEST_FILE_1_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length)
-            , null, fileContent);
-
-    // put the app level fiel
-    ConfigFileChangeDetail outcome = fm.putFile(ODK_CLIENT_VERSION, DbTableFileInfo.NO_TABLE_ID, fi, userPermissions);
-    assertEquals(ConfigFileChangeDetail.FILE_NEWLY_CREATED, outcome);
-
-    // put file for table 1
-    outcome = fm.putFile(ODK_CLIENT_VERSION, tableId, fi, userPermissions);
-    assertEquals(ConfigFileChangeDetail.FILE_NEWLY_CREATED, outcome);
-
-    // put file for table 2
-    fileContent = TEST_FILE_2.getBytes(StandardCharsets.UTF_8);
-    fi = new FileContentInfo(TEST_FILE_2_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length), null, fileContent);
-    outcome = fm.putFile(ODK_CLIENT_VERSION, tableId2, fi, userPermissions);
-    assertEquals(ConfigFileChangeDetail.FILE_NEWLY_CREATED, outcome);
-
-    // verify etags match
-    String appManifestETag = FileManifestUtils.getAppLevelManifestETag(T.appId, cc);
-    String table1ManifestETag = FileManifestUtils.getTableLevelManifestETag(tableId, T.appId, cc);
-    String table2ManifestETag = FileManifestUtils.getTableLevelManifestETag(tableId2, T.appId, cc);
-    assertNotEquals(table1ManifestETag, table2ManifestETag);
-    assertEquals(appManifestETag, table1ManifestETag);
-
-    TableResourceList trl = getTables();
-    assertEquals(appManifestETag, trl.getAppLevelManifestETag());
-
-    List<TableResource> tables = trl.getTables();
-    for (TableResource tr : tables) {
-      assertTrue((tr.getTableLevelManifestETag().equals(table1ManifestETag)) ||
-              (tr.getTableLevelManifestETag().equals(table2ManifestETag)));
-      assertNotEquals(EMPTY_MD5_HASH, tr.getTableLevelManifestETag());
+    private void cleanAppLevelFiles() throws ODKDatastoreException, ODKTaskLockException {
+        FileManager fm = new FileManager(T.appId, cc);
+        FileManifestManager manifestManager = new FileManifestManager(T.appId, ODK_CLIENT_VERSION, cc);
+        OdkTablesFileManifest manifest = manifestManager.getManifestForAppLevelFiles();
+        for (OdkTablesFileManifestEntry entry : manifest.getFiles()) {
+            fm.deleteFile(ODK_CLIENT_VERSION, DbTableFileInfo.NO_TABLE_ID, entry.filename);
+        }
     }
-  }
-
-  ////////////////////////////////////////////////////////////
-  /////////////// HELPER FUNCTIONS ///////////////////////////
-  ////////////////////////////////////////////////////////////
-  private void createTable1Only() throws ODKDatastoreException, TableAlreadyExistsException, PermissionDeniedException, ODKTaskLockException {
-    List<TableEntry> expected = new ArrayList<TableEntry>();
-    TableEntry entry = tm.createTable(tableId, T.columns);
-    TableEntry one = tm.getTable(tableId);
-    expected.add(one);
-
-    WebsafeTables result = tm.getTables(null, 2000);
-    List<TableEntry> actual = result.tables;
-    assertEquals(1, actual.size());
-
-    Util.assertCollectionSameElements(expected, actual);
-  }
-
-  private void createBothTable1N2() throws ODKDatastoreException, TableAlreadyExistsException, PermissionDeniedException, ODKTaskLockException {
-    List<TableEntry> expected = new ArrayList<TableEntry>();
-
-    TableEntry entry = tm.createTable(tableId, T.columns);
-    TableEntry one = tm.getTable(tableId);
-
-    TableEntry entry2 = tm.createTable(tableId2, T.columns);
-    tm.createTable(tableId2, T.columns);
-    TableEntry two = tm.getTable(tableId2);
-
-    expected.add(one);
-    expected.add(two);
-
-    WebsafeTables result = tm.getTables(null, 2000);
-    List<TableEntry> actual = result.tables;
-    assertEquals(2, actual.size());
-
-    Util.assertCollectionSameElements(expected, actual);
-  }
-
-  private void verifyFileManifestsAreUsingEmptyMD5() throws ODKDatastoreException, ODKTaskLockException {
-    String appManifestETag = FileManifestUtils.getAppLevelManifestETag(T.appId, cc);
-    assertEquals(EMPTY_MD5_HASH, appManifestETag);
-    String table1ManifestETag = FileManifestUtils.getTableLevelManifestETag(tableId, T.appId, cc);
-    assertEquals(EMPTY_MD5_HASH, table1ManifestETag);
-    String table2ManifestETag = FileManifestUtils.getTableLevelManifestETag(tableId2, T.appId, cc);
-    assertEquals(EMPTY_MD5_HASH, table2ManifestETag);
-  }
-
-  private void cleanAppLevelFiles() throws ODKDatastoreException, ODKTaskLockException {
-    FileManager fm = new FileManager(T.appId, cc);
-    FileManifestManager manifestManager = new FileManifestManager(T.appId, ODK_CLIENT_VERSION, cc);
-    OdkTablesFileManifest manifest = manifestManager.getManifestForAppLevelFiles();
-    for(OdkTablesFileManifestEntry entry : manifest.getFiles()) {
-      fm.deleteFile(ODK_CLIENT_VERSION, DbTableFileInfo.NO_TABLE_ID, entry.filename);
-    }
-  }
 }
