@@ -15,8 +15,12 @@
  */
 package org.opendatakit.aggregate.odktables.impl.api;
 
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import javax.ws.rs.PathParam;
@@ -30,6 +34,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.opendatakit.aggregate.ContextFactory;
 import org.opendatakit.aggregate.odktables.FileManifestManager;
+import org.opendatakit.aggregate.odktables.FileManifestUtils;
 import org.opendatakit.aggregate.odktables.api.FileManifestService;
 import org.opendatakit.aggregate.odktables.api.FileService;
 import org.opendatakit.aggregate.odktables.api.OdkTables;
@@ -67,17 +72,7 @@ public class FileManifestServiceImpl implements FileManifestService {
     this.userPermissions = ContextFactory.getTablesUserPermissions(cc);
   }
 
-  public static String getAppLevelManifestETag(CallingContext cc) throws ODKDatastoreException {
-    DbManifestETagEntity eTagEntity = DbManifestETags.getTableIdEntry(DbManifestETags.APP_LEVEL,
-        cc);
-    return eTagEntity.getManifestETag();
-  }
 
-  public static String getTableLevelManifestETag(String tableId, CallingContext cc)
-      throws ODKDatastoreException {
-    DbManifestETagEntity eTagEntity = DbManifestETags.getTableIdEntry(tableId, cc);
-    return eTagEntity.getManifestETag();
-  }
 
   @Override
   public Response getAppLevelFileManifest(HttpHeaders httpHeaders,
@@ -90,14 +85,10 @@ public class FileManifestServiceImpl implements FileManifestService {
     // retrieve the incoming if-none-match eTag...
     List<String> eTags = httpHeaders.getRequestHeader(HttpHeaders.IF_NONE_MATCH);
     String eTag = (eTags == null || eTags.isEmpty()) ? null : eTags.get(0);
-    DbManifestETagEntity eTagEntity = null;
+    String eTagValue = null;
     try {
-      try {
-        eTagEntity = DbManifestETags.getTableIdEntry(DbManifestETags.APP_LEVEL, cc);
-      } catch (ODKEntityNotFoundException e) {
-        // ignore...
-      }
-      if (eTag != null && eTagEntity != null && eTag.equals(eTagEntity.getManifestETag())) {
+      eTagValue = FileManifestUtils.getAppLevelManifestETag(appId, odkClientVersion, cc);
+      if (eTag != null  && eTag.equals(eTagValue)) {
         return Response.status(Status.NOT_MODIFIED).header(HttpHeaders.ETAG, eTag)
             .header(ApiConstants.OPEN_DATA_KIT_VERSION_HEADER, ApiConstants.OPEN_DATA_KIT_VERSION)
             .header("Access-Control-Allow-Origin", "*")
@@ -117,20 +108,17 @@ public class FileManifestServiceImpl implements FileManifestService {
           .header("Access-Control-Allow-Origin", "*")
           .header("Access-Control-Allow-Credentials", "true").build();
     } else {
-      String newETag = Integer.toHexString(manifest.hashCode());
-      // create a new eTagEntity if there isn't one already...
-      if (eTagEntity == null) {
-        eTagEntity = DbManifestETags.createNewEntity(DbManifestETags.APP_LEVEL, cc);
-        eTagEntity.setManifestETag(newETag);
-        eTagEntity.put(cc);
-      } else if (!newETag.equals(eTagEntity.getManifestETag())) {
+      String newETag = FileManifestUtils.calculateUpdatedEtagFromManifest(manifest);
+      // update eTagEntity if there is a conflict
+      if (!newETag.equals(eTagValue)) {
         Log log = LogFactory.getLog(FileManifestServiceImpl.class);
         log.error("App-level Manifest ETag does not match computed value!");
+        DbManifestETagEntity eTagEntity = DbManifestETags.getTableIdEntry(DbManifestETags.APP_LEVEL, cc);
         eTagEntity.setManifestETag(newETag);
         eTagEntity.put(cc);
       }
-      // and whatever the eTag is in that entity is the eTag we should return...
-      eTag = eTagEntity.getManifestETag();
+      // and whatever the eTag is for the manifest we should return...
+      eTag = newETag;
 
       UriBuilder ub = info.getBaseUriBuilder();
       ub.path(OdkTables.class, "getFilesService");
@@ -164,14 +152,10 @@ public class FileManifestServiceImpl implements FileManifestService {
     // retrieve the incoming if-none-match eTag...
     List<String> eTags = httpHeaders.getRequestHeader(HttpHeaders.IF_NONE_MATCH);
     String eTag = (eTags == null || eTags.isEmpty()) ? null : eTags.get(0);
-    DbManifestETagEntity eTagEntity = null;
+    String eTagValue = null;
     try {
-      try {
-        eTagEntity = DbManifestETags.getTableIdEntry(tableId, cc);
-      } catch (ODKEntityNotFoundException e) {
-        // ignore...
-      }
-      if (eTag != null && eTagEntity != null && eTag.equals(eTagEntity.getManifestETag())) {
+      eTagValue = FileManifestUtils.getTableLevelManifestETag(tableId, appId, odkClientVersion, cc);
+      if (eTag != null && eTag.equals(eTagValue)) {
         return Response.status(Status.NOT_MODIFIED).header(HttpHeaders.ETAG, eTag)
             .header(ApiConstants.OPEN_DATA_KIT_VERSION_HEADER, ApiConstants.OPEN_DATA_KIT_VERSION)
             .header("Access-Control-Allow-Origin", "*")
@@ -190,20 +174,17 @@ public class FileManifestServiceImpl implements FileManifestService {
           .header("Access-Control-Allow-Origin", "*")
           .header("Access-Control-Allow-Credentials", "true").build();
     } else {
-      String newETag = Integer.toHexString(manifest.hashCode());
-      // create a new eTagEntity if there isn't one already...
-      if (eTagEntity == null) {
-        eTagEntity = DbManifestETags.createNewEntity(tableId, cc);
-        eTagEntity.setManifestETag(newETag);
-        eTagEntity.put(cc);
-      } else if (!newETag.equals(eTagEntity.getManifestETag())) {
+      String newETag = FileManifestUtils.calculateUpdatedEtagFromManifest(manifest);
+      // update eTagEntity if there is a conflict
+      if (!newETag.equals(eTagValue)) {
         Log log = LogFactory.getLog(FileManifestServiceImpl.class);
         log.error("Table-level (" + tableId + ") Manifest ETag does not match computed value!");
+        DbManifestETagEntity eTagEntity = DbManifestETags.getTableIdEntry(tableId, cc);
         eTagEntity.setManifestETag(newETag);
         eTagEntity.put(cc);
       }
-      // and whatever the eTag is in that entity is the eTag we should return...
-      eTag = eTagEntity.getManifestETag();
+      // and whatever the eTag is for the manifest we should return...
+      eTag = newETag;
 
       UriBuilder ub = info.getBaseUriBuilder();
       ub.path(OdkTables.class, "getFilesService");
