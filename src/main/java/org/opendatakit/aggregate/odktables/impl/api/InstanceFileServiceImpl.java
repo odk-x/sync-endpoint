@@ -15,6 +15,7 @@
  */
 package org.opendatakit.aggregate.odktables.impl.api;
 
+import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
@@ -210,7 +211,8 @@ public class InstanceFileServiceImpl implements InstanceFileService {
   @Override
   public Response getFile(@Context HttpHeaders httpHeaders,
       @PathParam("filePath") List<PathSegment> segments,
-      @QueryParam(PARAM_AS_ATTACHMENT) String asAttachment)
+      @QueryParam(PARAM_AS_ATTACHMENT) String asAttachment,
+      @QueryParam("reduceImageSize") String reduceSize)
       throws IOException, ODKTaskLockException, PermissionDeniedException {
     // The appId and tableId are from the surrounding TableService.
     // The rowId is already pulled out.
@@ -266,7 +268,11 @@ public class InstanceFileServiceImpl implements InstanceFileService {
                 .header("Access-Control-Allow-Credentials", "true").build();
           }
 
-          ResponseBuilder rBuild = Response.ok(fi.fileBlob, fi.contentType)
+          byte[] fileBlob = fi.fileBlob;
+          if (reduceSize != null && reduceSize.equals("true") && fi.contentType.startsWith("image")) {
+            fileBlob = ImageManipulation.reducedImage(fileBlob, fi.contentType);
+          }
+          ResponseBuilder rBuild = Response.ok(fileBlob, fi.contentType)
               .header(HttpHeaders.ETAG, fi.contentHash)
               .header(HttpHeaders.ETAG, fi.reducedImageContentHash)
               .header(HttpHeaders.CONTENT_LENGTH, fi.contentLength)
@@ -379,6 +385,7 @@ public class InstanceFileServiceImpl implements InstanceFileService {
                 // silently ignore this -- error in this record
                 fileBlob = null;
               }
+
 
               if (fileBlob != null) {
                 // we got the content -- create an OutPart to hold it

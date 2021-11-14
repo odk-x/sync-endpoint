@@ -127,7 +127,7 @@ public interface InstanceFileService {
   
   @GET
   @Path("file/{filePath:.*}")
-  public Response getFile(@Context HttpHeaders httpHeaders, @PathParam("filePath") List<PathSegment> segments, @QueryParam(PARAM_AS_ATTACHMENT) String asAttachment) throws IOException, ODKTaskLockException, PermissionDeniedException;
+  public Response getFile(@Context HttpHeaders httpHeaders, @PathParam("filePath") List<PathSegment> segments, @QueryParam(PARAM_AS_ATTACHMENT) String asAttachment, @QueryParam("reduceImageSize") String reduceSize) throws IOException, ODKTaskLockException, PermissionDeniedException;
 
   @POST
   @Path("file/{filePath:.*}")
