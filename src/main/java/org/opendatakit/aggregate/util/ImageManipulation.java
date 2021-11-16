@@ -34,5 +34,6 @@ public class ImageManipulation {
         writer.write(new IIOImage(imageBuff, null, null));
         byte[] fileBlob = resized.toByteArray();
         return fileBlob;
+
     }
 }
