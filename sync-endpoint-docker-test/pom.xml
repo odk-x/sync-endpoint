@@ -7,11 +7,10 @@
     <parent>
         <groupId>org.opendatakit</groupId>
         <artifactId>sync-endpoint</artifactId>
-        <version>2.1.8</version>
+        <version>2.1.9</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <groupId>org.opendatakit</groupId>
     <artifactId>sync-endpoint-docker-test</artifactId>
     <packaging>pom</packaging>
     <build>
