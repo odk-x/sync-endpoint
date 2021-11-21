@@ -17,11 +17,7 @@ package org.opendatakit.aggregate.odktables.impl.api;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.UUID;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.PathParam;
@@ -34,6 +30,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
+import java.lang.IllegalArgumentException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -157,7 +154,8 @@ public class InstanceFileServiceImpl implements InstanceFileService {
         entry.filename = sfci.getValue().partialPath;
         entry.contentLength = sfci.getValue().contentLength;
         entry.contentType = sfci.getValue().contentType;
-        entry.md5hash = sfci.getValue().contentHash;
+        entry.md5hash = sfci.getValue().contentHash; //TODO (omkar) wherever there is md5 hash here.
+        entry.reducedImageMd5Hash = sfci.getValue().reducedImageContentHash;
 
         URI getFile = ub.clone().path(TableService.class, "getRealizedTable")
             .path(RealizedTableService.class, "getInstanceFiles")
@@ -268,7 +266,6 @@ public class InstanceFileServiceImpl implements InstanceFileService {
 
           ResponseBuilder rBuild = Response.ok(fi.fileBlob, fi.contentType)
               .header(HttpHeaders.ETAG, fi.contentHash)
-              .header(HttpHeaders.ETAG, fi.reducedImageContentHash)
               .header(HttpHeaders.CONTENT_LENGTH, fi.contentLength)
               .header(ApiConstants.OPEN_DATA_KIT_VERSION_HEADER, ApiConstants.OPEN_DATA_KIT_VERSION)
               .header("Access-Control-Allow-Origin", "*")
@@ -381,7 +378,22 @@ public class InstanceFileServiceImpl implements InstanceFileService {
               }
 
               if (fileBlob != null) {
-                // we got the content -- create an OutPart to hold it
+                // we got the content
+                // reduce size if necessary
+                OdkTablesFileManifestEntry currEntry = manifest.getFiles().get(entryIndex);
+                if (Boolean.valueOf(currEntry.reducedImageMd5Hash) && content.contentType.startsWith("image")) {
+                  Log log = LogFactory.getLog(InstanceFileServiceImpl.class);
+                  try { //TODO (omkar) clean
+                    fileBlob = ImageManipulation.reducedImage(fileBlob, content.contentType);
+                    log.error("omkar imagereduction suceeded, contentType is " + content.contentType);
+                  } catch (java.io.IOException e) {
+                    log.error("Image reduction threw IO exception!");
+                  } catch (IllegalArgumentException e) {
+                    log.error("omkar Image reduction threw IllegalArgumentException, contentType is " + content.contentType);
+                  }
+                }
+
+                // create an OutPart to hold it
                 OutPart op = new OutPart();
                 op.addHeader("Name", "file-" + Integer.toString(entryIndex));
                 String disposition = "file; filename=\"" + content.partialPath.replace("\"", "\"\"")
@@ -463,12 +475,15 @@ public class InstanceFileServiceImpl implements InstanceFileService {
     String contentType = req.getContentType();
     String contentHash = PersistenceUtils.newMD5HashUri(content);
     byte[] reducedBytes = content;
+    Log log = LogFactory.getLog(FileManifestServiceImpl.class);
     if (contentType.startsWith("image")) {
-      try {
+      try { //TODO (omkar) clean
         reducedBytes = ImageManipulation.reducedImage(content, contentType);
+        log.error("omkar imagereduction suceeded, contentType is " + contentType);
       } catch (java.io.IOException e) {
-        Log log = LogFactory.getLog(InstanceFileServiceImpl.class);
         log.error("Image reduction threw IO exception!");
+      } catch (IllegalArgumentException e) {
+        log.error("omkar Image reduction threw IllegalArgumentException, contentType is " + contentType);
       }
     }
     String reducedImageMd5Hash = PersistenceUtils.newMD5HashUri(reducedBytes);

@@ -14,15 +14,12 @@
 package org.opendatakit.common.datamodel;
 
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import java.lang.IllegalArgumentException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.opendatakit.aggregate.odktables.impl.api.FileManifestServiceImpl;
 import org.opendatakit.aggregate.odktables.impl.api.InstanceFileServiceImpl;
 import org.opendatakit.aggregate.util.ImageManipulation;
 import org.opendatakit.common.persistence.*;
@@ -487,12 +484,16 @@ public class BinaryContentManipulator {
 
       String md5Hash = CommonFieldsBase.newMD5HashUri(byteArray);
       byte[] reducedBytes = byteArray;
+      Log log = LogFactory.getLog(BinaryContentManipulator.class);
       if (contentType.startsWith("image")) {
         try {
           reducedBytes = ImageManipulation.reducedImage(byteArray, contentType);
+          log.error(" imageReduction suceeded, contentType is " + contentType);
         } catch (java.io.IOException e) {
-          Log log = LogFactory.getLog(BinaryContentManipulator.class);
           log.error("Image reduction threw IO exception!");
+        } catch (IllegalArgumentException e) {
+          log.error("Image reduction threw InvalidArgException");
+          log.error(e.toString());
         }
       }
       String reducedImageMd5Hash = PersistenceUtils.newMD5HashUri(reducedBytes);
