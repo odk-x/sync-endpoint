@@ -160,9 +160,6 @@
                                         <volume>
                                             ${project.basedir}/resources/jdbc.properties:/run/secrets/org.opendatakit.aggregate.jdbc.properties
                                         </volume>
-                                        <volume>
-                                            ${project.basedir}/resources/logging.properties:/run/secrets/org.opendatakit.aggregate.logging.properties
-                                        </volume>
                                     </bind>
                                 </volumes>
                                 <dependsOn>
@@ -232,7 +229,7 @@
         <dependency>
             <groupId>org.opendatakit</groupId>
             <artifactId>sync-endpoint-docker-test</artifactId>
-            <version>${release.version}</version>
+            <version>${project.parent.version}</version>
             <type>pom</type>
         </dependency>
         <dependency>

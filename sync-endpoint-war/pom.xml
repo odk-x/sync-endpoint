@@ -58,7 +58,7 @@
         <dependency>
             <groupId>org.opendatakit</groupId>
             <artifactId>sync-endpoint-common-dependencies</artifactId>
-            <version>${release.version}</version>
+            <version>${project.parent.version}</version>
             <type>pom</type>
         </dependency>
     </dependencies>
