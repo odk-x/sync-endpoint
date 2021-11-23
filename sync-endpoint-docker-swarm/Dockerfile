@@ -1,7 +1,8 @@
 FROM tomcat:8.5
 
 COPY init.sh /tmp/init.sh
-COPY server.xml conf/
+COPY resources/server.xml conf/
+COPY resources/logging.properties conf/
 
 COPY target/dependency/sync-endpoint-war.war /
 RUN chmod +x /tmp/init.sh && \
