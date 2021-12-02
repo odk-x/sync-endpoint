@@ -19,7 +19,6 @@ public class FileContentInfo {
   public final String partialPath;
   public final String contentType;
   public final Long contentLength;
-  //TODO og name: contentHash
   public final String contentHash;
   public final String reducedImageContentHash;
   public final byte[] fileBlob;
@@ -31,6 +30,5 @@ public class FileContentInfo {
     this.contentHash = contentHash;
     this.reducedImageContentHash = reducedImageContentHash;
     this.fileBlob = blob;
-
   }
 }

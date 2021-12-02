@@ -154,7 +154,7 @@ public class InstanceFileServiceImpl implements InstanceFileService {
         entry.filename = sfci.getValue().partialPath;
         entry.contentLength = sfci.getValue().contentLength;
         entry.contentType = sfci.getValue().contentType;
-        entry.md5hash = sfci.getValue().contentHash; //TODO (omkar) wherever there is md5 hash here.
+        entry.md5hash = sfci.getValue().contentHash;
         entry.reducedImageMd5Hash = sfci.getValue().reducedImageContentHash;
 
         URI getFile = ub.clone().path(TableService.class, "getRealizedTable")
@@ -215,8 +215,6 @@ public class InstanceFileServiceImpl implements InstanceFileService {
     // The segments are just rest/of/path in the full app-centric
     // path of:
     // appid/data/attachments/tableid/instances/instanceId/rest/of/path
-    Log log = LogFactory.getLog(InstanceFileServiceImpl.class);
-    log.info("omkar getFile() called"); //todo
     if (rowId == null || rowId.length() == 0) {
       return Response.status(Status.BAD_REQUEST)
           .entity(InstanceFileService.ERROR_MSG_INVALID_ROW_ID)
@@ -339,7 +337,7 @@ public class InstanceFileServiceImpl implements InstanceFileService {
     String boundary = "boundary-" + UUID.randomUUID().toString();
 
     InstanceFileManager fm = new InstanceFileManager(appId, cc);
-    //TODO (omkar) no reducedimagemd5hash here?
+
     try {
 
       BufferedOutMultiPart mpEntity = new BufferedOutMultiPart();
@@ -347,14 +345,11 @@ public class InstanceFileServiceImpl implements InstanceFileService {
 
       final OutPart[] outParts = new OutPart[manifest.getFiles().size()];
 
-      log.info("omkar fm.getInstanceAttachments() about to be called");
       fm.getInstanceAttachments(tableId, rowId, new FileContentHandler() {
 
         @Override
         public void processFileContent(FileContentInfo content, FetchBlobHandler fetcher) {
           // NOTE: this is processed within a critical section
-          Log log2 = LogFactory.getLog(InstanceFileManager.class);
-          log2.info("omkar fm.getInstanceAttachments()called processFileContent(), different log");
 
           // see if the server's file entry is in the requested set of files.
           //
@@ -389,17 +384,17 @@ public class InstanceFileServiceImpl implements InstanceFileService {
                 // reduce size if necessary
                 OdkTablesFileManifestEntry currEntry = manifest.getFiles().get(entryIndex);
                 boolean reduceImage = Boolean.valueOf(currEntry.reduceImage);
-                log2.info("omkar " + reduceImage);
-                log2.info("omkar " + content.contentType);
                 if (reduceImage && content.contentType.startsWith("image")) {
-                  log2 = LogFactory.getLog(InstanceFileServiceImpl.class); //TODO
-                  try { //TODO (omkar) clean
+                  Log logger = LogFactory.getLog(InstanceFileManager.class);
+                  logger.info("Attempting reduction of image of contentType: " + content.contentType);
+                  try {
                     fileBlob = ImageManipulation.reducedImage(fileBlob, content.contentType);
-                    log2.error("omkar imagereduction suceeded, contentType is " + content.contentType);
+                    logger.info("Image reduction succeeded");
                   } catch (java.io.IOException e) {
-                    log2.error("Image reduction threw IO exception!");
+                    logger.warn("Image reduction threw IO exception! Using full size image");
                   } catch (IllegalArgumentException e) {
-                    log2.error("omkar Image reduction threw IllegalArgumentException, contentType is " + content.contentType);
+                   logger.warn("Image reduction threw IllegalArgumentException! Using full size image");
+                   logger.warn(e.getMessage());
                   }
                 }
 
@@ -485,23 +480,25 @@ public class InstanceFileServiceImpl implements InstanceFileService {
     String contentType = req.getContentType();
     String contentHash = PersistenceUtils.newMD5HashUri(content);
     byte[] reducedBytes = content;
-    Log log = LogFactory.getLog(FileManifestServiceImpl.class);
     if (contentType.startsWith("image")) {
-      try { //TODO (omkar) clean
+      Log logger = LogFactory.getLog(InstanceFileServiceImpl.class);
+      logger.info("Attempting reduction of image of contentType: " + contentType);
+      try {
         reducedBytes = ImageManipulation.reducedImage(content, contentType);
-        log.error("omkar imagereduction suceeded, contentType is " + contentType);
+        logger.info("Image reduction succeeded");
       } catch (java.io.IOException e) {
-        log.error("Image reduction threw IO exception!");
+        logger.warn("Image reduction threw IO exception! Using full size image");
       } catch (IllegalArgumentException e) {
-        log.error("omkar Image reduction threw IllegalArgumentException, contentType is " + contentType);
+        logger.warn("Image reduction threw IllegalArgumentException! Using full size image");
+        logger.warn(e.getMessage());
       }
     }
     String reducedImageMd5Hash = PersistenceUtils.newMD5HashUri(reducedBytes);
 
     InstanceFileManager fm = new InstanceFileManager(appId, cc);
 
-    // TODO (omkar) don't actually need to populate fi with reducedImageMd5Hash, since hte hash
-    // is recomputed later. Howerver, good to maintain consistency of the fi object?
+    // TODO (omkar) don't actually need to populate fi with reducedImageMd5Hash, since stored later.
+    // check with waylon
     FileContentInfo fi = new FileContentInfo(partialPath, contentType, (long) content.length,
             contentHash, reducedImageMd5Hash, content);
     InstanceFileChangeDetail outcome = fm.putFile(tableId, rowId, fi, userPermissions);

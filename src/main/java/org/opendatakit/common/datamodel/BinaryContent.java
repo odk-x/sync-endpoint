@@ -73,7 +73,6 @@ public final class BinaryContent extends DynamicBase {
 		fieldList.add(contentLength = new DataField(CONTENT_LENGTH));
 		fieldList.add(contentHash = new DataField(CONTENT_HASH));
 		fieldList.add(reducedImageContentHash = new DataField(REDUCED_IMAGE_CONTENT_HASH));
-
 	}
 
 	/**

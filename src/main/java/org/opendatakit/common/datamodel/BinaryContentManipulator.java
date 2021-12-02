@@ -15,12 +15,10 @@ package org.opendatakit.common.datamodel;
 
 import java.io.ByteArrayOutputStream;
 import java.util.*;
-
 import java.lang.IllegalArgumentException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.opendatakit.aggregate.odktables.impl.api.FileManifestServiceImpl;
-import org.opendatakit.aggregate.odktables.impl.api.InstanceFileServiceImpl;
+
 import org.opendatakit.aggregate.util.ImageManipulation;
 import org.opendatakit.common.persistence.*;
 import org.opendatakit.common.persistence.Query.Direction;
@@ -30,8 +28,6 @@ import org.opendatakit.common.persistence.exception.ODKEntityPersistException;
 import org.opendatakit.common.persistence.exception.ODKOverQuotaException;
 import org.opendatakit.common.security.User;
 import org.opendatakit.common.web.CallingContext;
-
-import javax.tools.JavaCompiler;
 
 /**
  * Manipulator class for handling binary attachments. To use, create an instance
@@ -484,16 +480,17 @@ public class BinaryContentManipulator {
 
       String md5Hash = CommonFieldsBase.newMD5HashUri(byteArray);
       byte[] reducedBytes = byteArray;
-      Log log = LogFactory.getLog(BinaryContentManipulator.class);
+      Log logger = LogFactory.getLog(BinaryContentManipulator.class);
       if (contentType.startsWith("image")) {
         try {
+          logger.info("Attempting reduction of image of contentType: " + contentType);
           reducedBytes = ImageManipulation.reducedImage(byteArray, contentType);
-          log.info("omkar imageReduction suceeded, contentType is " + contentType);
+          logger.info("Image reduction succeeded");
         } catch (java.io.IOException e) {
-          log.info("omkar Image reduction threw IO exception!");
+          logger.warn("Image reduction threw IO exception! Using full size image");
         } catch (IllegalArgumentException e) {
-          log.info("omkar Image reduction threw InvalidArgException");
-          log.info(e.toString());
+          logger.warn("Image reduction threw IllegalArgumentException! Using full size image");
+          logger.warn(e.getMessage());
         }
       }
       String reducedImageMd5Hash = PersistenceUtils.newMD5HashUri(reducedBytes);

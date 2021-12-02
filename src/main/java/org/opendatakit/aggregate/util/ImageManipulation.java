@@ -25,15 +25,17 @@ public class ImageManipulation {
     // TODO handle case where input dimensions are less than RESIZED_IMAGE_Dimensions
     public static byte[] reducedImage(byte[] input, String contentType) throws IOException, IllegalArgumentException {
         InputStream in = new ByteArrayInputStream(input);
-        BufferedImage fullSizeImage = ImageIO.read(in);
+        BufferedImage ogImage = ImageIO.read(in);
+        int newWidth = Math.min(ogImage.getWidth(), RESIZED_IMAGE_WIDTH);
+        int newHeight = Math.min(ogImage.getHeight(), RESIZED_IMAGE_HEIGHT);
         Iterator<ImageWriter> writers = ImageIO.getImageWritersByMIMEType(contentType);
         if (!writers.hasNext()) {
             throw new IllegalArgumentException("Content-Type [" + contentType + "] is not supported by the Java Image I/O API");
         }
         ImageWriter writer = writers.next();
-        Image scaledImage = fullSizeImage.getScaledInstance(RESIZED_IMAGE_WIDTH, RESIZED_IMAGE_HEIGHT,
+        Image scaledImage = ogImage.getScaledInstance(newWidth, newHeight,
                 Image.SCALE_SMOOTH);
-        BufferedImage imageBuff = new BufferedImage(RESIZED_IMAGE_WIDTH, RESIZED_IMAGE_HEIGHT,
+        BufferedImage imageBuff = new BufferedImage(newWidth, newHeight,
                 BufferedImage.TYPE_INT_RGB);
         imageBuff.getGraphics().drawImage(scaledImage, 0, 0, new Color(0, 0, 0), null);
 
