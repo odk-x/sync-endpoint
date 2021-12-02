@@ -215,6 +215,8 @@ public class InstanceFileServiceImpl implements InstanceFileService {
     // The segments are just rest/of/path in the full app-centric
     // path of:
     // appid/data/attachments/tableid/instances/instanceId/rest/of/path
+    Log log = LogFactory.getLog(InstanceFileServiceImpl.class);
+    log.info("omkar getFile() called"); //todo
     if (rowId == null || rowId.length() == 0) {
       return Response.status(Status.BAD_REQUEST)
           .entity(InstanceFileService.ERROR_MSG_INVALID_ROW_ID)
@@ -308,6 +310,8 @@ public class InstanceFileServiceImpl implements InstanceFileService {
     // app-centric
     // path of:
     // appid/data/attachments/tableid/instances/instanceId/rest/of/path
+    Log log = LogFactory.getLog(InstanceFileServiceImpl.class);
+    log.info("omkar getFiles() called"); //todo
     if (rowId == null || rowId.length() == 0) {
       return Response.status(Status.BAD_REQUEST)
           .entity(InstanceFileService.ERROR_MSG_INVALID_ROW_ID)
@@ -343,11 +347,14 @@ public class InstanceFileServiceImpl implements InstanceFileService {
 
       final OutPart[] outParts = new OutPart[manifest.getFiles().size()];
 
+      log.info("omkar fm.getInstanceAttachments() about to be called");
       fm.getInstanceAttachments(tableId, rowId, new FileContentHandler() {
 
         @Override
         public void processFileContent(FileContentInfo content, FetchBlobHandler fetcher) {
           // NOTE: this is processed within a critical section
+          Log log2 = LogFactory.getLog(InstanceFileManager.class);
+          log2.info("omkar fm.getInstanceAttachments()called processFileContent(), different log");
 
           // see if the server's file entry is in the requested set of files.
           //
@@ -381,15 +388,18 @@ public class InstanceFileServiceImpl implements InstanceFileService {
                 // we got the content
                 // reduce size if necessary
                 OdkTablesFileManifestEntry currEntry = manifest.getFiles().get(entryIndex);
-                if (Boolean.valueOf(currEntry.reducedImageMd5Hash) && content.contentType.startsWith("image")) {
-                  Log log = LogFactory.getLog(InstanceFileServiceImpl.class);
+                boolean reduceImage = Boolean.valueOf(currEntry.reduceImage);
+                log2.info("omkar " + reduceImage);
+                log2.info("omkar " + content.contentType);
+                if (reduceImage && content.contentType.startsWith("image")) {
+                  log2 = LogFactory.getLog(InstanceFileServiceImpl.class); //TODO
                   try { //TODO (omkar) clean
                     fileBlob = ImageManipulation.reducedImage(fileBlob, content.contentType);
-                    log.error("omkar imagereduction suceeded, contentType is " + content.contentType);
+                    log2.error("omkar imagereduction suceeded, contentType is " + content.contentType);
                   } catch (java.io.IOException e) {
-                    log.error("Image reduction threw IO exception!");
+                    log2.error("Image reduction threw IO exception!");
                   } catch (IllegalArgumentException e) {
-                    log.error("omkar Image reduction threw IllegalArgumentException, contentType is " + content.contentType);
+                    log2.error("omkar Image reduction threw IllegalArgumentException, contentType is " + content.contentType);
                   }
                 }
 

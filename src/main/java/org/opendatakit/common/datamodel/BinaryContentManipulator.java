@@ -488,12 +488,12 @@ public class BinaryContentManipulator {
       if (contentType.startsWith("image")) {
         try {
           reducedBytes = ImageManipulation.reducedImage(byteArray, contentType);
-          log.error(" imageReduction suceeded, contentType is " + contentType);
+          log.info("omkar imageReduction suceeded, contentType is " + contentType);
         } catch (java.io.IOException e) {
-          log.error("Image reduction threw IO exception!");
+          log.info("omkar Image reduction threw IO exception!");
         } catch (IllegalArgumentException e) {
-          log.error("Image reduction threw InvalidArgException");
-          log.error(e.toString());
+          log.info("omkar Image reduction threw InvalidArgException");
+          log.info(e.toString());
         }
       }
       String reducedImageMd5Hash = PersistenceUtils.newMD5HashUri(reducedBytes);
