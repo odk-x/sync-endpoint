@@ -3,6 +3,7 @@ package org.opendatakit.aggregate.util;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.opendatakit.aggregate.odktables.impl.api.FileManifestServiceImpl;
+import org.opendatakit.common.datamodel.BinaryContentManipulator;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -18,16 +19,24 @@ import java.util.Iterator;
 import java.lang.IllegalArgumentException;
 
 public class ImageManipulation {
-    public static final int RESIZED_IMAGE_WIDTH = 50;
-    public static final int RESIZED_IMAGE_HEIGHT = 100;
 
-    // TODO need to make sure this code works for images with different formats like rgb, etc.
-    // TODO handle case where input dimensions are less than RESIZED_IMAGE_Dimensions
+    public static final int REDUCED_SMALLER_DIMENSION = 480;
+    public static final int REDUCED_LARGER_DIMENSION = 640;
+
     public static byte[] reducedImage(byte[] input, String contentType) throws IOException, IllegalArgumentException {
         InputStream in = new ByteArrayInputStream(input);
         BufferedImage ogImage = ImageIO.read(in);
-        int newWidth = Math.min(ogImage.getWidth(), RESIZED_IMAGE_WIDTH);
-        int newHeight = Math.min(ogImage.getHeight(), RESIZED_IMAGE_HEIGHT);
+        int newWidth;
+        int newHeight;
+        if (ogImage.getWidth() > ogImage.getHeight()) {
+            newWidth = REDUCED_LARGER_DIMENSION;
+            newHeight = REDUCED_SMALLER_DIMENSION;
+        } else {
+            newWidth = REDUCED_SMALLER_DIMENSION;
+            newHeight = REDUCED_LARGER_DIMENSION;
+        }
+        newWidth = Math.min(ogImage.getWidth(), newWidth);
+        newHeight = Math.min(ogImage.getHeight(), newHeight);
         Iterator<ImageWriter> writers = ImageIO.getImageWritersByMIMEType(contentType);
         if (!writers.hasNext()) {
             throw new IllegalArgumentException("Content-Type [" + contentType + "] is not supported by the Java Image I/O API");

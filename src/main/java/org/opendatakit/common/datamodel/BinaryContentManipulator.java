@@ -481,7 +481,7 @@ public class BinaryContentManipulator {
       String md5Hash = CommonFieldsBase.newMD5HashUri(byteArray);
       byte[] reducedBytes = byteArray;
       Log logger = LogFactory.getLog(BinaryContentManipulator.class);
-      if (contentType.startsWith("image")) {
+      if (contentType.startsWith("image") && byteArray != null) {
         try {
           logger.info("Attempting reduction of image of contentType: " + contentType);
           reducedBytes = ImageManipulation.reducedImage(byteArray, contentType);
@@ -490,6 +490,9 @@ public class BinaryContentManipulator {
           logger.warn("Image reduction threw IO exception! Using full size image");
         } catch (IllegalArgumentException e) {
           logger.warn("Image reduction threw IllegalArgumentException! Using full size image");
+          logger.warn(e.getMessage());
+        } catch (Exception e) {
+          logger.warn("Image reduction threw an unexpected exception! Using full size image");
           logger.warn(e.getMessage());
         }
       }

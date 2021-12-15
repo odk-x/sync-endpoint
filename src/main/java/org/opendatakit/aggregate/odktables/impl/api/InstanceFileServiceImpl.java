@@ -479,28 +479,28 @@ public class InstanceFileServiceImpl implements InstanceFileService {
     String partialPath = constructPathFromSegments(segments);
     String contentType = req.getContentType();
     String contentHash = PersistenceUtils.newMD5HashUri(content);
-    byte[] reducedBytes = content;
-    if (contentType.startsWith("image")) {
-      Log logger = LogFactory.getLog(InstanceFileServiceImpl.class);
-      logger.info("Attempting reduction of image of contentType: " + contentType);
-      try {
-        reducedBytes = ImageManipulation.reducedImage(content, contentType);
-        logger.info("Image reduction succeeded");
-      } catch (java.io.IOException e) {
-        logger.warn("Image reduction threw IO exception! Using full size image");
-      } catch (IllegalArgumentException e) {
-        logger.warn("Image reduction threw IllegalArgumentException! Using full size image");
-        logger.warn(e.getMessage());
-      }
-    }
-    String reducedImageMd5Hash = PersistenceUtils.newMD5HashUri(reducedBytes);
+    // TODO don't need this, check again.
+//    byte[] reducedBytes = content;
+//    if (contentType.startsWith("image")) {
+//      Log logger = LogFactory.getLog(InstanceFileServiceImpl.class);
+//      logger.info("Attempting reduction of image of contentType: " + contentType);
+//      try {
+//        reducedBytes = ImageManipulation.reducedImage(content, contentType);
+//        logger.info("Image reduction succeeded");
+//      } catch (java.io.IOException e) {
+//        logger.warn("Image reduction threw IO exception! Using full size image");
+//      } catch (IllegalArgumentException e) {
+//        logger.warn("Image reduction threw IllegalArgumentException! Using full size image");
+//        logger.warn(e.getMessage());
+//      }
+//    }
+//    String reducedImageMd5Hash = PersistenceUtils.newMD5HashUri(reducedBytes);
 
     InstanceFileManager fm = new InstanceFileManager(appId, cc);
 
-    // TODO (omkar) don't actually need to populate fi with reducedImageMd5Hash, since stored later.
-    // check with waylon
+    // Note: reducedImageContentHash not populated.
     FileContentInfo fi = new FileContentInfo(partialPath, contentType, (long) content.length,
-            contentHash, reducedImageMd5Hash, content);
+            contentHash, null, content);
     InstanceFileChangeDetail outcome = fm.putFile(tableId, rowId, fi, userPermissions);
 
     UriBuilder ub = info.getBaseUriBuilder();
