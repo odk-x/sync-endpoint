@@ -49,6 +49,7 @@ import org.apache.commons.logging.LogFactory;
 import org.opendatakit.aggregate.odktables.ConfigFileChangeDetail;
 import org.opendatakit.aggregate.odktables.FileContentInfo;
 import org.opendatakit.aggregate.odktables.FileManager;
+import org.opendatakit.aggregate.odktables.FileManifestUtils;
 import org.opendatakit.aggregate.odktables.TableManager;
 import org.opendatakit.aggregate.odktables.TableManager.WebsafeTables;
 import org.opendatakit.aggregate.odktables.api.OdkTables;
@@ -152,8 +153,8 @@ public class TableServiceImpl implements TableService {
 
         // set the table-level manifest ETag if known...
         try {
-          resource.setTableLevelManifestETag(FileManifestServiceImpl.getTableLevelManifestETag(
-              entry.getTableId(), cc));
+          resource.setTableLevelManifestETag(FileManifestUtils.getTableLevelManifestETag(
+              entry.getTableId(), appId, cc));
         } catch (ODKDatastoreException e) {
           // ignore
         }
@@ -170,7 +171,7 @@ public class TableServiceImpl implements TableService {
     // set the app-level manifest ETag if known...
     try {
       tableResourceList
-          .setAppLevelManifestETag(FileManifestServiceImpl.getAppLevelManifestETag(cc));
+          .setAppLevelManifestETag(FileManifestUtils.getAppLevelManifestETag(appId, cc));
     } catch (ODKDatastoreException e) {
       // ignore
     }
@@ -198,8 +199,8 @@ public class TableServiceImpl implements TableService {
 
     // set the table-level manifest ETag if known...
     try {
-      resource.setTableLevelManifestETag(FileManifestServiceImpl.getTableLevelManifestETag(
-          entry.getTableId(), cc));
+      resource.setTableLevelManifestETag(FileManifestUtils.getTableLevelManifestETag(
+          entry.getTableId(), appId, cc));
     } catch (ODKDatastoreException e) {
       // ignore
     }
@@ -231,8 +232,8 @@ public class TableServiceImpl implements TableService {
 
     // set the table-level manifest ETag if known...
     try {
-      resource.setTableLevelManifestETag(FileManifestServiceImpl.getTableLevelManifestETag(
-          entry.getTableId(), cc));
+      resource.setTableLevelManifestETag(FileManifestUtils.getTableLevelManifestETag(
+          entry.getTableId(), appId, cc));
     } catch (ODKDatastoreException e) {
       // ignore
     }

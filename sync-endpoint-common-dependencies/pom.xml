@@ -6,11 +6,10 @@
     <parent>
         <groupId>org.opendatakit</groupId>
         <artifactId>sync-endpoint</artifactId>
-        <version>2.1.8</version>
+        <version>2.1.9</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <groupId>org.opendatakit</groupId>
     <artifactId>sync-endpoint-common-dependencies</artifactId>
     <packaging>pom</packaging>
     <name>Sync Endpoint Common Dependencies</name>
@@ -157,6 +156,10 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
