@@ -216,7 +216,7 @@ public class InstanceFileManager {
           if (path != null && path.equals(fi.partialPath)) {
             // we already have this in our store -- check that it is identical.
             // if not, we have a problem!!!
-            if (fi.contentHash.equals(instance.getContentHash(i, cc))) { // TODO
+            if (fi.contentHash.equals(instance.getContentHash(i, cc))) {
               return InstanceFileChangeDetail.FILE_PRESENT;
             } else {
               return InstanceFileChangeDetail.FILE_INCOMPATIBLE;

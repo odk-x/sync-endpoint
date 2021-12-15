@@ -14,18 +14,28 @@
 package org.opendatakit.common.datamodel;
 
 import java.io.ByteArrayOutputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import java.lang.IllegalArgumentException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.opendatakit.aggregate.util.ImageManipulation;
-import org.opendatakit.common.persistence.*;
+import org.opendatakit.common.persistence.CommonFieldsBase;
+import org.opendatakit.common.persistence.Datastore;
+import org.opendatakit.common.persistence.EntityKey;
+import org.opendatakit.common.persistence.Query;
 import org.opendatakit.common.persistence.Query.Direction;
 import org.opendatakit.common.persistence.Query.FilterOperation;
 import org.opendatakit.common.persistence.exception.ODKDatastoreException;
 import org.opendatakit.common.persistence.exception.ODKEntityPersistException;
 import org.opendatakit.common.persistence.exception.ODKOverQuotaException;
+import org.opendatakit.common.persistence.PersistenceUtils;
 import org.opendatakit.common.security.User;
 import org.opendatakit.common.web.CallingContext;
 

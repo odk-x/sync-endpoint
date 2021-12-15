@@ -17,7 +17,11 @@ package org.opendatakit.aggregate.odktables.impl.api;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.PathParam;
@@ -308,8 +312,6 @@ public class InstanceFileServiceImpl implements InstanceFileService {
     // app-centric
     // path of:
     // appid/data/attachments/tableid/instances/instanceId/rest/of/path
-    Log log = LogFactory.getLog(InstanceFileServiceImpl.class);
-    log.info("omkar getFiles() called"); //todo
     if (rowId == null || rowId.length() == 0) {
       return Response.status(Status.BAD_REQUEST)
           .entity(InstanceFileService.ERROR_MSG_INVALID_ROW_ID)
@@ -395,6 +397,9 @@ public class InstanceFileServiceImpl implements InstanceFileService {
                   } catch (IllegalArgumentException e) {
                    logger.warn("Image reduction threw IllegalArgumentException! Using full size image");
                    logger.warn(e.getMessage());
+                  } catch (Exception e) {
+                    logger.warn("Image reduction (most likely) threw an unexpected exception! Using full size image");
+                    logger.warn(e.getMessage());
                   }
                 }
 
@@ -479,26 +484,10 @@ public class InstanceFileServiceImpl implements InstanceFileService {
     String partialPath = constructPathFromSegments(segments);
     String contentType = req.getContentType();
     String contentHash = PersistenceUtils.newMD5HashUri(content);
-    // TODO don't need this, check again.
-//    byte[] reducedBytes = content;
-//    if (contentType.startsWith("image")) {
-//      Log logger = LogFactory.getLog(InstanceFileServiceImpl.class);
-//      logger.info("Attempting reduction of image of contentType: " + contentType);
-//      try {
-//        reducedBytes = ImageManipulation.reducedImage(content, contentType);
-//        logger.info("Image reduction succeeded");
-//      } catch (java.io.IOException e) {
-//        logger.warn("Image reduction threw IO exception! Using full size image");
-//      } catch (IllegalArgumentException e) {
-//        logger.warn("Image reduction threw IllegalArgumentException! Using full size image");
-//        logger.warn(e.getMessage());
-//      }
-//    }
-//    String reducedImageMd5Hash = PersistenceUtils.newMD5HashUri(reducedBytes);
 
     InstanceFileManager fm = new InstanceFileManager(appId, cc);
 
-    // Note: reducedImageContentHash not populated.
+    // Note: reducedImageContentHash not populated in fi, but not needed as of 12/2021.
     FileContentInfo fi = new FileContentInfo(partialPath, contentType, (long) content.length,
             contentHash, null, content);
     InstanceFileChangeDetail outcome = fm.putFile(tableId, rowId, fi, userPermissions);
