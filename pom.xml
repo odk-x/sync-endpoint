@@ -20,7 +20,6 @@
     </organization>
     <name>ODK-X Sync-Endpoint</name>
     <properties>
-        <release.version>2.1.9</release.version>
         <toplevel.directory>${project.basedir}/../</toplevel.directory>
         <war.directory>${project.basedir}/../war-base</war.directory>
         <scriptSourceDirectory>${project.basedir}/../src/test/scripts</scriptSourceDirectory>
@@ -128,7 +127,7 @@
             <dependency>
                 <groupId>org.opendatakit</groupId>
                 <artifactId>sync-endpoint-docker-test</artifactId>
-                <version>{project.version}</version>
+                <version>${project.version}</version>
             </dependency>
 
             <dependency>
@@ -667,7 +666,6 @@
                     <artifactId>flatten-maven-plugin</artifactId>
                     <version>${flatten-maven-plugin.version}</version>
                 </plugin>
-
             </plugins>
         </pluginManagement>
     </build>
