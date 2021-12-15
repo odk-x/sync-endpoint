@@ -7,11 +7,10 @@
     <parent>
         <groupId>org.opendatakit</groupId>
         <artifactId>sync-endpoint</artifactId>
-        <version>2.1.8</version>
+        <version>2.1.9</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <groupId>org.opendatakit</groupId>
     <artifactId>sync-endpoint-docker-test</artifactId>
     <packaging>pom</packaging>
     <build>
@@ -29,7 +28,7 @@
                                 <artifactItem>
                                     <groupId>${project.groupId}</groupId>
                                     <artifactId>sync-endpoint-war</artifactId>
-                                    <version>${release.version}</version>
+                                    <version>${project.parent.version}</version>
                                     <type>war</type>
                                     <destFileName>sync-endpoint-war.war</destFileName>
                                 </artifactItem>
@@ -78,7 +77,7 @@
         <dependency>
             <groupId>org.opendatakit</groupId>
             <artifactId>sync-endpoint-war</artifactId>
-            <version>${release.version}</version>
+            <version>${project.parent.version}</version>
             <type>war</type>
         </dependency>
         <dependency>

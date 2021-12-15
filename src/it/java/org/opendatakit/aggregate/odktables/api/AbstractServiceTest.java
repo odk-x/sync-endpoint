@@ -8,6 +8,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.opendatakit.aggregate.odktables.rest.entity.TableDefinition;
 import org.opendatakit.aggregate.odktables.rest.entity.TableResource;
+import org.opendatakit.aggregate.odktables.rest.entity.TableResourceList;
 import org.springframework.http.*;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
@@ -170,6 +171,19 @@ public abstract class AbstractServiceTest {
     return rsc;
   }
 
+  protected TableResourceList getTables() throws Throwable {
+    URI uri = resolveUri(TABLE_API);
+
+    ResponseEntity<TableResourceList> resp;
+    try {
+      resp = rt.exchange(uri, HttpMethod.GET, null, TableResourceList.class);
+    } catch ( Throwable t ) {
+      t.printStackTrace();
+      throw t;
+    }
+    TableResourceList trl = resp.getBody();
+    return trl;
+  }
 
   protected <V> HttpEntity<V> entity(V entity) {
     return new HttpEntity<V>(entity, reqHeaders);

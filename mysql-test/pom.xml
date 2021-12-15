@@ -7,11 +7,10 @@
     <parent>
         <groupId>org.opendatakit</groupId>
         <artifactId>sync-endpoint-common-dependencies</artifactId>
-        <version>2.1.8</version>
+        <version>2.1.9</version>
         <relativePath>../sync-endpoint-common-dependencies/pom.xml</relativePath>
     </parent>
 
-    <groupId>org.opendatakit</groupId>
     <artifactId>mysql-test</artifactId>
     <packaging>jar</packaging>
     <build>
@@ -161,9 +160,6 @@
                                         <volume>
                                             ${project.basedir}/resources/jdbc.properties:/run/secrets/org.opendatakit.aggregate.jdbc.properties
                                         </volume>
-                                        <volume>
-                                            ${project.basedir}/resources/logging.properties:/run/secrets/org.opendatakit.aggregate.logging.properties
-                                        </volume>
                                     </bind>
                                 </volumes>
                                 <dependsOn>
@@ -233,7 +229,7 @@
         <dependency>
             <groupId>org.opendatakit</groupId>
             <artifactId>sync-endpoint-docker-test</artifactId>
-            <version>${release.version}</version>
+            <version>${project.parent.version}</version>
             <type>pom</type>
         </dependency>
         <dependency>
