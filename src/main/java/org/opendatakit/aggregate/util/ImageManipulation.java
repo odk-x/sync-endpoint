@@ -1,10 +1,5 @@
 package org.opendatakit.aggregate.util;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.opendatakit.aggregate.odktables.impl.api.FileManifestServiceImpl;
-import org.opendatakit.common.datamodel.BinaryContentManipulator;
-
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriter;
@@ -29,6 +24,7 @@ public class ImageManipulation {
         int newWidth;
         int newHeight;
         if (ogImage.getWidth() > ogImage.getHeight()) {
+            // For handling horizontal images.
             newWidth = REDUCED_LARGER_DIMENSION;
             newHeight = REDUCED_SMALLER_DIMENSION;
         } else {
