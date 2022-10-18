@@ -88,7 +88,7 @@
         <!-- jackson -->
         <com.fasterxml.jackson.base.version>2.11.4</com.fasterxml.jackson.base.version>
         <com.fasterxml.jackson.core.version>2.11.4</com.fasterxml.jackson.core.version>
-        <com.fasterxml.jackson.version>2.11.4</com.fasterxml.jackson.version>
+        <com.fasterxml.jackson.version>2.13.4.1</com.fasterxml.jackson.version>
 
         <!-- spring -->
         <org.springframework.version>5.2.13.RELEASE</org.springframework.version>
