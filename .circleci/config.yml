@@ -1,5 +1,15 @@
 version: 2.1
 jobs:
+  set up remote docker:
+    docker:
+      - image: cimg/base:2022.06
+        auth:
+          username: $DOCKER_USERNAME
+          password: $DOCKERHUB_PASSWORD
+    steps:
+      - setup_remote_docker:
+          version: 20.10.14
+
   build:
     docker:
       - image: circleci/openjdk:8-jdk-stretch
@@ -83,7 +93,10 @@ jobs:
 workflows:
   build:
     jobs:
-      - build
+      - set up remote docker
+      - build:
+          requires:
+            - set up remote docker
       - unit test:
           requires:
             - build
