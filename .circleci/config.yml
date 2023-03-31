@@ -6,18 +6,11 @@ jobs:
     working_directory: ~/sync-endpoint
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - sync-endpoint-{{ checksum "~/pom-checksum" }}
-            - sync-endpoint-
-
-      - run: mvn de.qaware.maven:go-offline-maven-plugin:resolve-dependencies      -
-
-      - save_cache:
-          paths:
-            - ~/.m2
-          key: sync-endpoint-{{ checksum "~/pom-checksum" }}
-
+      - run:
+          name: building project
+          command: |
+            mvn clean package
+            mvn clean compile
 
   unit test:
     docker:
