@@ -11,16 +11,14 @@ jobs:
           command: find . -name 'pom.xml' | sort | xargs cat > /tmp/maven_cache_seed
           when: always
       - restore_cache:
-          keys:
-            - sync-endpoint-{{ checksum "~/pom-checksum" }}
-            - sync-endpoint-
+          keys: maven-{{ checksum "/tmp/maven_cache_seed" }}  
 
       - run: mvn de.qaware.maven:go-offline-maven-plugin:resolve-dependencies
 
       - save_cache:
           paths:
-            - ~/.m2
-          key: sync-endpoint-{{ checksum "~/pom-checksum" }}
+          - ~/.m2
+          key: maven-{{ checksum "/tmp/maven_cache_seed" }}
 
       - setup_remote_docker
 
