@@ -110,4 +110,3 @@ workflows:
           requires:
             - unit test
             - integrated test
-            - j
