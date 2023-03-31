@@ -8,19 +8,19 @@ jobs:
       - checkout
       - run:
           name: Generate Cache Checksum
-          command: find . -name 'pom.xml' | sort | xargs cat > /tmp/maven_cache_seed
+          command: find . -name 'pom.xml' | sort -o ~/pom-checksum ~/pom-checksum.tmp
+          when: always
       - restore_cache:
-          key: maven-{{ checksum "/tmp/maven_cache_seed" }}
-      - run:
-          name: Install Dependencies
-          command: mvn -DskipTests clean install dependency:resolve-plugins dependency:go-offline
-          # - run:
-          #name: Run Tests
-          #command: mvn verify
+          keys:
+            - sync-endpoint-{{ checksum "~/pom-checksum" }}
+            - sync-endpoint-
+
+      - run: mvn de.qaware.maven:go-offline-maven-plugin:resolve-dependencies      -
+
       - save_cache:
           paths:
             - ~/.m2
-          key: maven-{{ checksum "/tmp/maven_cache_seed" }}
+          key: sync-endpoint-{{ checksum "~/pom-checksum" }}
       - store_test_results:
           path: target/surefire-reports
 
