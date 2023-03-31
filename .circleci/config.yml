@@ -6,10 +6,6 @@ jobs:
     working_directory: ~/sync-endpoint
     steps:
       - checkout
-      - run:
-          name: Generate Cache Checksum
-          command: find . -name 'pom.xml' | sort -o ~/pom-checksum ~/pom-checksum.tmp
-          when: always
       - restore_cache:
           keys:
             - sync-endpoint-{{ checksum "~/pom-checksum" }}
@@ -21,8 +17,7 @@ jobs:
           paths:
             - ~/.m2
           key: sync-endpoint-{{ checksum "~/pom-checksum" }}
-      - store_test_results:
-          path: target/surefire-reports
+
 
   unit test:
     docker:
