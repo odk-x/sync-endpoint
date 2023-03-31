@@ -79,10 +79,10 @@ jobs:
             docker login -u "${DOCKER_USERNAME} -p "${DOCKER_PASSWORD}
             docker push sync-endpoint-docker-test:latest    
 
-  workflows:
-    build:
-      jobs:
-        - build
+workflows:
+  build:
+    jobs:
+      - build
 
 
 
