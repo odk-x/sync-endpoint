@@ -9,7 +9,7 @@ jobs:
       - run:
           name: Generate Cache Checksum
           command: find . -type f -name "pom.xml" -exec sh -c "sha256sum {} >> ~/pom-checksum.tmp" \;
-                  sort -o ~/pom-checksum ~/pom-checksum.tmp
+                   sort -o ~/pom-checksum ~/pom-checksum.tmp
           when: always
       - restore_cache:
           keys:
