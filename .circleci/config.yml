@@ -3,16 +3,16 @@ jobs:
   docker machine and unit test:
     machine:
       image: ubuntu-2004:202104-01
-      resource_class: xlarge
+    resource_class: xlarge
     working_directory:  ~/sync-endpoint
     steps:
       - checkout
       - run:
-        name: build
-        command: |
-          set -xe  
-          mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
-          mvn clean test
+          name: build
+          command: |
+            set -xe  
+            mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+            mvn clean test
 
       - run:
           name: Save test results
