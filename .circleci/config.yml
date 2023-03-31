@@ -1,38 +1,18 @@
 version: 2.1
 jobs:
-  set up remote docker:
-    docker:
-      - image: cimg/base:2022.06
-        auth:
-          username: $DOCKER_USERNAME
-          password: $DOCKERHUB_PASSWORD
-    steps:
-      - setup_remote_docker:
-          version: 20.10.14
-
-  build:
-    docker:
-      - image: circleci/openjdk:8-jdk-stretch
-    working_directory: ~/sync-endpoint
+  docker machine and unit test:
+    machine:
+      image: ubuntu-2004:202104-01
+      resource_class: xlarge
+    working_directory:  ~/sync-endpoint
     steps:
       - checkout
       - run:
-          name: building project
-          command: |
-            mvn clean package
-            mvn clean compile
-
-  unit test:
-    docker:
-      - image: circleci/openjdk:8-jdk-stretch
-    working_directory: ~/sync-endpoint
-    steps:
-      - checkout
-      - run:
-          name: build and test
-          command: |
-            mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
-            mvn clean test
+        name: build
+        command: |
+          set -xe  
+          mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+          mvn clean test
 
       - run:
           name: Save test results
@@ -93,16 +73,10 @@ jobs:
 workflows:
   build:
     jobs:
-      - set up remote docker
-      - build:
-          requires:
-            - set up remote docker
-      - unit test:
-          requires:
-            - build
+      - docker machine and unit test
       - integrated test:
           requires:
-            - unit test
+            - docker machine and unit test
       - build and push sync endpoint docker swarm:
           requires:
             - unit test
