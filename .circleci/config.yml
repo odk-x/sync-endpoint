@@ -9,31 +9,27 @@ jobs:
       - run:
           name: Generate Cache Checksum
           command: find . -name 'pom.xml' | sort | xargs cat > /tmp/maven_cache_seed
-          when: always
       - restore_cache:
-          keys:
-            - sync-endpoint-{{ checksum "~/pom-checksum" }}
-            - sync-endpoint-
-
-      - run: mvn de.qaware.maven:go-offline-maven-plugin:resolve-dependencies
-
+          key: maven-{{ checksum "/tmp/maven_cache_seed" }}
+      - run:
+          name: Install Dependencies
+          command: mvn -DskipTests clean install dependency:resolve-plugins dependency:go-offline
+      # - run:
+          #name: Run Tests
+          #command: mvn verify
       - save_cache:
           paths:
-            - ~/.m2
-          key: sync-endpoint-{{ checksum "~/pom-checksum" }}
+          - ~/.m2
+          key: maven-{{ checksum "/tmp/maven_cache_seed" }}
+      - store_test_results:
+          path: target/surefire-reports
 
-      - setup_remote_docker
-
-      - run:
-          # installs a docker client that will be used to run the docker commands
-          name: Install Docker client
-          command: |
-            set -x
-            VER="17.03.0-ce"
-            curl -L -o /tmp/docker-$VER.tgz https://get.docker.com/builds/Linux/x86_64/docker-$VER.tgz
-            tar -xz -C /tmp -f /tmp/docker-$VER.tgz
-            mv /tmp/docker/* /usr/bin
-
+  unit test:
+    docker:
+      - image: circleci/openjdk:8-jdk-stretch
+    working_directory: ~/sync-endpoint
+    steps:
+      - checkout
       - run:
           name: build and test
           command: |
@@ -53,11 +49,23 @@ jobs:
       - store_artifacts:
           path: my-service/target/my-service.jar
 
+  integrated test:
+    docker:
+      - image: circleci/openjdk:8-jdk-stretch
+    working_directory: ~/sync-endpoint
+    steps:
+      - checkout
       - run:
           name: Run integration test
           command: |
             mvn clean verify -DskipTests=false -DskipITs=false
 
+  build and push sync endpoint docker swarm:
+    docker:
+      - image: cimg/base:2022.06
+    working_directory: ~/sync-endpoint
+    steps:
+      - checkout
       - run:
           name: Build sync-endpoint-docker-swarm
           command: docker build -t sync-endpoint-docker-swarm:latest .
@@ -68,6 +76,12 @@ jobs:
             docker login -u "${DOCKER_USERNAME} -p "${DOCKER_PASSWORD}
             docker push sync-endpoint-docker-swarm:latest
 
+  build and push sync endpoint docker test:
+    docker:
+      - image: cimg/base:2022.06
+    working_directory: ~/sync-endpoint
+    steps:
+      - checkout
       - run:
           name: Build sync-endpoint-docker-test
           command: docker build -t sync-endpoint-docker-test:latest .
@@ -82,7 +96,20 @@ workflows:
   build:
     jobs:
       - build
-
+      - unit test:
+          requires:
+            - build
+      - integrated test:
+          requires:
+            - unit test
+      - build and push sync endpoint docker swarm:
+          requires:
+            - unit test
+            - integrated test
+      - build and push sync endpoint docker test:
+          requires:
+            - unit test
+            - integrated test
 
 
 
