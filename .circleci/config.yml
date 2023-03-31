@@ -56,7 +56,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Run integration test
+          name: Running integration test
           command: |
             mvn clean verify -DskipTests=false -DskipITs=false
 
