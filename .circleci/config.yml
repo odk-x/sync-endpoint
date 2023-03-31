@@ -79,9 +79,7 @@ workflows:
             - docker machine and unit test
       - build and push sync endpoint docker swarm:
           requires:
-            - unit test
             - integrated test
       - build and push sync endpoint docker test:
           requires:
-            - unit test
             - integrated test
