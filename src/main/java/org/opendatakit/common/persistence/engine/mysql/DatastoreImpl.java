@@ -85,12 +85,6 @@ public class DatastoreImpl implements Datastore, InitializingBean {
       // ignore this but log a brief info message
       LogFactory.getLog(DatastoreImpl.class).info("Failed to load com.mysql.jdbc.Driver (did you download and install/copy MySQL Connector/J ?) Exception: " + e.toString());
     }
-    try {
-      Class.forName("com.mysql.jdbc.GoogleDriver");
-    } catch ( Exception e ) {
-      // ignore this but log a brief info message
-      LogFactory.getLog(DatastoreImpl.class).info("Failed to load com.mysql.jdbc.GoogleDriver Exception: " + e.toString());
-    }
     this.tm = new DataSourceTransactionManager(dataSource);
   }
 

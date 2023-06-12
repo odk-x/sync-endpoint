@@ -53,7 +53,7 @@
         <javax.transaction.transaction-api.version>1.3</javax.transaction.transaction-api.version>
         <javax.xml.bind.jaxb-api.version>2.3.1</javax.xml.bind.jaxb-api.version>
 
-        <io.fabric8.docker-maven-plugin.version>0.34.1</io.fabric8.docker-maven-plugin.version>
+        <io.fabric8.docker-maven-plugin.version>0.43.0</io.fabric8.docker-maven-plugin.version>
 
         <!-- apache -->
         <apache.httpclient.version>4.5.13</apache.httpclient.version>
