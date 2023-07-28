@@ -83,6 +83,14 @@
         </plugins>
 
     </build>
+    <distributionManagement>
+         <repository>
+                 <id>github</id>
+                 <name>GitHub tr-sangale Apache Maven Packages</name>
+                 <url>https://maven.pkg.github.com/tr-sangale/sync-endpoint</url>
+             </repository>
+    </distributionManagement>
+
     <dependencies>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
