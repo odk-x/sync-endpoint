@@ -49,11 +49,7 @@ jobs:
           command: |
             cd odk-rest-interface
             # sudo env "PATH=$PATH" mvn deploy
-            mvn deploy:deploy-file -Dfile=./[JAR].jar 
-            -DpomFile=pom.xml 
-            -DrepositoryId=github 
-            -Durl=https://maven.pkg.github.com/tr-sangale/sync-endpoint
-            -Dtoken=${GITHUB_PKG}
+            mvn deploy -DpomFile=pom.xml -DrepositoryId=github -Durl=https://maven.pkg.github.com/tr-sangale/sync-endpoint -Dtoken=${GITHUB_PKG}
 
       # - run:
       #     name: Saving docker image as tar file
