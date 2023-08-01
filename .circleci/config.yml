@@ -30,7 +30,7 @@ jobs:
             # pwd
             sudo env "PATH=$PATH" mvn clean install -DskipTests
       # - run:
-      #     name: Configure Mave
+      #     name: Configure Mav
       #     command: |
       #       echo "<settings><servers><server><id>github</id><username>${GITHUB_USERNAME}</username><password>${GITHUB_PKG}</password></server></servers></settings>" >> $HOME/.m2/settings.xml
 
