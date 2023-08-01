@@ -24,11 +24,11 @@ jobs:
       #       sudo update-java-alternatives --set java-1.8.0-openjdk-amd64
       #       java -version
 
-      # - run:
-      #     name: Building the maven project 
-      #     command: |
-      #       # pwd
-      #       sudo env "PATH=$PATH" mvn clean install -DskipTests
+      - run:
+          name: Building the maven project 
+          command: |
+            # pwd
+            sudo env "PATH=$PATH" mvn --global-settings --settings $HOME/project/.m2/settings.xml clean install -DskipTests
       # - run:
       #     name: Configure Mav
       #     command: |
@@ -38,14 +38,13 @@ jobs:
           name: Print
           command: |
             cat $HOME/project/.m2/settings.xml
-            echo $GITHUB_USERNAME
-            echo $GITHUB_TOKEN
-      # - run:
-      #     name: Deploying jars to remote repo 
-      #     command: |
-      #       cd odk-rest-interface
-      #       sudo env "PATH=$PATH" mvn --global-settings --settings $HOME/project/.m2/settings.xml deploy
-      #       # sudo env "PATH=$PATH" mvn deploy
+
+      - run:
+          name: Deploying jars to remote repo 
+          command: |
+            cd odk-rest-interface
+            sudo env "PATH=$PATH" mvn deploy
+            # sudo env "PATH=$PATH" mvn deploy
 
       # - run:
       #     name: Saving docker image as tar file
