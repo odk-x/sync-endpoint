@@ -42,7 +42,7 @@ jobs:
           name: Deploying jars to remote repo 
           command: |
             cd odk-rest-interface
-            sudo env "PATH=$PATH" mvn --settings $HOME/project/.m2/settings.xml deploy
+            sudo env "PATH=$PATH" mvn --global-settings $HOME/project/.m2/settings.xml deploy
             # sudo env "PATH=$PATH" mvn deploy
 
       # - run:
