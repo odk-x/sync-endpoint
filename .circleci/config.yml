@@ -43,10 +43,9 @@ jobs:
           name: Deploying jars to remote repo 
           command: |
             cd odk-rest-interface
-            export GITHUB_USERNAME=$GITHUB_USERNAME
-            export GITHUB_TOKEN=$GITHUB_TOKEN
-            echo $GITHUB_USERNAME
-            sudo env "PATH=$PATH" mvn deploy
+            export USERNAME=$GITHUB_USERNAME
+            export TOKEN=$GITHUB_TOKEN
+            sudo env "PATH=$PATH" mvn -gs settings.xml deploy
             # sudo env "PATH=$PATH" mvn deploy
 
       # - run:
