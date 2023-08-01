@@ -76,10 +76,10 @@ jobs:
       #     command: |
       #       echo "<settings><servers><server><id>github</id><username>${GITHUB_USERNAME}</username><password>${GITHUB_PKG}</password></server></servers></settings>" >> $HOME/.m2/settings.xml
 
-      # - run:
-      #     name: Print
-      #     command: |
-      #       cat $HOME/.m2/settings.xml
+      - run:
+          name: Print
+          command: |
+            cat $HOME/.m2/settings.xml
       - run:
           name: Deploying jars to remote repo 
           command: |
