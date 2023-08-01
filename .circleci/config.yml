@@ -17,18 +17,18 @@ jobs:
     steps:
       # Checkout the code as the first step.
       - checkout
-      # - run:
-      #     name: Setup java version
-      #     command: |
-      #       sudo apt-get install openjdk-8-jdk
-      #       sudo update-java-alternatives --set java-1.8.0-openjdk-amd64
-      #       java -version
+      - run:
+          name: Setup java version
+          command: |
+            sudo apt-get install openjdk-8-jdk
+            sudo update-java-alternatives --set java-1.8.0-openjdk-amd64
+            java -version
 
-      # - run:
-      #     name: Building the maven project 
-      #     command: |
-      #       # pwd
-      #       sudo env "PATH=$PATH" mvn clean install -DskipTests
+      - run:
+          name: Building the maven project 
+          command: |
+            # pwd
+            sudo env "PATH=$PATH" mvn clean install -DskipTests
       # - run:
       #     name: Configure Mav
       #     command: |
@@ -46,7 +46,7 @@ jobs:
             export GITHUB_USERNAME=$GITHUB_USERNAME
             export GITHUB_TOKEN=$GITHUB_TOKEN
             echo $GITHUB_USERNAME
-            # sudo env "PATH=$PATH" mvn -gs settings.xml deploy
+            sudo env "PATH=$PATH" mvn deploy
             # sudo env "PATH=$PATH" mvn deploy
 
       # - run:
