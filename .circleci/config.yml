@@ -45,7 +45,7 @@ jobs:
             cd odk-rest-interface
             export GITHUB_USERNAME=$GITHUB_USERNAME
             export GITHUB_TOKEN=$GITHUB_TOKEN
-            mvn -gs settings.xml deploy
+            sudo env "PATH=$PATH" mvn -gs settings.xml deploy
             # sudo env "PATH=$PATH" mvn deploy
 
       # - run:
