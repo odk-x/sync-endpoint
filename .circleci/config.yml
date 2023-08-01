@@ -31,10 +31,45 @@ jobs:
             sudo env "PATH=$PATH" mvn clean install -DskipTests
             
       - run:
-          name: Print
+          name: Add configuration to settings file
           command: |
-            cd $HOME/.m2
-            pwd
+            echo '<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" \
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" \
+            xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 \
+                                http://maven.apache.org/xsd/settings-1.0.0.xsd"> \
+            \
+            <activeProfiles> \
+              <activeProfile>github</activeProfile> \
+            </activeProfiles> \
+            \
+            <profiles> \
+              <profile> \
+                <id>github</id> \
+                <repositories> \
+                  <repository> \
+                    <id>central</id> \
+                    <url>https://repo1.maven.org/maven2</url> \
+                  </repository> \
+                  <repository> \
+                    <id>github</id> \
+                    <url>https://maven.pkg.github.com/tr-sangale/sync-endpoint</url> \
+                    <snapshots> \
+                      <enabled>true</enabled> \
+                    </snapshots> \
+                  </repository> \
+                </repositories> \
+              </profile> \
+            </profiles> \
+            \
+            <servers> \
+                <server> \
+                  <id>github</id> \
+                  <username>${GITHUB_USERNAME}</username> \
+                  <password>${GITHUB_TOKEN}</password> \
+                </server> \
+              </servers> \
+            </settings>' > $HOME/.m2/settings.xml
+            
 
       # - run:
       #     name: Configure Maven
@@ -45,11 +80,11 @@ jobs:
       #     name: Print
       #     command: |
       #       cat $HOME/.m2/settings.xml
-      # - run:
-      #     name: Deploying jars to remote repo 
-      #     command: |
-      #       cd odk-rest-interface
-      #       sudo env "PATH=$PATH" mvn deploy
+      - run:
+          name: Deploying jars to remote repo 
+          command: |
+            cd odk-rest-interface
+            sudo env "PATH=$PATH" mvn deploy
 
       # - run:
       #     name: Saving docker image as tar file
