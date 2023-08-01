@@ -30,10 +30,11 @@ jobs:
             # pwd
             sudo env "PATH=$PATH" mvn clean install -DskipTests
             
-      # - run:
-      #     name: Print
-      #     command: |
-      #       cat $HOME/.m2/settings.xml
+      - run:
+          name: Print
+          command: |
+            cd $HOME/.m2
+            pwd
 
       # - run:
       #     name: Configure Maven
@@ -44,12 +45,11 @@ jobs:
       #     name: Print
       #     command: |
       #       cat $HOME/.m2/settings.xml
-      - run:
-          name: Deploying jars to remote repo 
-          command: |
-            cd odk-rest-interface
-            # sudo env "PATH=$PATH" mvn deploy
-            sudo env "PATH=$PATH" mvn deploy -DpomFile=pom.xml -DrepositoryId=github -Durl=https://maven.pkg.github.com/tr-sangale/sync-endpoint -Dtoken=${GITHUB_PKG}
+      # - run:
+      #     name: Deploying jars to remote repo 
+      #     command: |
+      #       cd odk-rest-interface
+      #       sudo env "PATH=$PATH" mvn deploy
 
       # - run:
       #     name: Saving docker image as tar file
