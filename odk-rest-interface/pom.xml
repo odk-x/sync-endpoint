@@ -12,7 +12,7 @@
     <packaging>jar</packaging>
     <groupId>com.github</groupId>
     <artifactId>odk-rest-interface</artifactId>
-    <version>1.0.0</version>     
+    <version>1.0.1</version>     
     <distributionManagement>
          <repository>
                  <id>github</id>
