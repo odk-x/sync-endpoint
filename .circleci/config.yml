@@ -38,7 +38,7 @@ jobs:
             
 
       # - run:
-      #     name: Configure Maven
+      #     name: Configure Mave
       #     command: |
       #       echo "<settings><servers><server><id>github</id><username>${GITHUB_USERNAME}</username><password>${GITHUB_PKG}</password></server></servers></settings>" >> $HOME/.m2/settings.xml
 
