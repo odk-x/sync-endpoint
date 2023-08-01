@@ -38,8 +38,8 @@ jobs:
           name: Print
           command: |
             cat $HOME/project/.m2/settings.xml
-            echo $GITHUB_USERANME
-            echo %GITHUB_TOKEN
+            echo $GITHUB_USERNAME
+            echo $GITHUB_TOKEN
       # - run:
       #     name: Deploying jars to remote repo 
       #     command: |
