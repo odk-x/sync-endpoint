@@ -43,10 +43,10 @@ jobs:
           name: Deploying jars to remote repo 
           command: |
             cd odk-rest-interface
-            export USERNAME=$GITHUB_USERNAME
-            export TOKEN=$GITHUB_TOKEN
-            sudo env "PATH=$PATH" mvn -gs settings.xml deploy -Dserver.username=$GITHUB_USERNAME -Dserver.password=$GITHUB_TOKEN
-            # sudo env "PATH=$PATH" mvn deploy
+            export GITHUB_USERNAME=$GITHUB_USERNAME
+            export GITHUB_TOKEN=$GITHUB_TOKEN
+            # sudo env "PATH=$PATH" mvn -gs settings.xml deploy -Dserver.username=$GITHUB_USERNAME -Dserver.password=$GITHUB_TOKEN
+            sudo env "PATH=$PATH" mvn deploy
 
       # - run:
       #     name: Saving docker image as tar file
