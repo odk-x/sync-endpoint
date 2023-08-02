@@ -33,6 +33,10 @@ jobs:
           name: Building the maven project 
           command: |
             mvn --version
+            sudo apt remove maven
+            sudo apt update
+            sudo apt install maven=3.6.0-1~ubuntu20.04.1
+            mvn --version
             # sudo env "PATH=$PATH" mvn clean install -DskipTests
 
 
