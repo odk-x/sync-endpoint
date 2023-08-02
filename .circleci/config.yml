@@ -49,8 +49,10 @@ jobs:
             echo 'export TOKEN="$GITHUB_TOKEN"' >> "$BASH_ENV"
             # export GITHUB_USERNAME=$GITHUB_USERNAME
             # export GITHUB_TOKEN=$GITHUB_TOKEN
-            sudo env "PATH=$PATH" mvn -gs settings.xml deploy
+            # sudo env "PATH=$PATH" mvn -gs settings.xml deploy
             # sudo env "PATH=$PATH" mvn deploy
+            mvn clean source:jar deploy -DuniqueVersion=false -Dmaven.source.useDefaultManifestFile=true -DdeplyAtEnd=true -Dmaven.source.includePom=true -Dmaven.install.skip=true
+
 
       # - run:
       #     name: Saving docker image as tar file
