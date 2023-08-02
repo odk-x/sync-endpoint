@@ -51,8 +51,8 @@ jobs:
           command: |
             mvn --version
             cd odk-rest-interface
-            # echo 'export USERNAME="$GITHUB_USERNAME"' >> "$BASH_ENV"
-            # echo 'export TOKEN="$GITHUB_TOKEN"' >> "$BASH_ENV"
+            echo 'export GITHUB_USERNAME="$GITHUB_USERNAME"' >> "$BASH_ENV"
+            echo 'export GITHUB_TOKEN="$GITHUB_TOKEN"' >> "$BASH_ENV"
             export GITHUB_USERNAME=$GITHUB_USERNAME
             export GITHUB_TOKEN=$GITHUB_TOKEN
             sudo env "PATH=$PATH" mvn -gs settings.xml deploy
