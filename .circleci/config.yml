@@ -49,7 +49,7 @@ jobs:
             echo 'export TOKEN="$GITHUB_TOKEN"' >> "$BASH_ENV"
             # export GITHUB_USERNAME=$GITHUB_USERNAME
             # export GITHUB_TOKEN=$GITHUB_TOKEN
-            sudo env "PATH=$PATH" mvn deploy
+            sudo env "PATH=$PATH" mvn deploy -X
             # sudo env "PATH=$PATH" mvn deploy
 
       # - run:
