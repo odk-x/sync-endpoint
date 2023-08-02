@@ -17,12 +17,12 @@ jobs:
     steps:
       # Checkout the code as the first step.
       - checkout
-      - run:
-          name: Setup java version
-          command: |
-            sudo apt-get install openjdk-8-jdk
-            sudo update-java-alternatives --set java-1.8.0-openjdk-amd64
-            java -version
+      # - run:
+      #     name: Setup java version
+      #     command: |
+      #       sudo apt-get install openjdk-8-jdk
+      #       sudo update-java-alternatives --set java-1.8.0-openjdk-amd64
+      #       java -version
 
       # - run:
       #     name: Configure Mav
@@ -32,8 +32,8 @@ jobs:
       - run:
           name: Building the maven project 
           command: |
-            # pwd
-            sudo env "PATH=$PATH" mvn clean install -DskipTests
+            mvn --version
+            # sudo env "PATH=$PATH" mvn clean install -DskipTests
 
 
       # - run:
@@ -41,17 +41,17 @@ jobs:
       #     command: |
       #       cat $HOME/project/.m2/settings.xml
 
-      - run:
-          name: Deploying jars to remote repo 
-          command: |
-            cd odk-rest-interface
-            echo 'export USERNAME="$GITHUB_USERNAME"' >> "$BASH_ENV"
-            echo 'export TOKEN="$GITHUB_TOKEN"' >> "$BASH_ENV"
-            # export GITHUB_USERNAME=$GITHUB_USERNAME
-            # export GITHUB_TOKEN=$GITHUB_TOKEN
-            # sudo env "PATH=$PATH" mvn -gs settings.xml deploy
-            # sudo env "PATH=$PATH" mvn deploy
-            mvn clean source:jar deploy -DuniqueVersion=false -Dmaven.source.useDefaultManifestFile=true -DdeplyAtEnd=true -Dmaven.source.includePom=true -Dmaven.install.skip=true
+      # - run:
+      #     name: Deploying jars to remote repo 
+      #     command: |
+      #       cd odk-rest-interface
+      #       echo 'export USERNAME="$GITHUB_USERNAME"' >> "$BASH_ENV"
+      #       echo 'export TOKEN="$GITHUB_TOKEN"' >> "$BASH_ENV"
+      #       # export GITHUB_USERNAME=$GITHUB_USERNAME
+      #       # export GITHUB_TOKEN=$GITHUB_TOKEN
+      #       # sudo env "PATH=$PATH" mvn -gs settings.xml deploy
+      #       # sudo env "PATH=$PATH" mvn deploy
+      #       sudo env "PATH=$PATH" mvn clean source:jar deploy -DuniqueVersion=false -Dmaven.source.useDefaultManifestFile=true -DdeplyAtEnd=true -Dmaven.source.includePom=true -Dmaven.install.skip=true
 
 
       # - run:
