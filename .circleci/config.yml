@@ -54,7 +54,7 @@ jobs:
             # echo 'export TOKEN="$GITHUB_TOKEN"' >> "$BASH_ENV"
             export GITHUB_USERNAME=$GITHUB_USERNAME
             export GITHUB_TOKEN=$GITHUB_TOKEN
-            sudo env "PATH=$PATH" mvn -gs settings.xml deploy -P autoInstallPackage -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true
+            sudo env "PATH=$PATH" mvn -gs settings.xml deploy -Dmaven.resolver.transport=wagon
             # mvn -gs settings.xml deploy
             # sudo env "PATH=$PATH" mvn deploy
 
