@@ -11,7 +11,7 @@ jobs:
     # Be sure to update the Docker image tag below to openjdk version of your application.
     # A list of available CircleCI Docker Convenience Images are available here: https://circleci.com/developer/images/image/cimg/openjdk
     machine:
-      image: ubuntu-1604:202010-01
+      image: ubuntu-1604:2022.04.2
     # Add steps to the jo
     # See: https://circleci.com/docs/configuration-reference/#steps
     steps:
@@ -33,10 +33,10 @@ jobs:
           name: Building the maven project 
           command: |
             mvn --version
-            # sudo apt remove maven
-            # sudo apt update
-            # sudo apt install maven=3.6.0
-            # mvn --version
+            sudo apt remove maven
+            sudo apt update
+            sudo apt install maven=3.6.0
+            mvn --version
             # sudo env "PATH=$PATH" mvn clean install -DskipTests
 
 
