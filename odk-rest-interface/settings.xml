@@ -29,14 +29,8 @@
   <servers>
     <server>
       <id>github</id>
-      <configuration>
-        <httpHeaders>
-          <property>
-            <name>Authorization</name>
-            <value>Bearer \${env.GITHUB_TOKEN}</value>
-          </property>
-        </httpHeaders>
-      </configuration>
+      <username>${env.GITHUB_USERNAME}</username>
+      <password>${env.GITHUB_TOKEN}</password>
     </server>
   </servers>
 </settings>
