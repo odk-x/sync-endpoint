@@ -30,7 +30,7 @@ jobs:
       #       echo "<settings><servers><server><id>github</id><username>\${env.GITHUB_USERNAME}</username><password>\${env.GITHUB_TOKEN}</password></server></servers></settings>" > /home/circleci/.m2/settings.xml
 
       - run:
-          name: Building the maven project 
+          name: Degrading maven version 
           command: |
             mvn --version
             wget -P ~/maven https://archive.apache.org/dist/maven/maven-3/3.6.0/binaries/apache-maven-3.6.0-bin.zip
@@ -38,25 +38,24 @@ jobs:
             export M2_HOME=~/maven/apache-maven-3.6.0
             export PATH=${M2_HOME}/bin:${PATH}
             mvn --version
-            # sudo env "PATH=$PATH" mvn clean install -DskipTests
+            
 
 
-      # - run:
-      #     name: Print
-      #     command: |
-      #       cat $HOME/project/.m2/settings.xml
+      - run:
+          name: Building maven project
+          command: |
+            sudo env "PATH=$PATH" mvn clean install -DskipTests
 
-      # - run:
-      #     name: Deploying jars to remote repo 
-      #     command: |
-      #       cd odk-rest-interface
-      #       echo 'export USERNAME="$GITHUB_USERNAME"' >> "$BASH_ENV"
-      #       echo 'export TOKEN="$GITHUB_TOKEN"' >> "$BASH_ENV"
-      #       # export GITHUB_USERNAME=$GITHUB_USERNAME
-      #       # export GITHUB_TOKEN=$GITHUB_TOKEN
-      #       # sudo env "PATH=$PATH" mvn -gs settings.xml deploy
-      #       # sudo env "PATH=$PATH" mvn deploy
-      #       sudo env "PATH=$PATH" mvn clean source:jar deploy -DuniqueVersion=false -Dmaven.source.useDefaultManifestFile=true -DdeplyAtEnd=true -Dmaven.source.includePom=true -Dmaven.install.skip=true
+      - run:
+          name: Deploying jars to remote repo 
+          command: |
+            cd odk-rest-interface
+            # echo 'export USERNAME="$GITHUB_USERNAME"' >> "$BASH_ENV"
+            # echo 'export TOKEN="$GITHUB_TOKEN"' >> "$BASH_ENV"
+            # export GITHUB_USERNAME=$GITHUB_USERNAME
+            # export GITHUB_TOKEN=$GITHUB_TOKEN
+            sudo env "PATH=$PATH" mvn -gs settings.xml deploy
+            # sudo env "PATH=$PATH" mvn deploy
 
 
       # - run:
