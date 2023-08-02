@@ -49,6 +49,7 @@ jobs:
       - run:
           name: Deploying jars to remote repo 
           command: |
+            mvn --version
             cd odk-rest-interface
             # echo 'export USERNAME="$GITHUB_USERNAME"' >> "$BASH_ENV"
             # echo 'export TOKEN="$GITHUB_TOKEN"' >> "$BASH_ENV"
