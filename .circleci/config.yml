@@ -37,25 +37,28 @@ jobs:
             unzip ~/maven/apache-maven-3.6.0-bin.zip -d ~/maven
             export M2_HOME=~/maven/apache-maven-3.6.0
             export PATH=${M2_HOME}/bin:${PATH}
-            mvn --version
+            echo 'export M2_HOME=~/maven/apache-maven-3.6.0' >> $BASH_ENV
+            echo 'export PATH=${M2_HOME}/bin:${PATH}' >> $BASH_ENV
+            
             
 
 
       - run:
           name: Building maven project
           command: |
-            sudo env "PATH=$PATH" mvn clean install -DskipTests
+            mvn --version
+            # sudo env "PATH=$PATH" mvn clean install -DskipTests
 
       - run:
           name: Deploying jars to remote repo 
           command: |
             mvn --version
-            cd odk-rest-interface
+            # cd odk-rest-interface
             # echo 'export USERNAME="$GITHUB_USERNAME"' >> "$BASH_ENV"
             # echo 'export TOKEN="$GITHUB_TOKEN"' >> "$BASH_ENV"
-            export GITHUB_USERNAME=$GITHUB_USERNAME
-            export GITHUB_TOKEN=$GITHUB_TOKEN
-            sudo env "PATH=$PATH" mvn -gs settings.xml deploy -Dmaven.resolver.transport=wagon
+            # export GITHUB_USERNAME=$GITHUB_USERNAME
+            # export GITHUB_TOKEN=$GITHUB_TOKEN
+            # sudo env "PATH=$PATH" mvn -gs settings.xml deploy -Dmaven.resolver.transport=wagon
             # mvn -gs settings.xml deploy
             # sudo env "PATH=$PATH" mvn deploy
 
