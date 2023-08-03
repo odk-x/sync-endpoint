@@ -84,7 +84,7 @@ jobs:
           command: |
             mvn --version
             cd odk-rest-interface
-            sudo env "PATH=$PATH" mvn -gs settings.xml deploy
+            mvn -gs settings.xml deploy
 
   deploy-push:
     # These next lines define a Docker eecutor: https://circleci.com/docs/executor-types/
