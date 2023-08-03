@@ -49,13 +49,13 @@ jobs:
       - run:
           name: Deploying jars to remote repo 
           command: |
-            mvn --version
-            cd odk-rest-interface
-            echo 'export GITHUB_USERNAME="$GITHUB_USERNAME"' >> "$BASH_ENV"
-            echo 'export GITHUB_TOKEN="$GITHUB_TOKEN"' >> "$BASH_ENV"
-            export GITHUB_USERNAME=$GITHUB_USERNAME
-            export GITHUB_TOKEN=$GITHUB_TOKEN
-            sudo env "PATH=$PATH" mvn -s settings.xml deploy
+            # mvn --version
+            # cd odk-rest-interface
+            # echo 'export GITHUB_USERNAME="$GITHUB_USERNAME"' >> "$BASH_ENV"
+            # echo 'export GITHUB_TOKEN="$GITHUB_TOKEN"' >> "$BASH_ENV"
+            # export GITHUB_USERNAME=$GITHUB_USERNAME
+            # export GITHUB_TOKEN=$GITHUB_TOKEN
+            # sudo env "PATH=$PATH" mvn -s settings.xml deploy
             # mvn -gs settings.xml deploy
             # sudo env "PATH=$PATH" mvn deploy
 
@@ -74,6 +74,16 @@ jobs:
       #     key: v1-odk/sync-endpoint
       #     paths:
       #       - .
+  deploy-jar:
+    docker:
+      - image: circleci/openjdk:8
+    steps:
+      - checkout
+      - run:
+          name: Deploying jars to remote repo 
+          command: |
+            mvn --version
+            cd odk-rest-interface
 
   deploy-push:
     # These next lines define a Docker eecutor: https://circleci.com/docs/executor-types/
@@ -112,7 +122,9 @@ workflows:
   Build-Test: # This is the name of the workflow, feel free to change it to better match your workflow.
     # Inside the workflow, you define the jobs you want to run.
     jobs:
-      - build-and-test
+      # - build-and-test
+      - deploy-jar
       # - deploy-push:
           # requires:
           # - build-and-test
+ 
