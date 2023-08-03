@@ -24,79 +24,43 @@ jobs:
             sudo update-java-alternatives --set java-1.8.0-openjdk-amd64
             java -version
 
-      # - run:
-      #     name: Configure Mav
-      #     command: |
-      #       echo "<settings><servers><server><id>github</id><username>\${env.GITHUB_USERNAME}</username><password>\${env.GITHUB_TOKEN}</password></server></servers></settings>" > /home/circleci/.m2/settings.xml
-
-      - run:
-          name: Degrading maven version 
-          command: |
-            mvn --version
-            wget -P ~/maven https://archive.apache.org/dist/maven/maven-3/3.6.0/binaries/apache-maven-3.6.0-bin.zip
-            unzip ~/maven/apache-maven-3.6.0-bin.zip -d ~/maven
-            export M2_HOME=~/maven/apache-maven-3.6.0
-            export PATH=${M2_HOME}/bin:${PATH}
-            echo 'export M2_HOME=~/maven/apache-maven-3.6.0' >> $BASH_ENV
-            echo 'export PATH=${M2_HOME}/bin:${PATH}' >> $BASH_ENV
-
       - run:
           name: Building maven project
           command: |
-            mvn --version
-            sudo env "PATH=$PATH" mvn clean install -DskipTests
+            sudo env "PATH=$PATH" mvn clean install
 
       - run:
-          name: Deploying jars to remote repo 
+          name: Saving docker image as tar file
           command: |
-            # mvn --version
-            # cd odk-rest-interface
-            # echo 'export GITHUB_USERNAME="$GITHUB_USERNAME"' >> "$BASH_ENV"
-            # echo 'export GITHUB_TOKEN="$GITHUB_TOKEN"' >> "$BASH_ENV"
-            # export GITHUB_USERNAME=$GITHUB_USERNAME
-            # export GITHUB_TOKEN=$GITHUB_TOKEN
-            # sudo env "PATH=$PATH" mvn -s settings.xml deploy
-            # mvn -gs settings.xml deploy
-            # sudo env "PATH=$PATH" mvn deploy
+            docker save -o ./sync-endpoint-docker-swarm/sync-endpoint.tar odk/sync-endpoint:latest
 
-
-      # - run:
-      #     name: Saving docker image as tar file
-      #     command: |
-      #       docker save -o ./sync-endpoint-docker-swarm/sync-endpoint.tar odk/sync-endpoint:latest
-
-
-      # - persist_to_workspace:
-      #     root: .
-      #     paths:
-      #       - .
-      # - save_cache:
-      #     key: v1-odk/sync-endpoint
-      #     paths:
-      #       - .
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+      - save_cache:
+          key: v1-odk/sync-endpoint
+          paths:
+            - .
   deploy-jar:
     docker:
+      # used docekr image as machine executor was not able topush jar to githubrepo
       - image: circleci/openjdk:8
+
     steps:
       - checkout
       - run:
-          name: Deploying jars to remote repo 
+          name: Deploying jars to github maven repo 
           command: |
-            mvn --version
             cd odk-rest-interface
             mvn -gs settings.xml deploy
 
   deploy-push:
-    # These next lines define a Docker eecutor: https://circleci.com/docs/executor-types/
-    # You can specify an image from Dockerhu or use one of our Convenience Images from CircleCI's Developer Hub.
-    # Be sure to update the Docker image tag below to openjdk version of your application.
-    # A list of available CircleCI Docker Convenience Images are available here: https://circleci.com/developer/images/image/cimg/openjdk
     machine:
       image: ubuntu-2204:2022.04.2
     
     steps:
-      # Checkout the code as the first step.
-      # - checkout
+
       - restore_cache:
           key: v1-odk/sync-endpoint
       - attach_workspace:
@@ -107,7 +71,6 @@ jobs:
             export CR_PAT=$GHCR_TOKEN
             echo $CR_PAT | docker login ghcr.io -u tr-sangale --password-stdin
             docker load -i ./sync-endpoint-docker-swarm/sync-endpoint.tar
-            docker images
 
       - run:
           name: Pushing the image to GHCR
@@ -120,12 +83,14 @@ jobs:
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
 workflows:
-  Build-Test: # This is the name of the workflow, feel free to change it to better match your workflow.
+  Build-Test-Deploy: # This is the name of the workflow, feel free to change it to better match your workflow.
     # Inside the workflow, you define the jobs you want to run.
     jobs:
       # - build-and-test
       - deploy-jar
+      #     requires:
+      #       - build-and-test
       # - deploy-push:
-          # requires:
-          # - build-and-test
+      #     requires:
+      #     - build-and-test
  
