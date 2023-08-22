@@ -25,7 +25,7 @@ jobs:
             java -version
 
       - run:
-          name: Building maven project
+          name: Building and pushing the maven project
           command: |
             sudo env "PATH=$PATH" mvn clean install
 
@@ -52,8 +52,8 @@ jobs:
       - run:
           name: Deploying jars to github maven repo 
           command: |
-            cd odk-rest-interface
-            mvn -gs settings.xml deploy
+            sudo env "PATH=$PATH" mvn -gs settings.xml -pl '!sync-endpoint-war,!sync-endpoint-docker-swarm,!sync-endpoint-docker-test,!postgres-test,!mysql-test,!sync-endpoint-common-dependencies' deploy -DskipTests
+
 
   deploy-image:
     machine:
@@ -89,7 +89,7 @@ workflows:
       - deploy-jar:
           requires:
             - build-and-test
-      - deploy-image:
-          requires:
-          - build-and-test
+      # - deploy-image:
+      #     requires:
+      #     - build-and-test
  
