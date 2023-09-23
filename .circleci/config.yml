@@ -74,8 +74,8 @@ jobs:
       - run:
           name: Pushing the image to GHCR
           command: |
-            docker tag odk/sync-endpoint:latest ghcr.io/tr-sangale/sync-endpoint:latest
-            docker push ghcr.io/tr-sangale/sync-endpoint:latest
+            docker tag odk/sync-endpoint:latest ghcr.io/odk-x/sync-endpoint:latest
+            docker push ghcr.io/odk-x/sync-endpoint:latest
 
  
 
