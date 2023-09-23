@@ -9,8 +9,17 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>odk-rest-interface</artifactId>
     <packaging>jar</packaging>
+    <groupId>com.github</groupId>
+    <artifactId>odk-rest-interface</artifactId>
+    <version>1.0.1</version>     
+    <distributionManagement>
+         <repository>
+                 <id>github</id>
+                 <name>GitHubPackages</name>
+                 <url>https://maven.pkg.github.com/tr-sangale/sync-endpoint</url>
+         </repository>
+    </distributionManagement>
     <build>
         <sourceDirectory>${project.basedir}/../src/main/java</sourceDirectory>
         <directory>${project.basedir}/target</directory>
