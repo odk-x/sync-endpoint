@@ -68,7 +68,7 @@ jobs:
           name: Setting up ghcr repo
           command: |
             export CR_PAT=$GHCR_TOKEN
-            echo $CR_PAT | docker login ghcr.io -u tr-sangale --password-stdin
+            echo $CR_PAT | docker login ghcr.io -u odk-x-bot --password-stdin
             docker load -i ./sync-endpoint-docker-swarm/sync-endpoint.tar
 
       - run:
