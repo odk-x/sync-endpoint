@@ -75,14 +75,13 @@ jobs:
           name: Setting up ghcr repo
           command: |
             export CR_PAT=$GITHUB_TOKEN
-            echo $CR_PAT | docker login ghcr.io -u tr-sangale --password-stdin
+            echo $CR_PAT | docker login ghcr.io -u odk-x-bot --password-stdin
             docker load -i ./sync-endpoint-docker-swarm/sync-endpoint.tar
-
       - run:
           name: Pushing the image to GHCR
           command: |
-            docker tag odk/sync-endpoint:latest ghcr.io/tr-sangale/sync-endpoint:latest
-            docker push ghcr.io/tr-sangale/sync-endpoint:latest
+            docker tag odk/sync-endpoint:latest ghcr.io/odk-x/sync-endpoint:latest
+            docker push ghcr.io/odk-x/sync-endpoint:latest
 
  
 
