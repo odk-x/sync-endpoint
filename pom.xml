@@ -10,7 +10,7 @@
          <repository>
                  <id>github</id>
                  <name>GitHubPackages</name>
-                 <url>https://maven.pkg.github.com/odk-x/sync-endpoint</url>
+                 <url>https://maven.pkg.github.com/tr-sangale/sync-endpoint</url>
          </repository>
    </distributionManagement>
     <licenses>
