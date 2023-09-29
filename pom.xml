@@ -573,6 +573,22 @@
         <pluginManagement>
             <!-- these are referenced by other projects -->
             <plugins>
+            <plugin>
+                  <groupId>pl.project13.maven</groupId>
+                  <artifactId>git-commit-id-plugin</artifactId>
+                  <version>4.0.0</version>
+                     <executions>
+                         <execution>
+                             <goals>
+                                 <goal>revision</goal>
+                             </goals>
+                         </execution>
+                      </executions>
+                     <configuration>
+                         <dateFormat>yyyyMMdd-HHmmss</dateFormat>
+                         <generateGitPropertiesFile>true</generateGitPropertiesFile>
+                     </configuration>
+                </plugin>
                 <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-dependency-plugin</artifactId>
