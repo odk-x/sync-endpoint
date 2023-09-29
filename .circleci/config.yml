@@ -6,14 +6,10 @@ version: 2.1
 jobs:
   # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
   build-and-test:
-    # These next lines define a Docker executor: https://circleci.com/docs/executor-types/
-    # You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
-    # Be sure to update the Docker image tag below to openjdk version of your application.
-    # A list of available CircleCI Docker Convenience Images are available here: https://circleci.com/developer/images/image/cimg/openjdk
+    
     machine:
       image: ubuntu-2204:2022.04.2
-    # Add steps to the jo
-    # See: https://circleci.com/docs/configuration-reference/#steps
+  
     steps:
       # Checkout the code as the first step.
       - checkout
@@ -25,9 +21,10 @@ jobs:
             java -version
 
       - run:
-          name: Building and pushing the maven project
+          name: Setting the version 
           command: |
-            sudo env "PATH=$PATH" mvn clean install
+            cd odk-rest-interface
+            sudo env "PATH=$PATH" mvn clean install -DskipTests
 
       - run:
           name: Saving docker image as tar file
@@ -48,11 +45,20 @@ jobs:
       - image: circleci/openjdk:8
 
     steps:
-      - checkout
+      - restore_cache:
+          key: v1-odk/sync-endpoint
+      - attach_workspace:
+          at: /home/circleci/project
+      - run:
+          name: Changing the version to required version
+          command: |
+            GIT_HASH=$(grep 'git.commit.id.abbrev' odk-rest-interface/target/classes/git.properties | cut -d'=' -f2 | tr -d '[:space:]')
+            BUILD_TIME=$(grep 'git.build.time' odk-rest-interface/target/classes/git.properties | cut -d'=' -f2 | tr -d '[:space:]' | sed 's/[-:]//g')
+            sudo env "PATH=$PATH" mvn versions:set -DnewVersion="1.0.0-${BUILD_TIME}-${GIT_HASH}"
       - run:
           name: Deploying jars to github maven repo 
           command: |
-            sudo env "PATH=$PATH" mvn -gs settings.xml -pl '!sync-endpoint-war,!sync-endpoint-docker-swarm,!sync-endpoint-docker-test,!postgres-test,!mysql-test,!sync-endpoint-common-dependencies' deploy -DskipTests
+            sudo env "PATH=$PATH" mvn -gs settings.xml -pl '!sync-endpoint-war,!sync-endpoint-docker-swarm,!sync-endpoint-docker-test,!postgres-test,!mysql-test,!sync-endpoint-common-dependencies' clean deploy -DskipTests
 
 
   deploy-image:
@@ -67,7 +73,7 @@ jobs:
       - run:
           name: Setting up ghcr repo
           command: |
-            export CR_PAT=$GHCR_TOKEN
+            export CR_PAT=$GITHUB_TOKEN
             echo $CR_PAT | docker login ghcr.io -u tr-sangale --password-stdin
             docker load -i ./sync-endpoint-docker-swarm/sync-endpoint.tar
 
@@ -89,7 +95,7 @@ workflows:
       - deploy-jar:
           requires:
             - build-and-test
-      # - deploy-image:
-      #     requires:
-      #     - build-and-test
+      - deploy-image:
+          requires:
+          - build-and-test
  
