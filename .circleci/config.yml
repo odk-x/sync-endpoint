@@ -41,7 +41,7 @@ jobs:
             - .
   deploy-jar:
     docker:
-      # used docekr image as machine executor was not able topush jar to githubrepo
+      # used docekr image as machine executor was not able to push jar to githubrepo
       - image: circleci/openjdk:8
 
     steps:
