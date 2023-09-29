@@ -127,7 +127,7 @@
             </dependency>
             <!-- create dependency on the current modules version (not old versions) -->
             <dependency>
-                <groupId>org.odk-xt</groupId>
+                <groupId>org.odk-x</groupId>
                 <artifactId>sync-endpoint-war</artifactId>
                 <version>${project.version}</version>
             </dependency>
