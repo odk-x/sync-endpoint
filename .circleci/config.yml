@@ -29,7 +29,7 @@ jobs:
       - run:
           name: Saving docker image as tar file
           command: |
-            sudo env "PATH=$PATH" mvn clean install
+            sudo env "PATH=$PATH" mvn clean install -DskipTests
             docker save -o ./sync-endpoint-docker-swarm/sync-endpoint.tar odk/sync-endpoint:latest
 
       - persist_to_workspace:
