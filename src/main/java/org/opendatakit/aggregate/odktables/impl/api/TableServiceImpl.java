@@ -631,7 +631,7 @@ public class TableServiceImpl implements TableService {
 
     FileManager fm = new FileManager(appId, cc);
 
-    FileContentInfo fi = new FileContentInfo(appRelativePath, contentType, Long.valueOf(content.length), null,
+    FileContentInfo fi = new FileContentInfo(appRelativePath, contentType, Long.valueOf(content.length), null, null,
         content);
 
     @SuppressWarnings("unused")

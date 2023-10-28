@@ -51,11 +51,14 @@ public final class BinaryContent extends DynamicBase {
 			DataField.DataType.INTEGER, true);
 	private static final DataField CONTENT_HASH = new DataField("CONTENT_HASH", 
 			DataField.DataType.STRING, true);
+	private static final DataField REDUCED_IMAGE_CONTENT_HASH = new DataField("REDUCED_IMAGE_CONTENT_HASH",
+			DataField.DataType.STRING, true);
 
 	public final DataField unrootedFilePath;
 	public final DataField contentType;
 	public final DataField contentLength;
 	public final DataField contentHash;
+	public final DataField reducedImageContentHash;
 
 	/**
 	 * Construct a relation prototype.
@@ -69,6 +72,7 @@ public final class BinaryContent extends DynamicBase {
 		fieldList.add(contentType = new DataField(CONTENT_TYPE));
 		fieldList.add(contentLength = new DataField(CONTENT_LENGTH));
 		fieldList.add(contentHash = new DataField(CONTENT_HASH));
+		fieldList.add(reducedImageContentHash = new DataField(REDUCED_IMAGE_CONTENT_HASH));
 	}
 
 	/**
@@ -83,6 +87,7 @@ public final class BinaryContent extends DynamicBase {
 		contentType = ref.contentType;
 		contentLength = ref.contentLength;
 		contentHash = ref.contentHash;
+		reducedImageContentHash = ref.reducedImageContentHash;
 	}
 
 	// Only called from within the persistence layer.
@@ -127,6 +132,16 @@ public final class BinaryContent extends DynamicBase {
 	public void setContentHash(String value) {
 		if ( !setStringField(contentHash, value)) {
 			throw new IllegalStateException("overflow on contentHash");
+		}
+	}
+
+	public String getReducedImageContentHash() {
+		return getStringField(reducedImageContentHash);
+	}
+
+	public void setReducedImageContentHash(String value) {
+		if (!setStringField(reducedImageContentHash, value)) {
+			throw new IllegalStateException("overflow on reducedImageContentHash");
 		}
 	}
 }

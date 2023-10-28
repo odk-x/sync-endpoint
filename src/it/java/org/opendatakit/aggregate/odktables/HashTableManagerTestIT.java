@@ -173,7 +173,7 @@ public class HashTableManagerTestIT extends AbstractServiceTest {
 
         FileManager fm = new FileManager(T.appId, cc);
         FileContentInfo fi = new FileContentInfo(TEST_FILE_1_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length)
-                , null, fileContent);
+                , null, null, fileContent);
 
         ConfigFileChangeDetail outcome = fm.putFile(ODK_CLIENT_VERSION, tableId, fi, userPermissions);
         assertEquals(ConfigFileChangeDetail.FILE_NEWLY_CREATED, outcome);
@@ -205,7 +205,7 @@ public class HashTableManagerTestIT extends AbstractServiceTest {
         byte[] fileContent = TEST_FILE_1.getBytes(StandardCharsets.UTF_8);
 
         FileManager fm = new FileManager(T.appId, cc);
-        FileContentInfo fi = new FileContentInfo(TEST_FILE_1_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length), null, fileContent);
+        FileContentInfo fi = new FileContentInfo(TEST_FILE_1_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length), null, null, fileContent);
 
         ConfigFileChangeDetail outcome = fm.putFile(ODK_CLIENT_VERSION, tableId, fi, userPermissions);
         assertEquals(ConfigFileChangeDetail.FILE_NEWLY_CREATED, outcome);
@@ -249,7 +249,7 @@ public class HashTableManagerTestIT extends AbstractServiceTest {
         byte[] fileContent = TEST_FILE_1.getBytes(StandardCharsets.UTF_8);
 
         FileManager fm = new FileManager(T.appId, cc);
-        FileContentInfo fi = new FileContentInfo(TEST_FILE_1_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length), null, fileContent);
+        FileContentInfo fi = new FileContentInfo(TEST_FILE_1_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length), null, null, fileContent);
 
         // put file for table 1
         ConfigFileChangeDetail outcome = fm.putFile(ODK_CLIENT_VERSION, tableId, fi, userPermissions);
@@ -287,7 +287,7 @@ public class HashTableManagerTestIT extends AbstractServiceTest {
         byte[] fileContent = TEST_FILE_1.getBytes(StandardCharsets.UTF_8);
 
         FileManager fm = new FileManager(T.appId, cc);
-        FileContentInfo fi = new FileContentInfo(TEST_FILE_1_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length), null, fileContent);
+        FileContentInfo fi = new FileContentInfo(TEST_FILE_1_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length), null, null, fileContent);
 
         ConfigFileChangeDetail outcome = fm.putFile(ODK_CLIENT_VERSION, tableId, fi, userPermissions);
         assertEquals(ConfigFileChangeDetail.FILE_NEWLY_CREATED, outcome);
@@ -306,7 +306,7 @@ public class HashTableManagerTestIT extends AbstractServiceTest {
 
         // add file 2
         fileContent = TEST_FILE_2.getBytes(StandardCharsets.UTF_8);
-        fi = new FileContentInfo(TEST_FILE_2_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length), null, fileContent);
+        fi = new FileContentInfo(TEST_FILE_2_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length), null, null, fileContent);
         outcome = fm.putFile(ODK_CLIENT_VERSION, tableId, fi, userPermissions);
         assertEquals(ConfigFileChangeDetail.FILE_NEWLY_CREATED, outcome);
 
@@ -336,7 +336,7 @@ public class HashTableManagerTestIT extends AbstractServiceTest {
         byte[] fileContent = TEST_FILE_1.getBytes(StandardCharsets.UTF_8);
 
         FileManager fm = new FileManager(T.appId, cc);
-        FileContentInfo fi = new FileContentInfo(TEST_FILE_1_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length), null, fileContent);
+        FileContentInfo fi = new FileContentInfo(TEST_FILE_1_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length), null, null, fileContent);
 
         ConfigFileChangeDetail outcome = fm.putFile(ODK_CLIENT_VERSION, tableId, fi, userPermissions);
         assertEquals(ConfigFileChangeDetail.FILE_NEWLY_CREATED, outcome);
@@ -355,7 +355,7 @@ public class HashTableManagerTestIT extends AbstractServiceTest {
 
         // add file 2
         fileContent = TEST_FILE_2.getBytes(StandardCharsets.UTF_8);
-        fi = new FileContentInfo(TEST_FILE_2_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length), null, fileContent);
+        fi = new FileContentInfo(TEST_FILE_2_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length), null, null, fileContent);
         outcome = fm.putFile(ODK_CLIENT_VERSION, tableId, fi, userPermissions);
         assertEquals(ConfigFileChangeDetail.FILE_NEWLY_CREATED, outcome);
 
@@ -399,7 +399,7 @@ public class HashTableManagerTestIT extends AbstractServiceTest {
         byte[] fileContent = TEST_FILE_1.getBytes(StandardCharsets.UTF_8);
 
         FileManager fm = new FileManager(T.appId, cc);
-        FileContentInfo fi = new FileContentInfo(TEST_FILE_1_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length), null, fileContent);
+        FileContentInfo fi = new FileContentInfo(TEST_FILE_1_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length), null, null, fileContent);
 
         // put file for table 1
         ConfigFileChangeDetail outcome = fm.putFile(ODK_CLIENT_VERSION, tableId, fi, userPermissions);
@@ -407,7 +407,7 @@ public class HashTableManagerTestIT extends AbstractServiceTest {
 
         // put file for table 2
         fileContent = TEST_FILE_2.getBytes(StandardCharsets.UTF_8);
-        fi = new FileContentInfo(TEST_FILE_2_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length), null, fileContent);
+        fi = new FileContentInfo(TEST_FILE_2_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length), null, null, fileContent);
         outcome = fm.putFile(ODK_CLIENT_VERSION, tableId2, fi, userPermissions);
         assertEquals(ConfigFileChangeDetail.FILE_NEWLY_CREATED, outcome);
 
@@ -440,7 +440,7 @@ public class HashTableManagerTestIT extends AbstractServiceTest {
         byte[] fileContent = TEST_FILE_1.getBytes(StandardCharsets.UTF_8);
 
         FileManager fm = new FileManager(T.appId, cc);
-        FileContentInfo fi = new FileContentInfo(TEST_FILE_1_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length), null, fileContent);
+        FileContentInfo fi = new FileContentInfo(TEST_FILE_1_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length), null, null, fileContent);
 
         ConfigFileChangeDetail outcome = fm.putFile(ODK_CLIENT_VERSION, DbTableFileInfo.NO_TABLE_ID, fi, userPermissions);
         assertEquals(ConfigFileChangeDetail.FILE_NEWLY_CREATED, outcome);
@@ -470,7 +470,7 @@ public class HashTableManagerTestIT extends AbstractServiceTest {
 
         FileManager fm = new FileManager(T.appId, cc);
         FileContentInfo fi = new FileContentInfo(TEST_FILE_1_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length)
-                , null, fileContent);
+                , null, null, fileContent);
 
         // put the app level fiel
         ConfigFileChangeDetail outcome = fm.putFile(ODK_CLIENT_VERSION, DbTableFileInfo.NO_TABLE_ID, fi, userPermissions);
@@ -482,7 +482,7 @@ public class HashTableManagerTestIT extends AbstractServiceTest {
 
         // put file for table 2
         fileContent = TEST_FILE_2.getBytes(StandardCharsets.UTF_8);
-        fi = new FileContentInfo(TEST_FILE_2_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length), null, fileContent);
+        fi = new FileContentInfo(TEST_FILE_2_PATH, TEXT_PLAIN, Long.valueOf(fileContent.length), null, null, fileContent);
         outcome = fm.putFile(ODK_CLIENT_VERSION, tableId2, fi, userPermissions);
         assertEquals(ConfigFileChangeDetail.FILE_NEWLY_CREATED, outcome);
 

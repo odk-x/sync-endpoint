@@ -34,6 +34,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
+import java.lang.IllegalArgumentException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -57,6 +58,7 @@ import org.opendatakit.aggregate.odktables.rest.ApiConstants;
 import org.opendatakit.aggregate.odktables.rest.entity.OdkTablesFileManifest;
 import org.opendatakit.aggregate.odktables.rest.entity.OdkTablesFileManifestEntry;
 import org.opendatakit.aggregate.odktables.security.TablesUserPermissions;
+import org.opendatakit.aggregate.util.ImageManipulation;
 import org.opendatakit.common.persistence.PersistenceUtils;
 import org.opendatakit.common.persistence.exception.ODKDatastoreException;
 import org.opendatakit.common.persistence.exception.ODKEntityNotFoundException;
@@ -157,6 +159,7 @@ public class InstanceFileServiceImpl implements InstanceFileService {
         entry.contentLength = sfci.getValue().contentLength;
         entry.contentType = sfci.getValue().contentType;
         entry.md5hash = sfci.getValue().contentHash;
+        entry.reducedImageMd5Hash = sfci.getValue().reducedImageContentHash;
 
         URI getFile = ub.clone().path(TableService.class, "getRealizedTable")
             .path(RealizedTableService.class, "getInstanceFiles")
@@ -379,7 +382,28 @@ public class InstanceFileServiceImpl implements InstanceFileService {
               }
 
               if (fileBlob != null) {
-                // we got the content -- create an OutPart to hold it
+                // we got the content
+                // reduce size if necessary
+                OdkTablesFileManifestEntry currEntry = manifest.getFiles().get(entryIndex);
+                boolean reduceImage = Boolean.valueOf(currEntry.reduceImage);
+                if (reduceImage && content.contentType.startsWith("image")) {
+                  Log logger = LogFactory.getLog(InstanceFileManager.class);
+                  logger.info("Attempting reduction of image of contentType: " + content.contentType);
+                  try {
+                    fileBlob = ImageManipulation.reducedImage(fileBlob, content.contentType);
+                    logger.info("Image reduction succeeded");
+                  } catch (java.io.IOException e) {
+                    logger.warn("Image reduction threw IO exception! Using full size image");
+                  } catch (IllegalArgumentException e) {
+                   logger.warn("Image reduction threw IllegalArgumentException! Using full size image");
+                   logger.warn(e.getMessage());
+                  } catch (Exception e) {
+                    logger.warn("Image reduction (most likely) threw an unexpected exception! Using full size image");
+                    logger.warn(e.getMessage());
+                  }
+                }
+
+                // create an OutPart to hold it
                 OutPart op = new OutPart();
                 op.addHeader("Name", "file-" + Integer.toString(entryIndex));
                 String disposition = "file; filename=\"" + content.partialPath.replace("\"", "\"\"")
@@ -459,12 +483,13 @@ public class InstanceFileServiceImpl implements InstanceFileService {
     // appid/data/attachments/tableid/instances/instanceId/rest/of/path
     String partialPath = constructPathFromSegments(segments);
     String contentType = req.getContentType();
-    String md5Hash = PersistenceUtils.newMD5HashUri(content);
+    String contentHash = PersistenceUtils.newMD5HashUri(content);
 
     InstanceFileManager fm = new InstanceFileManager(appId, cc);
 
+    // Note: reducedImageContentHash not populated in fi, but not needed as of 12/2021.
     FileContentInfo fi = new FileContentInfo(partialPath, contentType, (long) content.length,
-        md5Hash, content);
+            contentHash, null, content);
     InstanceFileChangeDetail outcome = fm.putFile(tableId, rowId, fi, userPermissions);
 
     UriBuilder ub = info.getBaseUriBuilder();

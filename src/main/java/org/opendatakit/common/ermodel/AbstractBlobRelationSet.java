@@ -351,6 +351,11 @@ public class AbstractBlobRelationSet implements BlobRelationSet {
     }
 
     @Override
+    public String getReducedImageContentHash(int ordinal, CallingContext cc) throws ODKDatastoreException {
+      return m.getReducedImageContentHash(ordinal, cc);
+    }
+
+    @Override
     public Long getContentLength(int ordinal, CallingContext cc) throws ODKDatastoreException {
       return m.getContentLength(ordinal, cc);
     }

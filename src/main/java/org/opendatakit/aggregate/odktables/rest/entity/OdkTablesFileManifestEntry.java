@@ -59,6 +59,23 @@ public class OdkTablesFileManifestEntry implements Comparable<OdkTablesFileManif
   public String md5hash;
 
   /**
+   * If the file is an image, this is the md5 of the
+   * reduced version of the image. Otherwise, the hash is
+   * an md5 on the original.
+   * Used for understanding when to download
+   * full size or reduced size images
+   */
+  @JsonProperty(required = false)
+  public String reducedImageMd5Hash;
+
+  /**
+   * If the image should be reduced (objects of this class are passed from services to sync-endpoint)
+   * Either "true" or "false"
+   */
+  @JsonProperty(required = false)
+  public String reduceImage;
+
+  /**
    * This is the url from which the current version of the file can be
    * downloaded.
    */
@@ -73,6 +90,8 @@ public class OdkTablesFileManifestEntry implements Comparable<OdkTablesFileManif
     result = prime * result + ((contentLength == null) ? 0 : contentLength.hashCode());
     result = prime * result + ((contentType == null) ? 0 : contentType.hashCode());
     result = prime * result + ((md5hash == null) ? 0 : md5hash.hashCode());
+    result = prime * result + ((reducedImageMd5Hash == null) ? 0 : reducedImageMd5Hash.hashCode());
+    result = prime * result + ((reduceImage == null) ? 0 : reduceImage.hashCode());
     result = prime * result + ((downloadUrl == null) ? 0 : downloadUrl.hashCode());
     return result;
   }
@@ -89,6 +108,8 @@ public class OdkTablesFileManifestEntry implements Comparable<OdkTablesFileManif
       return false;
     }
     OdkTablesFileManifestEntry other = (OdkTablesFileManifestEntry) obj;
+    // The 'reducedImageMd5Hash' and 'reduce' parameters not included in equals
+    // because could have other downstream effects.
     return (filename == null ? other.filename == null : filename.equals(other.filename))
         && (contentLength == null ? other.contentLength == null : contentLength
             .equals(other.contentLength))
@@ -99,6 +120,8 @@ public class OdkTablesFileManifestEntry implements Comparable<OdkTablesFileManif
 
   @Override
   public int compareTo(OdkTablesFileManifestEntry other) {
+    // The 'reducedImageMd5Hash' and 'reduce' parameters are not compared
+    // because doing so could have other downstream effects.
     if ( filename == null ) {
       if ( other.filename != null ) {
         return -1;

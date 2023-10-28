@@ -180,7 +180,7 @@ public class FileServiceImpl implements FileService {
     FileManager fm = new FileManager(appId, cc);
 
     FileContentInfo fi = new FileContentInfo(appRelativePath, contentType,
-        Long.valueOf(content.length), null, content);
+        Long.valueOf(content.length), null, null, content);
 
     ConfigFileChangeDetail outcome = fm.putFile(odkClientVersion, tableId, fi, userPermissions);
 

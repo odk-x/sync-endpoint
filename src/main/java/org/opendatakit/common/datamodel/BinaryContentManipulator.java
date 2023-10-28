@@ -21,6 +21,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import java.lang.IllegalArgumentException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import org.opendatakit.aggregate.util.ImageManipulation;
 import org.opendatakit.common.persistence.CommonFieldsBase;
 import org.opendatakit.common.persistence.Datastore;
 import org.opendatakit.common.persistence.EntityKey;
@@ -30,6 +35,7 @@ import org.opendatakit.common.persistence.Query.FilterOperation;
 import org.opendatakit.common.persistence.exception.ODKDatastoreException;
 import org.opendatakit.common.persistence.exception.ODKEntityPersistException;
 import org.opendatakit.common.persistence.exception.ODKOverQuotaException;
+import org.opendatakit.common.persistence.PersistenceUtils;
 import org.opendatakit.common.security.User;
 import org.opendatakit.common.web.CallingContext;
 
@@ -337,6 +343,16 @@ public class BinaryContentManipulator {
     return b.getContentHash();
   }
 
+  public String getReducedImageContentHash(int ordinal, CallingContext cc) throws ODKDatastoreException {
+    updateAttachments(cc);
+    BinaryContent b = attachments.get(Long.valueOf(ordinal));
+    if (b == null) {
+      // we are somehow out of sync!
+      throw new IllegalStateException("missing attachment declaration");
+    }
+    return b.getReducedImageContentHash();
+  }
+
   public Long getContentLength(int ordinal, CallingContext cc) throws ODKDatastoreException {
     updateAttachments(cc);
     BinaryContent b = attachments.get(Long.valueOf(ordinal));
@@ -473,6 +489,24 @@ public class BinaryContentManipulator {
       // adding a file entry with an actual file...
 
       String md5Hash = CommonFieldsBase.newMD5HashUri(byteArray);
+      byte[] reducedBytes = byteArray;
+      Log logger = LogFactory.getLog(BinaryContentManipulator.class);
+      if (contentType.startsWith("image") && byteArray != null) {
+        try {
+          logger.info("Attempting reduction of image of contentType: " + contentType);
+          reducedBytes = ImageManipulation.reducedImage(byteArray, contentType);
+          logger.info("Image reduction succeeded");
+        } catch (java.io.IOException e) {
+          logger.warn("Image reduction threw IO exception! Using full size image");
+        } catch (IllegalArgumentException e) {
+          logger.warn("Image reduction threw IllegalArgumentException! Using full size image");
+          logger.warn(e.getMessage());
+        } catch (Exception e) {
+          logger.warn("Image reduction threw an unexpected exception! Using full size image");
+          logger.warn(e.getMessage());
+        }
+      }
+      String reducedImageMd5Hash = PersistenceUtils.newMD5HashUri(reducedBytes);
 
       if (matchedBc == null || currentContentHash == null) {
         // either
@@ -523,6 +557,7 @@ public class BinaryContentManipulator {
 
         // Step (4)
         matchedBc.setContentHash(md5Hash);
+        matchedBc.setReducedImageContentHash(reducedImageMd5Hash);
         ds.putEntity(matchedBc, user);
 
         return BinaryContentManipulator.BlobSubmissionOutcome.COMPLETELY_NEW_FILE;
@@ -559,6 +594,7 @@ public class BinaryContentManipulator {
 
         // Step (4)
         matchedBc.setContentHash(md5Hash);
+        matchedBc.setReducedImageContentHash(reducedImageMd5Hash);
         ds.putEntity(matchedBc, user);
 
         return BinaryContentManipulator.BlobSubmissionOutcome.NEW_FILE_VERSION;
