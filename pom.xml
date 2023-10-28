@@ -62,7 +62,7 @@
         <org.apache.wink.version>1.4</org.apache.wink.version>
         <org.apache.commons.commons-pools2.version>2.9.0</org.apache.commons.commons-pools2.version>
         <org.apache.commons.commons-dhcp2.version>2.8.0</org.apache.commons.commons-dhcp2.version>
-        <org.apache.commons.commons-fileupload.version>1.4</org.apache.commons.commons-fileupload.version>
+        <org.apache.commons.commons-fileupload.version>1.5</org.apache.commons.commons-fileupload.version>
         <org.apache.commons.commons-io.version>2.8.0</org.apache.commons.commons-io.version>
         <org.apache.commons.commons-text.version>1.9</org.apache.commons.commons-text.version>
         <org.apache.commons.commons-logging.version>1.2</org.apache.commons.commons-logging.version>
