@@ -4,14 +4,11 @@ version: 2.1
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/configuration-reference/#job
 jobs:
-  # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
-  build-and-test:
-    
+  build-and-test:   
     machine:
       image: ubuntu-2204:2022.04.2
-  
+
     steps:
-      # Checkout the code as the first step.
       - checkout
       - run:
           name: Setup java version
@@ -24,12 +21,12 @@ jobs:
           name: Setting the version 
           command: |
             cd odk-rest-interface
-            sudo env "PATH=$PATH" mvn clean install -DskipTests
+            mvn clean install -DskipTests
 
       - run:
           name: Saving docker image as tar file
           command: |
-            sudo env "PATH=$PATH" mvn clean install
+            mvn clean install
             docker save -o ./sync-endpoint-docker-swarm/sync-endpoint.tar odk/sync-endpoint:latest
 
       - persist_to_workspace:
@@ -42,7 +39,6 @@ jobs:
             - .
   deploy-jar:
     docker:
-      # used docekr image as machine executor was not able to push jar to githubrepo
       - image: circleci/openjdk:8
 
     steps:
@@ -59,8 +55,7 @@ jobs:
       - run:
           name: Deploying jars to github maven repo 
           command: |
-            mvn -gs settings.xml -pl '!sync-endpoint-war,!sync-endpoint-docker-swarm,!sync-endpoint-docker-test,!postgres-test,!mysql-test,!sync-endpoint-common-dependencies' clean deploy -DskipTests -X
-
+            mvn -gs settings.xml -pl '!sync-endpoint-war,!sync-endpoint-docker-swarm,!sync-endpoint-docker-test,!postgres-test,!mysql-test,!sync-endpoint-common-dependencies' clean deploy -DskipTests
 
   deploy-image:
     machine:
@@ -83,13 +78,10 @@ jobs:
             docker tag odk/sync-endpoint:latest ghcr.io/odk-x/sync-endpoint:latest
             docker push ghcr.io/odk-x/sync-endpoint:latest
 
- 
-
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
 workflows:
-  Build-Test-Deploy: # This is the name of the workflow, feel free to change it to better match your workflow.
-    # Inside the workflow, you define the jobs you want to run.
+  Build-Test-Deploy:
     jobs:
       - build-and-test
       - deploy-jar:
@@ -97,5 +89,5 @@ workflows:
             - build-and-test
       - deploy-image:
           requires:
-          - build-and-test
+            - build-and-test
  
