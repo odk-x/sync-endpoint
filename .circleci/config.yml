@@ -59,7 +59,7 @@ jobs:
       - run:
           name: Deploying jars to github maven repo 
           command: |
-            sudo env "PATH=$PATH" mvn -gs settings.xml -pl '!sync-endpoint-war,!sync-endpoint-docker-swarm,!sync-endpoint-docker-test,!postgres-test,!mysql-test,!sync-endpoint-common-dependencies' clean deploy -DskipTests -X
+            mvn -gs settings.xml -pl '!sync-endpoint-war,!sync-endpoint-docker-swarm,!sync-endpoint-docker-test,!postgres-test,!mysql-test,!sync-endpoint-common-dependencies' clean deploy -DskipTests -X
 
 
   deploy-image:
