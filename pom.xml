@@ -110,11 +110,6 @@
         <module>sync-endpoint-common-dependencies</module>
     </modules>
     <dependencyManagement>
-        <repository>
-            <id>github</id>
-            <name>GitHubPackages</name>
-            <url>https://maven.pkg.github.com/odk-x/sync-endpoint</url>
-        </repository>
         <dependencies>
 			<dependency>
 				<groupId>pl.project13.maven</groupId>
@@ -679,4 +674,11 @@
             </plugins>
         </pluginManagement>
     </build>
+	<distributionManagement>
+         <repository>
+                 <id>github</id>
+                 <name>GitHubPackages</name>
+                 <url>https://maven.pkg.github.com/odk-x/sync-endpoint</url>
+         </repository>
+   </distributionManagement>
 </project>
