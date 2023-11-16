@@ -79,6 +79,20 @@
                     </execution>
                 </executions>
             </plugin>
+			<plugin>
+           <artifactId>git-commit-id-plugin</artifactId>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>revision</goal>
+                    </goals>
+                </execution>
+            </executions>
+            <configuration>
+                <dateFormat>yyyyMMdd-HHmmss</dateFormat>
+                <generateGitPropertiesFile>true</generateGitPropertiesFile>
+            </configuration>
+         </plugin>
 
         </plugins>
 
@@ -112,5 +126,9 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-text</artifactId>
         </dependency>
+		<dependency>
+			<groupId>pl.project13.maven</groupId>
+            <artifactId>git-commit-id-plugin</artifactId>
+		</dependency>
     </dependencies>
 </project>

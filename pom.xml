@@ -110,7 +110,17 @@
         <module>sync-endpoint-common-dependencies</module>
     </modules>
     <dependencyManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHubPackages</name>
+            <url>https://maven.pkg.github.com/odk-x/sync-endpoint</url>
+        </repository>
         <dependencies>
+			<dependency>
+				<groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <version>4.0.0</version>
+			</dependency>
             <dependency>
                 <groupId>org.opendatakit</groupId>
                 <artifactId>opendatakit-javarosa</artifactId>
