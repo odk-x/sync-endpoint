@@ -15,7 +15,12 @@
  */
 package org.opendatakit.aggregate.odktables.impl.api;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +28,11 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
@@ -57,6 +67,7 @@ import org.opendatakit.aggregate.odktables.rest.ApiConstants;
 import org.opendatakit.aggregate.odktables.rest.entity.OdkTablesFileManifest;
 import org.opendatakit.aggregate.odktables.rest.entity.OdkTablesFileManifestEntry;
 import org.opendatakit.aggregate.odktables.security.TablesUserPermissions;
+import org.opendatakit.common.persistence.CommonFieldsBase;
 import org.opendatakit.common.persistence.PersistenceUtils;
 import org.opendatakit.common.persistence.exception.ODKDatastoreException;
 import org.opendatakit.common.persistence.exception.ODKEntityNotFoundException;
@@ -209,7 +220,9 @@ public class InstanceFileServiceImpl implements InstanceFileService {
   @Override
   public Response getFile(@Context HttpHeaders httpHeaders,
       @PathParam("filePath") List<PathSegment> segments,
-      @QueryParam(PARAM_AS_ATTACHMENT) String asAttachment)
+      @QueryParam(PARAM_AS_ATTACHMENT) String asAttachment,
+      @QueryParam("reduceColor") String reduceColor,
+      @QueryParam("reduceSize") String reduceSize)
       throws IOException, ODKTaskLockException, PermissionDeniedException {
     // The appId and tableId are from the surrounding TableService.
     // The rowId is already pulled out.
@@ -265,9 +278,46 @@ public class InstanceFileServiceImpl implements InstanceFileService {
                 .header("Access-Control-Allow-Credentials", "true").build();
           }
 
-          ResponseBuilder rBuild = Response.ok(fi.fileBlob, fi.contentType)
-              .header(HttpHeaders.ETAG, fi.contentHash)
-              .header(HttpHeaders.CONTENT_LENGTH, fi.contentLength)
+          byte[] blob = fi.fileBlob;
+
+          if (fi.contentType.startsWith("image")) {
+            if (reduceColor != null && !"".equals(reduceColor)) {
+              InputStream in = new ByteArrayInputStream(blob);
+              BufferedImage fullSizeImage = ImageIO.read(in);
+
+              ImageWriter writer = ImageIO.getImageWritersByMIMEType(fi.contentType).next();
+
+              ByteArrayOutputStream compressed = new ByteArrayOutputStream();
+
+              ImageOutputStream ios = ImageIO.createImageOutputStream(compressed);
+              writer.setOutput(ios);
+
+              ImageWriteParam writerParam = writer.getDefaultWriteParam();
+              writerParam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+              writerParam.setCompressionQuality(Float.parseFloat(reduceColor));
+
+              writer.write(null, new IIOImage(fullSizeImage, null, null), writerParam);
+
+              blob = compressed.toByteArray();
+
+              compressed.close();
+              writer.dispose();
+            }
+
+            if (reduceSize != null && !"".equals(reduceSize)) {
+              InputStream in = new ByteArrayInputStream(blob);
+              BufferedImage fullSizeImage = ImageIO.read(in);
+
+              ImageWriter writer = ImageIO.getImageWritersByMIMEType(fi.contentType).next();
+
+              float ratio = Float.parseFloat(reduceSize);
+              blob = getReducedBytes(fullSizeImage, writer, ratio);
+            }
+          }
+
+          ResponseBuilder rBuild = Response.ok(blob, fi.contentType)
+              .header(HttpHeaders.ETAG, CommonFieldsBase.newMD5HashUri(blob))
+              .header(HttpHeaders.CONTENT_LENGTH, (long) blob.length)
               .header(ApiConstants.OPEN_DATA_KIT_VERSION_HEADER, ApiConstants.OPEN_DATA_KIT_VERSION)
               .header("Access-Control-Allow-Origin", "*")
               .header("Access-Control-Allow-Credentials", "true");
@@ -353,9 +403,13 @@ public class InstanceFileServiceImpl implements InstanceFileService {
           // see if the server's file entry is in the requested set of files.
           //
           int entryIndex = -1;
+          boolean reduceSize = false;
           for (int i = 0; i < manifest.getFiles().size(); ++i) {
             OdkTablesFileManifestEntry entry = manifest.getFiles().get(i);
             if (entry.filename.equals(content.partialPath)) {
+              if (entry.reduceFileSize != null) {
+                reduceSize = entry.reduceFileSize.equals("t");
+              }
               entryIndex = i;
               break;
             }
@@ -377,6 +431,22 @@ public class InstanceFileServiceImpl implements InstanceFileService {
                 // silently ignore this -- error in this record
                 fileBlob = null;
               }
+
+              if (reduceSize && fileBlob != null && content.contentType.startsWith("image")) {
+                try {
+                  InputStream in = new ByteArrayInputStream(fileBlob);
+                  BufferedImage fullSizeImage = ImageIO.read(in);
+
+                  ImageWriter writer = ImageIO.getImageWritersByMIMEType(content.contentType)
+                                              .next();
+
+                  float ratio = (float) 0.4;
+                  fileBlob = getReducedBytes(fullSizeImage, writer, ratio);
+                } catch (IOException e) {
+                  e.printStackTrace();
+                }
+              }
+
 
               if (fileBlob != null) {
                 // we got the content -- create an OutPart to hold it
@@ -416,6 +486,27 @@ public class InstanceFileServiceImpl implements InstanceFileService {
           .header("Access-Control-Allow-Origin", "*")
           .header("Access-Control-Allow-Credentials", "true").build();
     }
+  }
+
+  private byte[] getReducedBytes(BufferedImage fullSizeImage, ImageWriter writer,
+                                 float ratio) throws IOException {
+    int width = (int) (fullSizeImage.getWidth() * ratio);
+    int height = (int) (fullSizeImage.getHeight() * ratio);
+
+    Image scaledImage = fullSizeImage.getScaledInstance(width, height,
+                                                        Image.SCALE_SMOOTH);
+    BufferedImage imageBuff = new BufferedImage(width, height,
+                                                BufferedImage.TYPE_INT_RGB);
+    imageBuff.getGraphics().drawImage(scaledImage, 0, 0, new Color(0, 0, 0), null);
+
+    ByteArrayOutputStream resized = new ByteArrayOutputStream();
+    ImageOutputStream ios = ImageIO.createImageOutputStream(resized);
+    writer.setOutput(ios);
+
+    writer.write(new IIOImage(imageBuff, null, null));
+
+    byte[] fileBlob = resized.toByteArray();
+    return fileBlob;
   }
 
   @Override
