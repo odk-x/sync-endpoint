@@ -47,12 +47,6 @@ jobs:
       - attach_workspace:
           at: /home/circleci/project
       - run:
-          name: Changing the version to required version
-          command: |
-            GIT_HASH=$(grep 'git.commit.id.abbrev' odk-rest-interface/target/classes/git.properties | cut -d'=' -f2 | tr -d '[:space:]')
-            BUILD_TIME=$(grep 'git.build.time' odk-rest-interface/target/classes/git.properties | cut -d'=' -f2 | tr -d '[:space:]' | sed 's/[-:]//g')
-            sudo env "PATH=$PATH" mvn versions:set -DnewVersion="1.0.0-${BUILD_TIME}-${GIT_HASH}"
-      - run:
           name: Deploying jars to github maven repo 
           command: |
             mvn -gs settings.xml -pl 'odk-rest-interface' clean deploy -DskipTests
