@@ -1,4 +1,4 @@
-FROM tomcat:8.5-jdk8
+FROM tomcat:9-jdk11
 
 COPY init.sh /tmp/init.sh
 COPY resources/server.xml conf/

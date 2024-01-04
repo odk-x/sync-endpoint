@@ -13,9 +13,13 @@
  */
 package org.opendatakit.common.persistence;
 
+import org.opendatakit.common.persistence.DataField.DataType;
+import org.opendatakit.common.persistence.DataField.IndexType;
+import org.opendatakit.common.security.User;
+
 import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -25,10 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-import org.opendatakit.common.persistence.DataField.DataType;
-import org.opendatakit.common.persistence.DataField.IndexType;
-import org.opendatakit.common.security.User;
 
 /**
  * Base class defining the audit fields for a table.
@@ -298,7 +298,7 @@ public abstract class CommonFieldsBase {
     }
     if ( !f.isDoublePrecision()  && !value.isSpecialValue() ) {
       // enforce scaling here...
-      fieldValueMap.put(f, value.setScale(f.getNumericScale(), BigDecimal.ROUND_HALF_UP));
+      fieldValueMap.put(f, value.setScale(f.getNumericScale(), RoundingMode.HALF_UP));
     } else {
       fieldValueMap.put(f, value);
     }

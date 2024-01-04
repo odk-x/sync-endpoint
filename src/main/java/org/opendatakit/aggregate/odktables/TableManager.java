@@ -16,9 +16,6 @@
 
 package org.opendatakit.aggregate.odktables;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.lang3.Validate;
 import org.opendatakit.aggregate.odktables.exception.PermissionDeniedException;
 import org.opendatakit.aggregate.odktables.exception.TableAlreadyExistsException;
@@ -64,6 +61,9 @@ import org.opendatakit.common.persistence.exception.ODKOverQuotaException;
 import org.opendatakit.common.persistence.exception.ODKTaskLockException;
 import org.opendatakit.common.web.CallingContext;
 import org.opendatakit.common.web.constants.BasicConsts;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Manages creating, deleting, and getting tables.
@@ -196,7 +196,7 @@ public class TableManager {
       PermissionDeniedException {
     userPermissions.checkPermission(appId, tableId, TablePermission.READ_TABLE_ENTRY);
 
-    Validate.notNull(tableId);
+    Validate.notNull(tableId, "tableId cannot be null");
     Validate.notEmpty(tableId);
 
     // get table entry
@@ -273,7 +273,7 @@ public class TableManager {
    */
   public TableEntry getTableNullSafe(String tableId) throws ODKEntityNotFoundException,
       ODKDatastoreException, PermissionDeniedException {
-    Validate.notNull(tableId);
+    Validate.notNull(tableId, "tableId cannot be null");
     Validate.notEmpty(tableId);
     userPermissions.checkPermission(appId, tableId, TablePermission.READ_TABLE_ENTRY);
     // get table entry entity
@@ -305,7 +305,7 @@ public class TableManager {
   public TableEntry createTable(String tableId, List<Column> columns)
       throws ODKEntityPersistException, ODKDatastoreException,
       TableAlreadyExistsException, PermissionDeniedException, ODKTaskLockException {
-    Validate.notNull(tableId);
+    Validate.notNull(tableId, "tableId cannot be null");
     Validate.notEmpty(tableId);
     Validate.noNullElements(columns);
 
@@ -632,7 +632,7 @@ public class TableManager {
    */
   public void deleteTable(String tableId) throws ODKEntityNotFoundException, ODKDatastoreException,
       ODKTaskLockException, PermissionDeniedException {
-    Validate.notNull(tableId);
+    Validate.notNull(tableId, "tableId cannot be null");
     Validate.notEmpty(tableId);
 
     userPermissions.checkPermission(appId, tableId, TablePermission.DELETE_TABLE);

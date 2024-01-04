@@ -6,27 +6,24 @@ version: 2.1
 jobs:
   build-and-test:   
     machine:
-      image: ubuntu-2204:2022.04.2
+      image: ubuntu-2204:current
+    resource_class: large
 
     steps:
       - checkout
       - run:
           name: Setup java version
           command: |
-            sudo apt-get install openjdk-8-jdk
-            sudo update-java-alternatives --set java-1.8.0-openjdk-amd64
+            sudo apt-get install openjdk-11-jdk
+            sudo update-java-alternatives --set java-11-openjdk-amd64
             java -version
 
-      - run:
-          name: Setting the version 
-          command: |
-            cd odk-rest-interface
-            mvn clean install -DskipTests
-
-      - run:
-          name: Saving docker image as tar file
+          name: Compile and Run Tests Saving docker image as tar file
           command: |
             mvn clean install
+
+          name: Saving docker image as tar file
+          command: |
             docker save -o ./sync-endpoint-docker-swarm/sync-endpoint.tar odk/sync-endpoint:latest
 
       - persist_to_workspace:
@@ -39,7 +36,7 @@ jobs:
             - .
   deploy-jar:
     docker:
-      - image: circleci/openjdk:8
+      - image: circleci/openjdk:11
 
     steps:
       - restore_cache:
@@ -47,19 +44,13 @@ jobs:
       - attach_workspace:
           at: /home/circleci/project
       - run:
-          name: Changing the version to required version
-          command: |
-            GIT_HASH=$(grep 'git.commit.id.abbrev' odk-rest-interface/target/classes/git.properties | cut -d'=' -f2 | tr -d '[:space:]')
-            BUILD_TIME=$(grep 'git.build.time' odk-rest-interface/target/classes/git.properties | cut -d'=' -f2 | tr -d '[:space:]' | sed 's/[-:]//g')
-            sudo env "PATH=$PATH" mvn versions:set -DnewVersion="1.0.0-${BUILD_TIME}-${GIT_HASH}"
-      - run:
           name: Deploying jars to github maven repo 
           command: |
-            mvn -gs settings.xml -pl 'odk-rest-interface' clean deploy -DskipTests
+            mvn -gs settings.xml -pl 'sync-endpoint, odkx-rest-interface' clean deploy -DskipTests
 
   deploy-image:
     machine:
-      image: ubuntu-2204:2022.04.2
+      image: ubuntu-2204:curent
     
     steps:
       - restore_cache:

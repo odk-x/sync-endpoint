@@ -13,6 +13,12 @@
  */
 package org.opendatakit.common.utils;
 
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.javarosa.core.model.utils.DateUtils;
+import org.opendatakit.common.web.constants.HtmlConsts;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -20,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.ParsePosition;
@@ -29,16 +36,6 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.CharEncoding;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.javarosa.core.model.utils.DateUtils;
-import org.opendatakit.common.web.constants.BasicConsts;
-import org.opendatakit.common.web.constants.HtmlConsts;
 
 /**
  * Useful methods for parsing boolean and date values and formatting dates.
@@ -100,7 +97,7 @@ public class WebUtils {
     try {
       ByteArrayOutputStream out = new ByteArrayOutputStream();
       GZIPOutputStream gzip = new GZIPOutputStream(out);
-      gzip.write(rawString.getBytes(CharEncoding.UTF_8));
+      gzip.write(rawString.getBytes(StandardCharsets.UTF_8));
       gzip.finish();
       gzip.close();
       String candidate = Base64.encodeBase64URLSafeString(out.toByteArray());
@@ -127,7 +124,7 @@ public class WebUtils {
 
     try {
       ByteArrayInputStream in = new ByteArrayInputStream(Base64.decodeBase64(encodedWebsafeString
-          .getBytes(CharEncoding.UTF_8)));
+          .getBytes(StandardCharsets.UTF_8)));
       GZIPInputStream gzip = new GZIPInputStream(in);
       ByteArrayOutputStream out = new ByteArrayOutputStream();
       int ch = gzip.read();
@@ -138,7 +135,7 @@ public class WebUtils {
       gzip.close();
       out.flush();
       out.close();
-      return new String(out.toByteArray(), CharEncoding.UTF_8);
+      return new String(out.toByteArray(), StandardCharsets.UTF_8);
     } catch (UnsupportedEncodingException e) {
       e.printStackTrace();
       throw new IllegalArgumentException("Unexpected failure: " + e.toString());
@@ -304,24 +301,6 @@ public class WebUtils {
     throw new IllegalArgumentException("Unable to parse the date: " + value);
   }
 
-  public static final String asSubmissionDateTimeString(Date d) {
-    if (d == null)
-      return null;
-    return DateUtils.formatDateTime(d, DateUtils.FORMAT_ISO8601);
-  }
-
-  public static final String asSubmissionDateOnlyString(Date d) {
-    if (d == null)
-      return null;
-    return DateUtils.formatDate(d, DateUtils.FORMAT_ISO8601);
-  }
-
-  public static final String asSubmissionTimeOnlyString(Date d) {
-    if (d == null)
-      return null;
-    return DateUtils.formatTime(d, DateUtils.FORMAT_ISO8601);
-  }
-
   /**
    * Useful static method for constructing a UPPER_CASE persistence layer name
    * from a camelCase name. This inserts an underscore before a leading capital
@@ -358,33 +337,6 @@ public class WebUtils {
     return b.toString();
   }
 
-  /**
-   * Return the GoogleDocs datetime string representation of a datetime.
-   *
-   * @param d
-   * @return
-   */
-  public static final String googleDocsDateTime(Date d) {
-    if (d == null)
-      return null;
-    SimpleDateFormat asGoogleDoc = new SimpleDateFormat(PATTERN_GOOGLE_DOCS);
-    asGoogleDoc.setTimeZone(TimeZone.getTimeZone("GMT"));
-    return asGoogleDoc.format(d);
-  }
-
-  /**
-   * Return the GoogleDocs date string representation of a date-only datetime.
-   *
-   * @param d
-   * @return
-   */
-  public static final String googleDocsDateOnly(Date d) {
-    if (d == null)
-      return null;
-    SimpleDateFormat asGoogleDocDateOnly = new SimpleDateFormat(PATTERN_GOOGLE_DOCS_DATE_ONLY);
-    asGoogleDocDateOnly.setTimeZone(TimeZone.getTimeZone("GMT"));
-    return asGoogleDocDateOnly.format(d);
-  }
 
   /**
    * Return the ISO8601 string representation of a date.

@@ -13,16 +13,6 @@
  */
 package org.opendatakit.common.persistence.engine.pgres;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.opendatakit.common.persistence.CommonFieldsBase;
@@ -36,6 +26,16 @@ import org.opendatakit.common.persistence.exception.ODKDatastoreException;
 import org.opendatakit.common.security.User;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 
@@ -264,7 +264,7 @@ public class QueryImpl implements Query {
     try {
       queryStringLogger.debug(query);
       List<? extends CommonFieldsBase> l = dataStoreImpl.getJdbcConnection().query(query,
-          bindValues.toArray(), rowMapper);
+              rowMapper, bindValues.toArray());
       dataStoreImpl.recordQueryUsage(relation, l.size());
       return l;
     } catch (Exception e) {
@@ -282,8 +282,7 @@ public class QueryImpl implements Query {
 
     List<?> keys = null;
     try {
-      keys = dataStoreImpl.getJdbcConnection().queryForList(query, bindValues.toArray(),
-          String.class);
+      keys = dataStoreImpl.getJdbcConnection().queryForList(query, String.class, bindValues.toArray());
       dataStoreImpl.recordQueryUsage(relation, keys.size());
     } catch (Exception e) {
       dataStoreImpl.recordQueryUsage(relation, 0);
@@ -421,7 +420,7 @@ public class QueryImpl implements Query {
       CoreResult r;
       try {
         queryStringLogger.debug(query);
-        r = dataStoreImpl.getJdbcConnection().query(query, values.toArray(), rse);
+        r = dataStoreImpl.getJdbcConnection().query(query, rse, values.toArray());
       } finally {
         dataStoreImpl.recordQueryUsage(relation, rse.getReadCount());
       }

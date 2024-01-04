@@ -18,7 +18,13 @@ import org.springframework.util.Assert;
 
 import javax.naming.directory.SearchControls;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -116,8 +122,8 @@ public class DefaultLdapAuthenticationProvider
             GroupPrefixAwareAuthoritiesMapper authoritiesMapper) {
         super(authenticator, authoritiesPopulator);
 
-        Assert.notNull(contextSource);
-        Assert.notNull(authoritiesMapper);
+        Assert.notNull(contextSource, "contextSource must not be null");
+        Assert.notNull(authoritiesMapper, "authoritiesMapper must not be null");
 
         this.authoritiesMapper = authoritiesMapper;
         this.contextSource = contextSource;

@@ -13,12 +13,12 @@
  */
 package org.opendatakit.common.ermodel;
 
-import java.util.List;
-
 import org.opendatakit.common.persistence.exception.ODKDatastoreException;
 import org.opendatakit.common.persistence.exception.ODKEntityPersistException;
 import org.opendatakit.common.persistence.exception.ODKOverQuotaException;
 import org.opendatakit.common.web.CallingContext;
+
+import java.util.List;
 
 /**
  * API for the manipulation of a Blob set (e.g., the set of 3 tables used to

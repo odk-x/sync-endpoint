@@ -15,16 +15,10 @@
  */
 package org.opendatakit.aggregate.odktables;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
-import javax.ws.rs.core.MultivaluedMap;
-
-import org.apache.http.HeaderElement;
-import org.apache.http.message.BasicHeaderValueParser;
-import org.apache.http.message.HeaderValueParser;
+import org.apache.hc.core5.http.HeaderElement;
+import org.apache.hc.core5.http.message.BasicHeaderValueParser;
+import org.apache.hc.core5.http.message.HeaderValueParser;
+import org.apache.hc.core5.http.message.ParserCursor;
 import org.apache.wink.common.model.multipart.InMultiPart;
 import org.apache.wink.common.model.multipart.InPart;
 import org.opendatakit.aggregate.odktables.api.InstanceFileService;
@@ -43,6 +37,12 @@ import org.opendatakit.common.persistence.exception.ODKDatastoreException;
 import org.opendatakit.common.persistence.exception.ODKEntityNotFoundException;
 import org.opendatakit.common.persistence.exception.ODKTaskLockException;
 import org.opendatakit.common.web.CallingContext;
+
+import javax.ws.rs.core.MultivaluedMap;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Implementation of file management APIs for row-level attachments.
@@ -379,7 +379,8 @@ public class InstanceFileManager {
           String partialPath = null;
           {
             HeaderValueParser parser = new BasicHeaderValueParser();
-            HeaderElement[] values = BasicHeaderValueParser.parseElements(disposition, parser);
+            ParserCursor parseCursor = new ParserCursor(0, disposition.length());
+            HeaderElement[] values = parser.parseElements(disposition, parseCursor);
             for (HeaderElement v : values) {
               if (v.getName().equalsIgnoreCase("file")) {
                 partialPath = v.getParameterByName("filename").getValue();

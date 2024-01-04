@@ -13,14 +13,14 @@
  */
 package org.opendatakit.common.ermodel;
 
-import static org.junit.Assert.*;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.opendatakit.common.persistence.exception.ODKDatastoreException;
 import org.opendatakit.common.web.CallingContext;
 import org.opendatakit.common.web.TestContextFactory;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Simple test case for the AbstractBlobRelationSet class.

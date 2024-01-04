@@ -16,10 +16,10 @@
 
 package org.opendatakit.common.security.client;
 
+import org.opendatakit.common.security.common.EmailParser;
+
 import java.io.Serializable;
 import java.util.TreeSet;
-
-import org.opendatakit.common.security.common.EmailParser;
 
 
 /**

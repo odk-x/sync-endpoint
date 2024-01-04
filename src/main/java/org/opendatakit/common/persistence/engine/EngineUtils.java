@@ -13,13 +13,13 @@
  */
 package org.opendatakit.common.persistence.engine;
 
-import java.math.BigDecimal;
-import java.util.Date;
-
 import org.opendatakit.common.persistence.CommonFieldsBase;
 import org.opendatakit.common.persistence.DataField;
 import org.opendatakit.common.persistence.WrappedBigDecimal;
 import org.opendatakit.common.utils.WebUtils;
+
+import java.math.RoundingMode;
+import java.util.Date;
 
 public class EngineUtils {
 
@@ -174,7 +174,7 @@ public class EngineUtils {
             value = null;
          } else {
             if ( !dominantAttr.isDoublePrecision() && !bd.isSpecialValue() ) {
-              bd = bd.setScale(dominantAttr.getNumericScale(), BigDecimal.ROUND_HALF_UP);
+              bd = bd.setScale(dominantAttr.getNumericScale(), RoundingMode.HALF_UP);
             }
             value = bd.toString();
          }
@@ -228,7 +228,7 @@ public class EngineUtils {
 			} else {
 				WrappedBigDecimal bd = new WrappedBigDecimal(v);
 				if ( !dominantAttr.isDoublePrecision() && !bd.isSpecialValue() ) {
-				  bd = bd.setScale(dominantAttr.getNumericScale(), BigDecimal.ROUND_HALF_UP);
+				  bd = bd.setScale(dominantAttr.getNumericScale(), RoundingMode.HALF_UP);
 				}
 				value = bd;
 			}

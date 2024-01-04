@@ -13,14 +13,14 @@
  */
 package org.opendatakit.common.persistence;
 
-import java.util.Collection;
-import java.util.List;
-
 import org.opendatakit.common.persistence.exception.ODKDatastoreException;
 import org.opendatakit.common.persistence.exception.ODKEntityNotFoundException;
 import org.opendatakit.common.persistence.exception.ODKEntityPersistException;
 import org.opendatakit.common.persistence.exception.ODKOverQuotaException;
 import org.opendatakit.common.security.User;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * The Datastore interface defines how to store, retrieve, and query data in ODK

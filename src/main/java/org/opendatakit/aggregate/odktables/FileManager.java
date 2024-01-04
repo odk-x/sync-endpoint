@@ -15,9 +15,6 @@
  */
 package org.opendatakit.aggregate.odktables;
 
-import java.util.List;
-import java.util.Locale;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.opendatakit.aggregate.odktables.exception.FileNotFoundException;
@@ -35,6 +32,9 @@ import org.opendatakit.common.persistence.exception.ODKEntityNotFoundException;
 import org.opendatakit.common.persistence.exception.ODKTaskLockException;
 import org.opendatakit.common.web.CallingContext;
 import org.opendatakit.common.web.constants.BasicConsts;
+
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Implementation of file management APIs.

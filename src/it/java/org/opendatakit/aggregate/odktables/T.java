@@ -16,10 +16,6 @@
 
 package org.opendatakit.aggregate.odktables;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.Ignore;
 import org.opendatakit.aggregate.odktables.rest.SavepointTypeManipulator;
 import org.opendatakit.aggregate.odktables.rest.TableConstants;
 import org.opendatakit.aggregate.odktables.rest.entity.Column;
@@ -27,7 +23,9 @@ import org.opendatakit.aggregate.odktables.rest.entity.DataKeyValue;
 import org.opendatakit.aggregate.odktables.rest.entity.Row;
 import org.opendatakit.aggregate.odktables.rest.entity.RowFilterScope;
 
-@Ignore
+import java.util.ArrayList;
+import java.util.List;
+
 public class T {
 
   public static class Columns {

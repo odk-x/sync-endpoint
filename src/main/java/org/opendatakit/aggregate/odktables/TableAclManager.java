@@ -16,9 +16,6 @@
 
 package org.opendatakit.aggregate.odktables;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.lang3.Validate;
 import org.opendatakit.aggregate.odktables.exception.PermissionDeniedException;
 import org.opendatakit.aggregate.odktables.relation.DbTableAcl;
@@ -38,6 +35,9 @@ import org.opendatakit.common.persistence.QueryResumePoint;
 import org.opendatakit.common.persistence.exception.ODKDatastoreException;
 import org.opendatakit.common.persistence.exception.ODKEntityNotFoundException;
 import org.opendatakit.common.web.CallingContext;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Manages retrieving and setting access control lists on a table.
@@ -93,7 +93,7 @@ public class TableAclManager {
       ODKDatastoreException {
     Validate.notEmpty(appId);
     Validate.notEmpty(tableId);
-    Validate.notNull(cc);
+    Validate.notNull(cc, "cc is null");
 
     this.cc = cc;
     this.appId = appId;
@@ -158,7 +158,7 @@ public class TableAclManager {
    * @throws PermissionDeniedException
    */
   public WebsafeAcls getAcls(Scope.Type type, QueryResumePoint startCursor, int fetchLimit) throws ODKDatastoreException, PermissionDeniedException {
-    Validate.notNull(type);
+    Validate.notNull(type, "type is null");
     userPermissions.checkPermission(appId, tableId, TablePermission.READ_ACL);
 
     WebsafeQueryResult result = DbTableAcl.queryTableIdScopeTypeAcls(tableId, type.name(), startCursor, fetchLimit, cc);
@@ -184,8 +184,8 @@ public class TableAclManager {
    * @throws PermissionDeniedException
    */
   public TableAcl getAcl(Scope scope) throws ODKDatastoreException, PermissionDeniedException {
-    Validate.notNull(scope);
-    Validate.notNull(scope.getType());
+    Validate.notNull(scope, "scope is null");
+    Validate.notNull(scope.getType(), "scope type is null");
     userPermissions.checkPermission(appId, tableId, TablePermission.READ_ACL);
 
     DbTableAclEntity aclEntity = DbTableAcl.queryTableIdScopeTypeValueAcl(tableId, scope.getType()
@@ -205,8 +205,8 @@ public class TableAclManager {
    * @throws ODKDatastoreException
    */
   public TableAcl getAclForTablesUserPermissions(Scope scope) throws ODKDatastoreException {
-    Validate.notNull(scope);
-    Validate.notNull(scope.getType());
+    Validate.notNull(scope, "scope is null");
+    Validate.notNull(scope.getType(),"scope type is null");
 
     DbTableAclEntity aclEntity = DbTableAcl.queryTableIdScopeTypeValueAcl(tableId, scope.getType()
         .name(), scope.getValue(), cc);
@@ -229,9 +229,9 @@ public class TableAclManager {
    * @throws PermissionDeniedException
    */
   public TableAcl setAcl(Scope scope, TableRole role) throws ODKDatastoreException, PermissionDeniedException {
-    Validate.notNull(scope);
-    Validate.notNull(scope.getType());
-    Validate.notNull(role);
+    Validate.notNull(scope, "scope is null");
+    Validate.notNull(scope.getType(), "scope type is null");
+    Validate.notNull(role, "role is null");
     userPermissions.checkPermission(appId, tableId, TablePermission.WRITE_ACL);
 
     DbTableAclEntity acl = DbTableAcl.queryTableIdScopeTypeValueAcl(tableId,
@@ -255,8 +255,8 @@ public class TableAclManager {
    * @throws PermissionDeniedException
    */
   public void deleteAcl(Scope scope) throws ODKDatastoreException, PermissionDeniedException {
-    Validate.notNull(scope);
-    Validate.notNull(scope.getType());
+    Validate.notNull(scope, "scope is null");
+    Validate.notNull(scope.getType(), "scope type is null");
     userPermissions.checkPermission(appId, tableId, TablePermission.DELETE_ACL);
 
     DbTableAclEntity acl = DbTableAcl.queryTableIdScopeTypeValueAcl(tableId,
