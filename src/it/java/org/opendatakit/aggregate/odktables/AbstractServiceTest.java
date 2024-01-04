@@ -41,8 +41,8 @@ import java.util.List;
 
 public abstract class AbstractServiceTest {
 
-  private static final Logger log = LoggerFactory.getLogger(AbstractServiceTest.class);
-
+  //private static final Logger log = LoggerFactory.getLogger(AbstractServiceTest.class);
+/*
   @Component
   public class LoggingInterceptor implements ClientHttpRequestInterceptor {
 
@@ -76,7 +76,7 @@ public abstract class AbstractServiceTest {
 
     }
   }
-
+*/
   public static final String TABLE_API = "tables/";
 
   private String baseUrl;
@@ -98,7 +98,7 @@ public abstract class AbstractServiceTest {
 
     this.baseUri = URI.create("http://" + hostname + ":" + port + baseUrl + "odktables/" + appId + "/");
 
-    log.warn("baseUri: " + baseUri);
+   // log.warn("baseUri: " + baseUri);
 
     // RestTemplate
     try {
@@ -111,7 +111,7 @@ public abstract class AbstractServiceTest {
       throw t;
     }
 
-    this.rt.getInterceptors().add(new LoggingInterceptor());
+   // this.rt.getInterceptors().add(new LoggingInterceptor());
     this.rt.getInterceptors().add(new BasicAuthenticationInterceptor(username, password));
 
     

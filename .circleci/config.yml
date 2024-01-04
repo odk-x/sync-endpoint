@@ -47,11 +47,12 @@ jobs:
       - run:
           name: Deploying jars to github maven repo 
           command: |
-            mvn -gs settings.xml -pl 'sync-endpoint, odkx-rest-interface' clean deploy -DskipTests
+            mvn -gs settings.xml -H clean deploy
+            mvn -gs settings.xml -pl 'odkx-rest-interface' clean deploy -DskipTests
 
   deploy-image:
     machine:
-      image: ubuntu-2204:curent
+      image: ubuntu-2204:current
     
     steps:
       - restore_cache:
