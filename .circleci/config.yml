@@ -17,11 +17,11 @@ jobs:
             sudo apt-get install openjdk-11-jdk
             sudo update-java-alternatives --set java-11-openjdk-amd64
             java -version
-
+      - run:
           name: Compile and Run Tests Saving docker image as tar file
           command: |
             mvn clean install
-
+      - run:
           name: Saving docker image as tar file
           command: |
             docker save -o ./sync-endpoint-docker-swarm/sync-endpoint.tar odk/sync-endpoint:latest
