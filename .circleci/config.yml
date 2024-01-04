@@ -47,7 +47,7 @@ jobs:
       - run:
           name: Deploying jars to github maven repo 
           command: |
-            mvn -gs settings.xml -H clean deploy
+            mvn -gs settings.xml -N clean deploy
             mvn -gs settings.xml -pl 'odkx-rest-interface' clean deploy -DskipTests
 
   deploy-image:
