@@ -77,9 +77,6 @@
 
                                 <wait>
                                     <time>20000</time>
-                                    <exec>
-                                        <postStart>/tmp/executeMysql.sh</postStart>
-                                    </exec>
                                 </wait>
                             </run>
                         </image>
