@@ -16,11 +16,6 @@
 
 package org.opendatakit.common.ermodel;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
 import org.apache.commons.lang3.Validate;
 import org.opendatakit.common.ermodel.Relation.RelationImpl;
 import org.opendatakit.common.persistence.CommonFieldsBase;
@@ -30,6 +25,11 @@ import org.opendatakit.common.persistence.Query.FilterOperation;
 import org.opendatakit.common.persistence.QueryResult;
 import org.opendatakit.common.persistence.QueryResumePoint;
 import org.opendatakit.common.persistence.exception.ODKDatastoreException;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Query is a query over a Relation.
@@ -69,8 +69,7 @@ public class Query {
   private org.opendatakit.common.persistence.Query query;
 
   protected Query(Relation relation, org.opendatakit.common.persistence.Query query) {
-    Validate.notNull(relation);
-
+    Validate.notNull(relation, "relation cannot be null");
     this.relation = relation;
     this.query = query;
   }
@@ -258,7 +257,7 @@ public class Query {
    */
   public Query addFilter(String fieldName, FilterOperation op, Object value) {
     Validate.notEmpty(fieldName);
-    Validate.notNull(op);
+    Validate.notNull(op, "op cannot be null");
     DataField field = relation.getDataField(fieldName);
     query.addFilter(field, op, value);
     return this;
@@ -278,8 +277,8 @@ public class Query {
    * @return this Query, with the given filter added.
    */
   public Query addFilter(DataField field, FilterOperation op, Object value) {
-    Validate.notNull(field);
-    Validate.notNull(op);
+    Validate.notNull(field, "field cannot be null");
+    Validate.notNull(op, "op cannot be null");
 
     query.addFilter(relation.verify(field), op, value);
     return this;
@@ -345,8 +344,8 @@ public class Query {
    * @return this Query, with the given sort added.
    */
   public Query addSort(DataField field, Direction direction) {
-    Validate.notNull(field);
-    Validate.notNull(direction);
+    Validate.notNull(field, "field cannot be null");
+    Validate.notNull(direction, "direction cannot be null");
     query.addSort(relation.verify(field), direction);
     return this;
   }
@@ -364,7 +363,7 @@ public class Query {
    */
   public Query addSort(String fieldName, Direction direction) {
     Validate.notEmpty(fieldName);
-    Validate.notNull(direction);
+    Validate.notNull(direction, "direction cannot be null");
     DataField field = relation.getDataField(fieldName);
     query.addSort(field, direction);
     return this;
@@ -385,7 +384,7 @@ public class Query {
    *         not in values will be excluded from the query.
    */
   public Query include(DataField field, Collection<?> values) {
-    Validate.notNull(field);
+    Validate.notNull(field, "field cannot be null");
     Validate.noNullElements(values);
     query.addValueSetFilter(relation.verify(field), values);
     return this;
@@ -507,7 +506,7 @@ public class Query {
    *         existing filter and sort criteria.
    */
   public List<?> getDistinct(DataField field) {
-    Validate.notNull(field);
+    Validate.notNull(field,"field cannot be null");
     try {
       return query.executeDistinctValueForDataField(relation.verify(field));
     } catch (ODKDatastoreException e) {

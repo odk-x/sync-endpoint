@@ -16,11 +16,11 @@
 
 package org.opendatakit.aggregate.odktables.relation;
 
-import java.util.Locale;
-
 import org.opendatakit.common.ermodel.AbstractBlobRelationSet;
 import org.opendatakit.common.persistence.exception.ODKDatastoreException;
 import org.opendatakit.common.web.CallingContext;
+
+import java.util.Locale;
 
 /**
  * This represents the datastore table that holds files for the instance data

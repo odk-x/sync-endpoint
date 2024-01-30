@@ -15,10 +15,6 @@
  */
 package org.opendatakit.common.security.spring;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.opendatakit.common.security.Realm;
 import org.opendatakit.common.security.SecurityUtils;
 import org.opendatakit.common.security.User;
@@ -28,6 +24,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public class UserServiceImpl implements org.opendatakit.common.security.UserService,
     InitializingBean {

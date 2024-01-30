@@ -13,9 +13,6 @@
  */
 package org.opendatakit.common.ermodel;
 
-import java.util.Date;
-import java.util.List;
-
 import org.opendatakit.common.datamodel.BinaryContent;
 import org.opendatakit.common.datamodel.BinaryContentManipulator;
 import org.opendatakit.common.datamodel.BinaryContentManipulator.BlobSubmissionOutcome;
@@ -29,6 +26,9 @@ import org.opendatakit.common.persistence.exception.ODKEntityPersistException;
 import org.opendatakit.common.persistence.exception.ODKOverQuotaException;
 import org.opendatakit.common.security.User;
 import org.opendatakit.common.web.CallingContext;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * Base class for manipulating blob sets. The constructors assume that the base

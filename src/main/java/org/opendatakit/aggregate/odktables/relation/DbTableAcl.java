@@ -16,9 +16,6 @@
 
 package org.opendatakit.aggregate.odktables.relation;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.opendatakit.common.ermodel.Entity;
 import org.opendatakit.common.ermodel.Query;
 import org.opendatakit.common.ermodel.Query.WebsafeQueryResult;
@@ -32,6 +29,9 @@ import org.opendatakit.common.persistence.exception.ODKDatastoreException;
 import org.opendatakit.common.persistence.exception.ODKEntityPersistException;
 import org.opendatakit.common.persistence.exception.ODKOverQuotaException;
 import org.opendatakit.common.web.CallingContext;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Unlike the other tables, this is not updated atomically through the use of

@@ -13,14 +13,6 @@
  */
 package org.opendatakit.common.datamodel;
 
-import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.opendatakit.common.persistence.CommonFieldsBase;
 import org.opendatakit.common.persistence.Datastore;
 import org.opendatakit.common.persistence.EntityKey;
@@ -32,6 +24,14 @@ import org.opendatakit.common.persistence.exception.ODKEntityPersistException;
 import org.opendatakit.common.persistence.exception.ODKOverQuotaException;
 import org.opendatakit.common.security.User;
 import org.opendatakit.common.web.CallingContext;
+
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Manipulator class for handling binary attachments. To use, create an instance
@@ -454,7 +454,7 @@ public class BinaryContentManipulator {
 
       if (matchedBc == null) {
         // create the record...
-        matchedBc = (BinaryContent) ds.createEntityUsingRelation(ctntRelation, user);
+        matchedBc = ds.createEntityUsingRelation(ctntRelation, user);
         matchedBc.setTopLevelAuri(topLevelKey);
         matchedBc.setParentAuri(parentKey);
         matchedBc.setOrdinalNumber(internalGetAttachmentCount() + 1L);
@@ -491,7 +491,7 @@ public class BinaryContentManipulator {
         if (newBc) {
           // Step (0)
           // create the record...
-          matchedBc = (BinaryContent) ds.createEntityUsingRelation(ctntRelation, user);
+          matchedBc = ds.createEntityUsingRelation(ctntRelation, user);
           matchedBc.setTopLevelAuri(topLevelKey);
           matchedBc.setParentAuri(parentKey);
           matchedBc.setOrdinalNumber(internalGetAttachmentCount() + 1L);

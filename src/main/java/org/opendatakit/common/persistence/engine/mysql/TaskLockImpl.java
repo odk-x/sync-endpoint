@@ -15,14 +15,6 @@
  */
 package org.opendatakit.common.persistence.engine.mysql;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import org.apache.commons.logging.LogFactory;
 import org.opendatakit.common.persistence.CommonFieldsBase;
 import org.opendatakit.common.persistence.DataField;
@@ -38,6 +30,14 @@ import org.opendatakit.common.security.User;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ConnectionCallback;
 import org.springframework.jdbc.core.JdbcTemplate;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 
@@ -338,7 +338,7 @@ public class TaskLockImpl implements TaskLock {
             conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
             String lastResult = null;
             for (String s : stmts) {
-              Statement stmt = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY, ResultSet.CLOSE_CURSORS_AT_COMMIT);
+              Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY, ResultSet.CLOSE_CURSORS_AT_COMMIT);
               if ( s.startsWith("SELECT") ) {
                 ResultSet rs = stmt.executeQuery(s);
                 if ( rs.first() ) {
@@ -375,7 +375,7 @@ public class TaskLockImpl implements TaskLock {
       throw new ODKTaskLockException(PERSISTENCE_LAYER_PROBLEM, e);
     }
     if ( success ) {
-      return (TaskLockTable) datastore.getEntity(relation, uri, user);
+      return datastore.getEntity(relation, uri, user);
     } else {
       throw new ODKEntityNotFoundException();
     }

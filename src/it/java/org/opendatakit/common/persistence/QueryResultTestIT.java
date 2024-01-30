@@ -13,15 +13,6 @@
  */
 package org.opendatakit.common.persistence;
 
-import static org.junit.Assert.assertEquals;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -36,6 +27,15 @@ import org.opendatakit.common.security.User;
 import org.opendatakit.common.utils.WebUtils;
 import org.opendatakit.common.web.CallingContext;
 import org.opendatakit.common.web.TestContextFactory;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static org.junit.Assert.assertEquals;
 
 @RunWith(org.junit.runners.JUnit4.class)
 public class QueryResultTestIT {

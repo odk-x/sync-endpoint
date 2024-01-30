@@ -16,16 +16,16 @@
 
 package org.opendatakit.common.utils;
 
+import org.apache.commons.text.StringEscapeUtils;
+import org.opendatakit.common.web.constants.BasicConsts;
+import org.opendatakit.common.web.constants.HtmlConsts;
+import org.opendatakit.common.web.constants.HtmlStrUtil;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.apache.commons.text.StringEscapeUtils;
-import org.opendatakit.common.web.constants.BasicConsts;
-import org.opendatakit.common.web.constants.HtmlConsts;
-import org.opendatakit.common.web.constants.HtmlStrUtil;
 
 public class HtmlUtil extends HtmlStrUtil{
 

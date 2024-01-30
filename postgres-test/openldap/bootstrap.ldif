@@ -1,30 +1,31 @@
-dn: ou=groups,{{ LDAP_BASE_DN }}
+dn: ou=groups,dc=example,dc=org
 changetype: add
 ou: groups
 objectClass: organizationalUnit
 objectClass: top
 
-dn: ou=people,{{ LDAP_BASE_DN }}
+dn: ou=people,dc=example,dc=org
 changetype: add
 ou: people
 objectClass: organizationalUnit
 objectClass: top
 
-dn: ou=default_prefix,ou=groups,{{ LDAP_BASE_DN }}
+dn: ou=default_prefix,ou=groups,dc=example,dc=org
 changetype: add
 ou: default_prefix
 objectClass: organizationalUnit
 objectClass: top
 
-dn: gidNumber=500,ou=default_prefix,ou=groups,{{ LDAP_BASE_DN }}
+dn: gidNumber=500,ou=default_prefix,ou=groups,dc=example,dc=org
 changetype: add
 cn: default_prefix site_admins
 gidNumber: 500
 objectClass: posixGroup
 objectClass: top
 memberUid: john
+memberUid: testadmin
 
-dn: gidNumber=501,ou=default_prefix,ou=groups,{{ LDAP_BASE_DN }}
+dn: gidNumber=501,ou=default_prefix,ou=groups,dc=example,dc=org
 changetype: add
 cn: default_prefix administer_tables
 gidNumber: 501
@@ -32,42 +33,44 @@ objectClass: posixGroup
 objectClass: top
 memberUid: john
 
-dn: gidNumber=502,ou=default_prefix,ou=groups,{{ LDAP_BASE_DN }}
+dn: gidNumber=502,ou=default_prefix,ou=groups,dc=example,dc=org
 changetype: add
 cn: default_prefix super_user_tables
 gidNumber: 502
 objectClass: posixGroup
 objectClass: top
+memberUid: testsuper
 
-dn: gidNumber=503,ou=default_prefix,ou=groups,{{ LDAP_BASE_DN }}
+dn: gidNumber=503,ou=default_prefix,ou=groups,dc=example,dc=org
 changetype: add
 cn: default_prefix synchronize_tables
 gidNumber: 503
 objectClass: posixGroup
 objectClass: top
+memberUid: testuser
 
-dn: gidNumber=504,ou=default_prefix,ou=groups,{{ LDAP_BASE_DN }}
+dn: gidNumber=504,ou=default_prefix,ou=groups,dc=example,dc=org
 changetype: add
 cn: default_prefix form_managers
 gidNumber: 504
 objectClass: posixGroup
 objectClass: top
 
-dn: gidNumber=505,ou=default_prefix,ou=groups,{{ LDAP_BASE_DN }}
+dn: gidNumber=505,ou=default_prefix,ou=groups,dc=example,dc=org
 changetype: add
 cn: default_prefix data_viewers
 gidNumber: 505
 objectClass: posixGroup
 objectClass: top
 
-dn: gidNumber=506,ou=default_prefix,ou=groups,{{ LDAP_BASE_DN }}
+dn: gidNumber=506,ou=default_prefix,ou=groups,dc=example,dc=org
 changetype: add
 cn: default_prefix data_collectors
 gidNumber: 506
 objectClass: posixGroup
 objectClass: top
 
-dn: uid=john,ou=people,{{ LDAP_BASE_DN }}
+dn: uid=john,ou=people,dc=example,dc=org
 changetype: add
 cn: john
 gidnumber: 501
@@ -79,3 +82,43 @@ sn: john
 uid: john
 uidnumber: 1000
 userpassword: {MD5}JdVa0oOqQAr0ZMdtcTwHrQ==
+
+dn: uid=testsuper,ou=people,dc=example,dc=org
+changetype: add
+cn:  testsuper
+gidnumber: 502
+homedirectory: /home/users/testsuper
+objectclass: inetOrgPerson
+objectclass: posixAccount
+objectclass: top
+sn: testsuper
+uid: testsuper
+uidnumber: 1001
+userpassword: {MD5}81NkvICLB5hT3loeND5xWQ==
+
+
+dn: uid=testuser,ou=people,dc=example,dc=org
+changetype: add
+cn:  testuser
+gidnumber: 503
+homedirectory: /home/users/testuser
+objectclass: inetOrgPerson
+objectclass: posixAccount
+objectclass: top
+sn: testuser
+uid: testuser
+uidnumber: 1002
+userpassword: {MD5}atFLqZhuNhVCPfyiVtBOPw==
+
+dn: uid=testadmin,ou=people,dc=example,dc=org
+changetype: add
+cn:  testadmin
+gidnumber: 500
+homedirectory: /home/users/testadmin
+objectclass: inetOrgPerson
+objectclass: posixAccount
+objectclass: top
+sn: testadmin
+uid: testadmin
+uidnumber: 1003
+userpassword: {MD5}AZICOnu9cyUFFvBp3xi1AA==

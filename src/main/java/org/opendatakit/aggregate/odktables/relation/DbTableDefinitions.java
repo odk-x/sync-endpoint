@@ -16,9 +16,6 @@
 
 package org.opendatakit.aggregate.odktables.relation;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.logging.LogFactory;
 import org.opendatakit.common.ermodel.Entity;
 import org.opendatakit.common.ermodel.Query;
@@ -31,6 +28,9 @@ import org.opendatakit.common.persistence.exception.ODKDatastoreException;
 import org.opendatakit.common.persistence.exception.ODKEntityPersistException;
 import org.opendatakit.common.persistence.exception.ODKOverQuotaException;
 import org.opendatakit.common.web.CallingContext;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This provides a concrete mapping of (tableId,schemaETag) to a database table

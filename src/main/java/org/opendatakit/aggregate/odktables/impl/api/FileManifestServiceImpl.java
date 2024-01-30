@@ -15,17 +15,6 @@
  */
 package org.opendatakit.aggregate.odktables.impl.api;
 
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.util.List;
-
-import javax.ws.rs.PathParam;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.opendatakit.aggregate.ContextFactory;
@@ -45,6 +34,16 @@ import org.opendatakit.common.persistence.exception.ODKDatastoreException;
 import org.opendatakit.common.persistence.exception.ODKEntityNotFoundException;
 import org.opendatakit.common.persistence.exception.ODKTaskLockException;
 import org.opendatakit.common.web.CallingContext;
+
+import javax.ws.rs.PathParam;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.util.List;
 
 /**
  * The implementation of the file manifest service. Handles the actual requests

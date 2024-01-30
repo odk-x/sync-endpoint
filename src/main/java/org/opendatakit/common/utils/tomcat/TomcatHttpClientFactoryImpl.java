@@ -15,14 +15,12 @@
  */
 package org.opendatakit.common.utils.tomcat;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.config.ConnectionConfig;
-import org.apache.http.config.SocketConfig;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.hc.client5.http.config.ConnectionConfig;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.io.BasicHttpClientConnectionManager;
+import org.apache.hc.core5.http.io.SocketConfig;
 import org.opendatakit.common.utils.HttpClientFactory;
 
 /**
@@ -40,12 +38,21 @@ public class TomcatHttpClientFactoryImpl implements HttpClientFactory {
   public CloseableHttpClient createHttpClient(SocketConfig socketConfig,
       ConnectionConfig connectionConfig, RequestConfig requestConfig) {
     HttpClientBuilder builder = HttpClientBuilder.create();
+    BasicHttpClientConnectionManager cm = new BasicHttpClientConnectionManager();
+    boolean connectionManagerSet = false;
+
     if (socketConfig != null) {
-      builder.setDefaultSocketConfig(socketConfig);
+      cm.setSocketConfig(socketConfig);
+      connectionManagerSet = true;
     }
     if (connectionConfig != null) {
-      builder.setDefaultConnectionConfig(connectionConfig);
+      cm.setConnectionConfig(connectionConfig);
+      connectionManagerSet = true;
     }
+    if(connectionManagerSet) {
+      builder.setConnectionManager(cm);
+    }
+
     if (requestConfig != null) {
       builder.setDefaultRequestConfig(requestConfig);
     }

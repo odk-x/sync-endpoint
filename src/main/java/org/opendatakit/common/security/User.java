@@ -15,9 +15,9 @@
  */
 package org.opendatakit.common.security;
 
-import java.util.Set;
-
 import org.springframework.security.core.GrantedAuthority;
+
+import java.util.Set;
 
 
 /**

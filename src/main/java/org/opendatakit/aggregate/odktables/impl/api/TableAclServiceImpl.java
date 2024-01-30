@@ -16,17 +16,6 @@
 
 package org.opendatakit.aggregate.odktables.impl.api;
 
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TreeSet;
-
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
-
 import org.opendatakit.aggregate.odktables.TableAclManager;
 import org.opendatakit.aggregate.odktables.TableAclManager.WebsafeAcls;
 import org.opendatakit.aggregate.odktables.api.OdkTables;
@@ -46,6 +35,16 @@ import org.opendatakit.common.security.common.GrantedAuthorityName;
 import org.opendatakit.common.security.server.SecurityServiceUtil;
 import org.opendatakit.common.utils.WebUtils;
 import org.opendatakit.common.web.CallingContext;
+
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.TreeSet;
 
 public class TableAclServiceImpl implements TableAclService {
 

@@ -13,13 +13,13 @@
  */
 package org.opendatakit.common.ermodel;
 
-import java.util.Date;
-
 import org.opendatakit.common.datamodel.BinaryContentManipulator.BlobSubmissionOutcome;
 import org.opendatakit.common.persistence.exception.ODKDatastoreException;
 import org.opendatakit.common.persistence.exception.ODKEntityPersistException;
 import org.opendatakit.common.persistence.exception.ODKOverQuotaException;
 import org.opendatakit.common.web.CallingContext;
+
+import java.util.Date;
 
 /**
  * API for manipulating sets of blobs. Blobs themselves are stored using

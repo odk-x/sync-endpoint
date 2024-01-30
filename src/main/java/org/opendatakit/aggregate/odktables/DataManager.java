@@ -16,14 +16,6 @@
 
 package org.opendatakit.aggregate.odktables;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -65,6 +57,14 @@ import org.opendatakit.common.persistence.exception.ODKEntityPersistException;
 import org.opendatakit.common.persistence.exception.ODKTaskLockException;
 import org.opendatakit.common.web.CallingContext;
 import org.opendatakit.common.web.constants.BasicConsts;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Manages read, insert, update, and delete operations on the rows of a table.
@@ -126,7 +126,7 @@ public class DataManager {
       CallingContext cc) throws ODKEntityNotFoundException, ODKDatastoreException {
     Validate.notEmpty(appId);
     Validate.notEmpty(tableId);
-    Validate.notNull(cc);
+    Validate.notNull(cc, "cc is null");
     this.cc = cc;
     this.userPermissions = userPermissions;
     this.converter = new EntityConverter();
@@ -907,7 +907,7 @@ public class DataManager {
     long startTime = System.currentTimeMillis();
 
     try {
-      Validate.notNull(rows);
+      Validate.notNull(rows, "rows cannot be null");
       ArrayList<RowOutcome> rowOutcomes = new ArrayList<RowOutcome>();
 
       userPermissions.checkPermission(appId, tableId, TablePermission.WRITE_ROW);
@@ -1154,7 +1154,7 @@ public class DataManager {
       ETagMismatchException, BadColumnNameException, PermissionDeniedException,
       InconsistentStateException {
     try {
-      Validate.notNull(row);
+      Validate.notNull(row, "row cannot be null");
 
       userPermissions.checkPermission(appId, tableId, TablePermission.WRITE_ROW);
 
@@ -1376,7 +1376,7 @@ public class DataManager {
       ODKDatastoreException, ODKTaskLockException, PermissionDeniedException,
       InconsistentStateException, BadColumnNameException, ETagMismatchException {
     try {
-      Validate.notNull(rowId);
+      Validate.notNull(rowId, "rowId cannot be null");
       Validate.notBlank(rowId);
 
       userPermissions.checkPermission(appId, tableId, TablePermission.DELETE_ROW);

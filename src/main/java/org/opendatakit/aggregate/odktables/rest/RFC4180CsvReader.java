@@ -63,12 +63,6 @@ public class RFC4180CsvReader {
    *
    * @param reader
    *            the reader to an underlying CSV source.
-   * @param separator
-   *            the delimiter to use for separating entries
-   * @param quotechar
-   *            the character to use for quoted elements
-   * @param escape
-   *            the character to use for escaping a separator or quote
    */
 
   public RFC4180CsvReader(Reader reader) {
@@ -270,11 +264,11 @@ public class RFC4180CsvReader {
               // Excel for Mac silliness
               br.reset();
             }
-            b.append((char) cr);
-            b.append((char) lf);
+            b.append(cr);
+            b.append(lf);
           } else if ( ch == lf ) {
-            b.append((char) cr);
-            b.append((char) lf);
+            b.append(cr);
+            b.append(lf);
           } else {
             b.append((char) ch);
           }

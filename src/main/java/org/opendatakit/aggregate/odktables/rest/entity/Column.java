@@ -16,9 +16,9 @@
 
 package org.opendatakit.aggregate.odktables.rest.entity;
 
-import java.io.Serializable;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.io.Serializable;
 
 /**
  * The XML document that represents a column. This is the XML representation of

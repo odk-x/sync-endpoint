@@ -16,12 +16,12 @@
 
 package org.opendatakit.aggregate.server;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.opendatakit.aggregate.constants.common.FilterOperation;
 import org.opendatakit.aggregate.constants.common.Visibility;
 import org.opendatakit.common.persistence.Query;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Translate enumerations between the UI layer and the rest of Aggregate

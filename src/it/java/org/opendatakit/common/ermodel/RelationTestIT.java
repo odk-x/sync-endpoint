@@ -13,26 +13,26 @@
  */
 package org.opendatakit.common.ermodel;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.opendatakit.common.persistence.DataField;
 import org.opendatakit.common.persistence.Datastore;
 import org.opendatakit.common.persistence.PersistConsts;
-import org.opendatakit.common.persistence.WrappedBigDecimal;
 import org.opendatakit.common.persistence.Query.FilterOperation;
+import org.opendatakit.common.persistence.WrappedBigDecimal;
 import org.opendatakit.common.persistence.exception.ODKDatastoreException;
 import org.opendatakit.common.web.CallingContext;
 import org.opendatakit.common.web.TestContextFactory;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Simple test case of the AbstractRelation class. Also an example of how to use
@@ -278,10 +278,10 @@ public class RelationTestIT {
     if (ds instanceof org.opendatakit.common.persistence.engine.mysql.DatastoreImpl) {
       // MySQL does not support NaN, Infinity, -Infinity
       return;
-    } else if (ds instanceof org.opendatakit.common.persistence.engine.sqlserver.DatastoreImpl) {
+    } /* else if (ds instanceof org.opendatakit.common.persistence.engine.sqlserver.DatastoreImpl) {
       // SqlServer does not support NaN, Infinity, -Infinity
       return;
-    }
+    } */
     MyRelation rel = new MyRelation(cc);
     rel = new MyRelation(cc);
     Entity e = rel.newEntity(cc);

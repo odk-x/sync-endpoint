@@ -1,15 +1,17 @@
 package org.opendatakit.common.security.spring;
 
-import org.opendatakit.common.persistence.client.exception.DatastoreFailureException;
 import org.opendatakit.common.security.User;
 import org.opendatakit.common.security.client.UserSecurityInfo;
-import org.opendatakit.common.security.client.exception.AccessDeniedException;
 import org.opendatakit.common.security.server.SecurityServiceUtil;
-import org.opendatakit.common.security.spring.dhis2.*;
+import org.opendatakit.common.security.spring.dhis2.Dhis2GroupList;
+import org.opendatakit.common.security.spring.dhis2.Dhis2ListEntry;
+import org.opendatakit.common.security.spring.dhis2.Dhis2OuList;
+import org.opendatakit.common.security.spring.dhis2.Dhis2User;
+import org.opendatakit.common.security.spring.dhis2.Dhis2UserList;
 import org.opendatakit.common.web.CallingContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.support.BasicAuthorizationInterceptor;
+import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -148,7 +150,7 @@ public class Dhis2AuthenticationProvider implements DirectoryAwareAuthentication
     String password = (String) authentication.getCredentials();
 
     RestTemplate restTemplate = new RestTemplate();
-    restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(username, password));
+    restTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(username, password));
 
     try {
       restTemplate.headForHeaders(getApiUrl() + ME_ENDPOINT_URL);

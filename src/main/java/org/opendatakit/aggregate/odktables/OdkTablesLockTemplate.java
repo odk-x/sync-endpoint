@@ -16,9 +16,6 @@
 
 package org.opendatakit.aggregate.odktables;
 
-import java.util.Random;
-import java.util.UUID;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.opendatakit.common.persistence.Datastore;
@@ -26,6 +23,9 @@ import org.opendatakit.common.persistence.TaskLock;
 import org.opendatakit.common.persistence.exception.ODKTaskLockException;
 import org.opendatakit.common.security.User;
 import org.opendatakit.common.web.CallingContext;
+
+import java.util.Random;
+import java.util.UUID;
 
 /**
  * Make datastore locks a little easier. NOT threadsafe.

@@ -16,9 +16,6 @@
 
 package org.opendatakit.aggregate.odktables.relation;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.opendatakit.aggregate.odktables.relation.DbColumnDefinitions.DbColumnDefinitionsEntity;
 import org.opendatakit.aggregate.odktables.relation.DbTableAcl.DbTableAclEntity;
 import org.opendatakit.aggregate.odktables.relation.DbTableDefinitions.DbTableDefinitionsEntity;
@@ -38,6 +35,9 @@ import org.opendatakit.aggregate.odktables.rest.entity.TableRole;
 import org.opendatakit.common.ermodel.Entity;
 import org.opendatakit.common.persistence.DataField;
 import org.opendatakit.common.persistence.DataField.DataType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Converts between datastore {@link Entity} objects and domain objects in

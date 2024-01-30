@@ -16,10 +16,10 @@
 
 package org.opendatakit.aggregate.odktables.rest.entity;
 
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 /**
  * This holds the list of UserInfo structures describing

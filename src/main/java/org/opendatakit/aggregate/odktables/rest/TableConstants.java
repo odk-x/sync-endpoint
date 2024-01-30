@@ -18,7 +18,13 @@ package org.opendatakit.aggregate.odktables.rest;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
+import java.util.SimpleTimeZone;
 
 /**
  * Contains various things that are constant in tables and must be known and

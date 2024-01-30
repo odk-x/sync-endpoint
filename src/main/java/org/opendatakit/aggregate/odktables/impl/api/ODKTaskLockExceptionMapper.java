@@ -16,15 +16,15 @@
 
 package org.opendatakit.aggregate.odktables.impl.api;
 
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.ext.ExceptionMapper;
-
 import org.opendatakit.aggregate.odktables.rest.ApiConstants;
 import org.opendatakit.aggregate.odktables.rest.entity.Error;
 import org.opendatakit.aggregate.odktables.rest.entity.Error.ErrorType;
 import org.opendatakit.common.persistence.exception.ODKTaskLockException;
+
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.ext.ExceptionMapper;
 
 public class ODKTaskLockExceptionMapper implements ExceptionMapper<ODKTaskLockException> {
 

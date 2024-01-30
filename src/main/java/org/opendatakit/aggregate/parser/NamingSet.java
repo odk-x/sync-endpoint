@@ -13,6 +13,13 @@
  */
 package org.opendatakit.aggregate.parser;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.opendatakit.common.persistence.Datastore;
+import org.opendatakit.common.persistence.exception.ODKDatastoreException;
+import org.opendatakit.common.security.User;
+import org.opendatakit.common.web.CallingContext;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -20,13 +27,6 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.UUID;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.opendatakit.common.persistence.Datastore;
-import org.opendatakit.common.persistence.exception.ODKDatastoreException;
-import org.opendatakit.common.security.User;
-import org.opendatakit.common.web.CallingContext;
 
 /**
  * When a form is uploaded, the names for the columns and tables representing

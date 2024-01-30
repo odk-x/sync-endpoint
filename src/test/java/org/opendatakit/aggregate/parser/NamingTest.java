@@ -13,10 +13,10 @@
  */
 package org.opendatakit.aggregate.parser;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author mitchellsundt@gmail.com

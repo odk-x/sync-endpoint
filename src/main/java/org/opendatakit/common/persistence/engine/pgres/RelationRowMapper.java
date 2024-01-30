@@ -13,15 +13,15 @@
  */
 package org.opendatakit.common.persistence.engine.pgres;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Date;
-
 import org.opendatakit.common.persistence.CommonFieldsBase;
 import org.opendatakit.common.persistence.DataField;
 import org.opendatakit.common.persistence.WrappedBigDecimal;
 import org.opendatakit.common.security.User;
 import org.springframework.jdbc.core.RowMapper;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Date;
 
 /**
  * 

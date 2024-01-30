@@ -16,13 +16,13 @@
 
 package org.opendatakit.aggregate.odktables.impl.api;
 
+import org.opendatakit.aggregate.odktables.exception.ODKTablesException;
+
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
-
-import org.opendatakit.aggregate.odktables.exception.ODKTablesException;
 
 @Produces({ MediaType.TEXT_XML })
 @Provider

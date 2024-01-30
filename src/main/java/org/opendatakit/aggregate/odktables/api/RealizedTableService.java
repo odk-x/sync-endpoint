@@ -16,6 +16,15 @@
 
 package org.opendatakit.aggregate.odktables.api;
 
+import org.opendatakit.aggregate.odktables.exception.AppNameMismatchException;
+import org.opendatakit.aggregate.odktables.exception.PermissionDeniedException;
+import org.opendatakit.aggregate.odktables.exception.SchemaETagMismatchException;
+import org.opendatakit.aggregate.odktables.exception.TableNotFoundException;
+import org.opendatakit.aggregate.odktables.rest.ApiConstants;
+import org.opendatakit.aggregate.odktables.rest.entity.TableDefinitionResource;
+import org.opendatakit.common.persistence.exception.ODKDatastoreException;
+import org.opendatakit.common.persistence.exception.ODKTaskLockException;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -25,15 +34,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
-import org.opendatakit.aggregate.odktables.exception.AppNameMismatchException;
-import org.opendatakit.aggregate.odktables.exception.PermissionDeniedException;
-import org.opendatakit.aggregate.odktables.exception.SchemaETagMismatchException;
-import org.opendatakit.aggregate.odktables.exception.TableNotFoundException;
-import org.opendatakit.aggregate.odktables.rest.ApiConstants;
-import org.opendatakit.aggregate.odktables.rest.entity.TableDefinitionResource;
-import org.opendatakit.common.persistence.exception.ODKDatastoreException;
-import org.opendatakit.common.persistence.exception.ODKTaskLockException;
 
 /**
  * Realized tables are identified by the tuple (appId, tableId, schemaETag)

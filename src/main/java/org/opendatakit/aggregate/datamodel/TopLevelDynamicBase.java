@@ -13,13 +13,13 @@
  */
 package org.opendatakit.aggregate.datamodel;
 
-import java.util.Date;
-
 import org.opendatakit.common.datamodel.DynamicCommonFieldsBase;
 import org.opendatakit.common.persistence.CommonFieldsBase;
 import org.opendatakit.common.persistence.DataField;
 import org.opendatakit.common.persistence.DataField.IndexType;
 import org.opendatakit.common.security.User;
+
+import java.util.Date;
 
 
 /**

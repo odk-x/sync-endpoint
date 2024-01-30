@@ -16,16 +16,15 @@
 
 package org.opendatakit.aggregate.odktables.impl.api;
 
-import java.io.IOException;
+import org.opendatakit.aggregate.odktables.rest.ApiConstants;
+import org.opendatakit.aggregate.odktables.rest.entity.Error;
+import org.opendatakit.aggregate.odktables.rest.entity.Error.ErrorType;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.ExceptionMapper;
-
-import org.opendatakit.aggregate.odktables.rest.ApiConstants;
-import org.opendatakit.aggregate.odktables.rest.entity.Error;
-import org.opendatakit.aggregate.odktables.rest.entity.Error.ErrorType;
+import java.io.IOException;
 
 public class IOExceptionMapper implements ExceptionMapper<IOException> {
 

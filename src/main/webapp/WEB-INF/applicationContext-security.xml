@@ -3,7 +3,7 @@
 <beans:beans xmlns="http://www.springframework.org/schema/security"
 	xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.2.xsd">
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-5.6.xsd">
 
 	<!--	Configure the access policy to the pages here	-->
 	<!--	You can do things like this: and hasAuthority('AUTH_LOCAL') -->
@@ -32,18 +32,9 @@
 		<intercept-url pattern="/odk_color.png" access="true" />
 		<intercept-url pattern="/multimode_login.html" access="true" />
 		<intercept-url pattern="/relogin.html" access="true" />
-		<intercept-url pattern="/local_login.html" access="isFullyAuthenticated() and (hasAuthority('AUTH_LOCAL') or hasAuthority('AUTH_ACTIVE_DIRECTORY') or hasAuthority('AUTH_LDAP'))" />
+		<intercept-url pattern="/local_login.html" access="isFullyAuthenticated() and (hasAuthority('AUTH_LOCAL') or hasAuthority('AUTH_LDAP'))" />
 
 		<!-- grant access to various servlets -->
-		<intercept-url pattern="/formList" access="hasRole('ROLE_DATA_COLLECTOR') or hasRole('ROLE_DATA_VIEWER')" />
-		<intercept-url pattern="/formXml" access="hasRole('ROLE_DATA_COLLECTOR') or hasRole('ROLE_DATA_VIEWER')" />
-		<intercept-url pattern="/submission" access="hasRole('ROLE_DATA_COLLECTOR') or hasRole('ROLE_DATA_OWNER')" />
-		<intercept-url pattern="/formUpload" access="hasRole('ROLE_DATA_OWNER')" /> <!--  NEW form upload url -->
-		<intercept-url pattern="/upload" access="hasRole('ROLE_DATA_OWNER')" /> <!--  OLD form upload url -->
-		<intercept-url pattern="/xformsDownload" access="hasRole('ROLE_DATA_COLLECTOR') or hasRole('ROLE_DATA_VIEWER')" />
-		<intercept-url pattern="/xformsList" access="hasRole('ROLE_DATA_COLLECTOR') or hasRole('ROLE_DATA_VIEWER')" />
-		<intercept-url pattern="/xformsManifest" access="hasRole('ROLE_DATA_COLLECTOR') or hasRole('ROLE_DATA_VIEWER')" />
-
 		<intercept-url pattern="/www/**" access="hasRole('ROLE_USER')" />
 
 		<intercept-url pattern="/view/binaryData" access="hasRole('ROLE_DATA_VIEWER') or hasRole('ROLE_ATTACHMENT_VIEWER')" />
@@ -54,8 +45,6 @@
         <intercept-url pattern="/ssl/**" access="hasRole('ROLE_SITE_ACCESS_ADMIN')" />
         <intercept-url pattern="/enk/**" access="hasRole('ROLE_DATA_COLLECTOR') or hasRole('ROLE_DATA_VIEWER') or hasRole('ROLE_SITE_ACCESS_ADMIN')" />
 
-		<!--	GAE access is controlled in web.xml -->
-		<intercept-url pattern="/gae/**" access="true" />
 		<!--	RemoteAPI access is controlled in web.xml -->
 		<intercept-url pattern="/remote_api" access="true" />
 
@@ -332,7 +321,7 @@
 		</beans:constructor-arg>
 	</beans:bean>
 
-	<!--			Active Directory (Azure ADDS) Authentication -->
+	<!--			Active Directory (Azure ADDS) Authentication
 
 	<beans:bean id="activeDirectoryAuthFilter"
 		class="org.opendatakit.common.security.spring.BasicAuthenticationFilter">
@@ -375,7 +364,7 @@
 			</beans:bean>
 		</beans:property>
 	</beans:bean>
-
+	-->
 	<!-- LDAP Authentication -->
 
 	<beans:bean id="ldapAuthCtxSource" class="org.springframework.ldap.core.support.LdapContextSource">
@@ -455,7 +444,7 @@
 		<beans:property name="realmName" value="${security.server.realm.realmString}" />
 	</beans:bean>
 
-	<!-- DHIS2 Authentication -->
+	<!-- DHIS2 Authentication
 
 	<beans:bean id="dhis2AuthMapper"
 				class="org.opendatakit.common.security.spring.Dhis2AuthoritiesMapper">
@@ -515,6 +504,7 @@
 				class="org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint">
 		<beans:property name="realmName" value="${security.server.realm.realmString}" />
 	</beans:bean>
+	-->
 
 	<!-- Store the currently selected AuthenticationProvider for SecurityServiceUtil -->
 	<beans:alias name="${security.server.authenticationMethod}AuthenticationProvider" alias="directoryAwareAuthProvider"/>

@@ -15,9 +15,9 @@
  */
 package org.opendatakit.common.security.spring;
 
-import javax.servlet.ServletRequest;
-
 import org.springframework.security.web.PortResolver;
+
+import javax.servlet.ServletRequest;
 
 /**
  * PortResolver that makes its decisions solely based upon the scheme.

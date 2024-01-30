@@ -13,10 +13,6 @@
  */
 package org.opendatakit.common.persistence;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.List;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -28,6 +24,10 @@ import org.opendatakit.common.persistence.exception.ODKOverQuotaException;
 import org.opendatakit.common.security.User;
 import org.opendatakit.common.web.CallingContext;
 import org.opendatakit.common.web.TestContextFactory;
+
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests storage of strings up to STR_LENGTH (16384) characters long.  

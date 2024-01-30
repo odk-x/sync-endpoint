@@ -16,9 +16,6 @@
 
 package org.opendatakit.aggregate.odktables.relation;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -39,6 +36,9 @@ import org.opendatakit.aggregate.odktables.security.TablesUserPermissions;
 import org.opendatakit.common.ermodel.Entity;
 import org.opendatakit.common.persistence.exception.ODKDatastoreException;
 import org.opendatakit.common.web.CallingContext;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Creates and updates new Entity objects for relations.
@@ -76,10 +76,10 @@ public class EntityCreator {
    */
   public DbTableEntryEntity newTableEntryEntity(String tableId, String pendingSchemaETag,
       String aprioriDataSequenceValue, CallingContext cc) throws ODKDatastoreException {
-    Validate.notNull(cc);
-    Validate.notNull(tableId);
-    Validate.notNull(pendingSchemaETag);
-    Validate.notNull(aprioriDataSequenceValue);
+    Validate.notNull(cc, "cc cannot be null");
+    Validate.notNull(tableId, "tableId cannot be null");
+    Validate.notNull(pendingSchemaETag, "pendingSchemaETag cannot be null");
+    Validate.notNull(aprioriDataSequenceValue, "aprioriDataSequenceValue cannot be null");
 
     DbTableEntryEntity entity = DbTableEntry.createNewEntity(tableId, cc);
     entity.setPendingSchemaETag(pendingSchemaETag);
@@ -102,8 +102,8 @@ public class EntityCreator {
       Column column, CallingContext cc) throws ODKDatastoreException {
     Validate.notEmpty(tableId);
     Validate.notEmpty(schemaETag);
-    Validate.notNull(column);
-    Validate.notNull(cc);
+    Validate.notNull(column, "column cannot be null");
+    Validate.notNull(cc, "cc cannot be null");
 
     DbColumnDefinitionsEntity entity = DbColumnDefinitions.createNewEntity(cc);
     entity.setTableId(tableId);
@@ -165,7 +165,7 @@ public class EntityCreator {
     Validate.notEmpty(tableId);
     Validate.notEmpty(schemaETag);
     Validate.notEmpty(dbTableName);
-    Validate.notNull(cc);
+    Validate.notNull(cc, "cc cannot be null");
     DbTableDefinitionsEntity definition = DbTableDefinitions.createNewEntity(cc);
     definition.setTableId(tableId);
     definition.setSchemaETag(schemaETag);
@@ -189,11 +189,11 @@ public class EntityCreator {
   public DbTableAclEntity newTableAclEntity(String tableId, Scope scope, TableRole role,
       CallingContext cc) throws ODKDatastoreException {
     Validate.notEmpty(tableId);
-    Validate.notNull(scope);
+    Validate.notNull(scope, "scope cannot be null");
     // can't have an empty scope type in an acl entity
-    Validate.notNull(scope.getType());
-    Validate.notNull(role);
-    Validate.notNull(cc);
+    Validate.notNull(scope.getType(), "scope type cannot be null");
+    Validate.notNull(role, "role cannot be null");
+    Validate.notNull(cc, "cc cannot be null");
 
     DbTableAclEntity tableAcl = DbTableAcl.createNewEntity(cc);
     tableAcl.setTableId(tableId);
@@ -303,11 +303,11 @@ public class EntityCreator {
       String previousRowETag, Entity row,
       List<DbColumnDefinitionsEntity> columns, Sequencer sequencer, CallingContext cc)
       throws ODKDatastoreException {
-    Validate.notNull(logTable);
+    Validate.notNull(logTable, "logTable cannot be null");
     Validate.notEmpty(dataETagAtModification);
-    Validate.notNull(row);
+    Validate.notNull(row, "row cannot be null");
     Validate.noNullElements(columns);
-    Validate.notNull(cc);
+    Validate.notNull(cc, "cc cannot be null");
 
     Entity entity = logTable.newEntity(row.getString(DbTable.ROW_ETAG), cc);
     entity.set(DbLogTable.ROW_ID, row.getId());

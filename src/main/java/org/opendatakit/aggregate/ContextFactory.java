@@ -16,13 +16,6 @@
 
 package org.opendatakit.aggregate;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-
 import org.opendatakit.aggregate.constants.BeanDefs;
 import org.opendatakit.aggregate.odktables.exception.PermissionDeniedException;
 import org.opendatakit.aggregate.odktables.security.TablesUserPermissions;
@@ -40,6 +33,12 @@ import org.opendatakit.common.web.CallingContext;
 import org.opendatakit.common.web.constants.BasicConsts;
 import org.opendatakit.common.web.constants.HtmlConsts;
 import org.springframework.web.context.support.WebApplicationContextUtils;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 /**
  * Server Context creates a singleton for application context to prevent

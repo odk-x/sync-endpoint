@@ -15,16 +15,15 @@
  */
 package org.opendatakit.aggregate.odktables.impl.api;
 
-import java.util.Enumeration;
-import java.util.List;
+import org.opendatakit.aggregate.odktables.rest.ApiConstants;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MultivaluedMap;
-
-import org.opendatakit.aggregate.odktables.rest.ApiConstants;
+import java.util.Enumeration;
+import java.util.List;
 
 /**
  * Class to extract and format the request information coming in from ODK Tables

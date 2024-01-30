@@ -15,14 +15,10 @@
  */
 package org.opendatakit.common.utils;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.config.ConnectionConfig;
-import org.apache.http.config.SocketConfig;
-import org.apache.http.impl.client.CloseableHttpClient;
-
+import org.apache.hc.client5.http.config.ConnectionConfig;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.core5.http.io.SocketConfig;
 /**
  * Interface for the bean that will construct an HttpClient that is appropriate
  * for the GAE or Tomcat container in which the application runs. The GAE

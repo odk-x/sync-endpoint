@@ -26,6 +26,7 @@ import org.opendatakit.aggregate.odktables.rest.entity.RowFilterScope;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Ignore
 public class T {
@@ -50,12 +51,12 @@ public class T {
   public static final String savepoint_creator_1 = null;
   public static final String form_id_1 = null;
   public static final String locale_1 = "default";
-  public static final String savepoint_timestamp_1 = TableConstants.nanoSecondsFromMillis(System.currentTimeMillis()-1000);
+  public static final String savepoint_timestamp_1 = TableConstants.nanoSecondsFromMillis(System.currentTimeMillis()-1000, Locale.US);
 
   public static final String savepoint_creator_2 = "fred";
   public static final String form_id_2 = "ralph";
   public static final String locale_2 = "default";
-  public static final String savepoint_timestamp_2 = TableConstants.nanoSecondsFromMillis(System.currentTimeMillis()-2000);
+  public static final String savepoint_timestamp_2 = TableConstants.nanoSecondsFromMillis(System.currentTimeMillis()-2000, Locale.US);
 
   public static enum Data {
     DYLAN("1", "dylan", "23", "175"), JOHN("2", "john", "58", "200");

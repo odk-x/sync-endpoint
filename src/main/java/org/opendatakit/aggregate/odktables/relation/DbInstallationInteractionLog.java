@@ -16,10 +16,6 @@
 
 package org.opendatakit.aggregate.odktables.relation;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import org.opendatakit.common.ermodel.Entity;
 import org.opendatakit.common.ermodel.Query;
 import org.opendatakit.common.ermodel.Relation;
@@ -30,6 +26,10 @@ import org.opendatakit.common.persistence.exception.ODKDatastoreException;
 import org.opendatakit.common.persistence.exception.ODKEntityPersistException;
 import org.opendatakit.common.persistence.exception.ODKOverQuotaException;
 import org.opendatakit.common.web.CallingContext;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Tracks the client installations and authenticated users that are 

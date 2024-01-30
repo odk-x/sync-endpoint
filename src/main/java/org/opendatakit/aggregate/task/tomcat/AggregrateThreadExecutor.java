@@ -15,10 +15,10 @@
  */
 package org.opendatakit.aggregate.task.tomcat;
 
+import org.springframework.scheduling.TaskScheduler;
+
 import java.util.Date;
 import java.util.concurrent.ScheduledFuture;
-
-import org.springframework.scheduling.TaskScheduler;
 
 /**
  *
