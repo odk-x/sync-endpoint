@@ -65,6 +65,7 @@
          Define a non-SSL/TLS HTTP/1.1 Connector on port 80
     -->
     <Connector port="8080" protocol="HTTP/1.1"
+	       secretRequired="false" 
                connectionTimeout="20000"
                redirectPort="8443" 
                maxPostSize="33554432" />
