@@ -16,8 +16,6 @@
 
 package org.opendatakit.common.web;
 
-import javax.servlet.ServletContext;
-
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.junit.Ignore;
 import org.opendatakit.common.persistence.Datastore;
@@ -27,6 +25,7 @@ import org.opendatakit.common.security.UserService;
 import org.opendatakit.common.security.spring.UserServiceImpl;
 import org.opendatakit.common.web.constants.BasicConsts;
 
+import javax.servlet.ServletContext;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;

@@ -17,6 +17,7 @@
 package org.opendatakit.common.persistence;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /**
  * Wrapper to encapsulate and pass through the special double values of NaN,
@@ -79,7 +80,7 @@ public class WrappedBigDecimal implements Comparable<WrappedBigDecimal> {
     return (d != null);
   }
 
-  public WrappedBigDecimal setScale(int scale, int roundingMode) {
+  public WrappedBigDecimal setScale(int scale, RoundingMode roundingMode) {
     if (isSpecialValue()) {
       // immutable
       return this;

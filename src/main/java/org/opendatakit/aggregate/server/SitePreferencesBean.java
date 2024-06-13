@@ -15,8 +15,6 @@
  */
 package org.opendatakit.aggregate.server;
 
-import javax.servlet.ServletContext;
-
 import org.opendatakit.common.persistence.Datastore;
 import org.opendatakit.common.persistence.exception.ODKEntityNotFoundException;
 import org.opendatakit.common.persistence.exception.ODKOverQuotaException;
@@ -24,6 +22,8 @@ import org.opendatakit.common.security.User;
 import org.opendatakit.common.security.UserService;
 import org.opendatakit.common.web.CallingContext;
 import org.springframework.beans.factory.InitializingBean;
+
+import javax.servlet.ServletContext;
 
 /**
  * Simple class to retrieve the site key from ServerPreferencesProperties during

@@ -16,14 +16,14 @@
 
 package org.opendatakit.aggregate.odktables;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-
 import org.opendatakit.aggregate.odktables.relation.DbColumnDefinitions.DbColumnDefinitionsEntity;
 import org.opendatakit.aggregate.odktables.rest.ElementDataType;
 import org.opendatakit.aggregate.odktables.rest.ElementType;
 import org.opendatakit.aggregate.odktables.rest.entity.DataKeyValue;
+
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
 
 public class DataKeyValueDeepComparator implements Comparator<DataKeyValue> {
 

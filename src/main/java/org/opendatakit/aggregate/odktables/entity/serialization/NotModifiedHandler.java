@@ -1,5 +1,16 @@
 package org.opendatakit.aggregate.odktables.entity.serialization;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.hc.core5.http.HttpStatus;
+import org.apache.wink.server.handlers.HandlersChain;
+import org.apache.wink.server.handlers.MessageContext;
+import org.apache.wink.server.handlers.ResponseHandler;
+import org.opendatakit.aggregate.odktables.rest.ApiConstants;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
 import java.math.BigInteger;
@@ -8,19 +19,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Properties;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Response;
-
-import org.apache.http.HttpStatus;
-import org.apache.wink.server.handlers.HandlersChain;
-import org.apache.wink.server.handlers.MessageContext;
-import org.apache.wink.server.handlers.ResponseHandler;
-import org.opendatakit.aggregate.odktables.rest.ApiConstants;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class NotModifiedHandler implements ResponseHandler {
 

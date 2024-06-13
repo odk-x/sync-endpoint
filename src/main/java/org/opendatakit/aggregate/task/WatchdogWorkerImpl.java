@@ -15,27 +15,17 @@
  */
 package org.opendatakit.aggregate.task;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.opendatakit.aggregate.constants.BeanDefs;
-import org.opendatakit.aggregate.constants.common.ExternalServiceType;
-import org.opendatakit.aggregate.constants.common.OperationalStatus;
-import org.opendatakit.aggregate.constants.common.UIConsts;
-import org.opendatakit.aggregate.datamodel.TopLevelDynamicBase;
 import org.opendatakit.aggregate.exception.ODKExternalServiceException;
 import org.opendatakit.aggregate.exception.ODKFormNotFoundException;
 import org.opendatakit.aggregate.exception.ODKIncompleteSubmissionData;
 import org.opendatakit.aggregate.util.BackendActionsTable;
-import org.opendatakit.common.persistence.PersistConsts;
-import org.opendatakit.common.persistence.QueryResumePoint;
 import org.opendatakit.common.persistence.exception.ODKDatastoreException;
-import org.opendatakit.common.utils.WebUtils;
 import org.opendatakit.common.web.CallingContext;
+
+import java.util.Date;
 
 /**
  * Common worker implementation for restarting stalled tasks.

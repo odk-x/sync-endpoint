@@ -16,18 +16,7 @@
 
 package org.opendatakit.aggregate.odktables.impl.api;
 
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.util.TreeSet;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.opendatakit.aggregate.odktables.TableManager;
@@ -54,7 +43,16 @@ import org.opendatakit.common.security.common.GrantedAuthorityName;
 import org.opendatakit.common.security.server.SecurityServiceUtil;
 import org.opendatakit.common.web.CallingContext;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.util.TreeSet;
 
 public class RealizedTableServiceImpl implements RealizedTableService {
   private static final Log logger = LogFactory.getLog(RealizedTableServiceImpl.class);

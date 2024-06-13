@@ -13,19 +13,6 @@
  */
 package org.opendatakit.common.persistence.engine.pgres;
 
-import java.math.BigDecimal;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.sql.DataSource;
-
 import org.apache.commons.logging.LogFactory;
 import org.opendatakit.common.persistence.CommonFieldsBase;
 import org.opendatakit.common.persistence.DataField;
@@ -51,6 +38,19 @@ import org.springframework.jdbc.core.SqlParameterValue;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
+
+import javax.sql.DataSource;
+import java.math.BigDecimal;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Types;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -406,7 +406,7 @@ public class DatastoreImpl implements Datastore, InitializingBean {
     String qs = TableDefinition.TABLE_DEF_QUERY;
     List<?> columns;
     columns = jc.query(qs, new Object[] { relation.getSchemaName(), relation.getTableName() },
-        tableDef);
+            new int[]{ Types.VARCHAR, Types.VARCHAR }, tableDef);
     dam.recordQueryUsage(TableDefinition.INFORMATION_SCHEMA_COLUMNS, columns.size());
 
     if (columns.size() > 0) {
@@ -703,7 +703,7 @@ public class DatastoreImpl implements Datastore, InitializingBean {
     dam.recordQueryUsage(TableDefinition.INFORMATION_SCHEMA_COLUMNS, 1);
     String qs = TableDefinition.TABLE_EXISTS_QUERY;
     Integer columnCount = getJdbcConnection().queryForObject(qs, new Object[] { schema, tableName },
-        Integer.class);
+            new int[]{ Types.VARCHAR, Types.VARCHAR }, Integer.class);
     return (columnCount != null && columnCount != 0);
   }
 

@@ -15,12 +15,6 @@
  */
 package org.opendatakit.aggregate.task.tomcat;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.concurrent.ScheduledFuture;
-
-import javax.servlet.ServletContext;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.opendatakit.aggregate.constants.BeanDefs;
@@ -43,6 +37,11 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.SmartLifecycle;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.web.context.ServletContextAware;
+
+import javax.servlet.ServletContext;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.concurrent.ScheduledFuture;
 
 /**
  * Tomcat implementation of the watchdog -- as an executor

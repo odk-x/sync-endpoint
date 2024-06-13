@@ -16,10 +16,6 @@
 
 package org.opendatakit.common.security.server;
 
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import org.opendatakit.aggregate.odktables.rest.entity.PrivilegesInfo;
 import org.opendatakit.aggregate.odktables.rest.entity.UserInfo;
 import org.opendatakit.common.persistence.client.exception.DatastoreFailureException;
@@ -36,6 +32,19 @@ import org.opendatakit.common.security.spring.DirectoryAwareAuthenticationProvid
 import org.opendatakit.common.web.CallingContext;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Common utility methods extracted from the AccessConfigurationServlet so they

@@ -15,8 +15,13 @@
  */
 package org.opendatakit.aggregate.odktables.api;
 
-import java.io.IOException;
-import java.util.List;
+import org.apache.wink.common.model.multipart.InMultiPart;
+import org.opendatakit.aggregate.odktables.exception.ODKTablesException;
+import org.opendatakit.aggregate.odktables.exception.PermissionDeniedException;
+import org.opendatakit.aggregate.odktables.rest.ApiConstants;
+import org.opendatakit.aggregate.odktables.rest.entity.OdkTablesFileManifest;
+import org.opendatakit.common.persistence.exception.ODKDatastoreException;
+import org.opendatakit.common.persistence.exception.ODKTaskLockException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -31,14 +36,8 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.PathSegment;
 import javax.ws.rs.core.Response;
-
-import org.apache.wink.common.model.multipart.InMultiPart;
-import org.opendatakit.aggregate.odktables.exception.ODKTablesException;
-import org.opendatakit.aggregate.odktables.exception.PermissionDeniedException;
-import org.opendatakit.aggregate.odktables.rest.ApiConstants;
-import org.opendatakit.aggregate.odktables.rest.entity.OdkTablesFileManifest;
-import org.opendatakit.common.persistence.exception.ODKDatastoreException;
-import org.opendatakit.common.persistence.exception.ODKTaskLockException;
+import java.io.IOException;
+import java.util.List;
 
 /**
  * Servlet for handling the uploading and downloading of instance data files

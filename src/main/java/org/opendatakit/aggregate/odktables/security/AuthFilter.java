@@ -16,10 +16,6 @@
 
 package org.opendatakit.aggregate.odktables.security;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.apache.commons.lang3.Validate;
 import org.opendatakit.aggregate.odktables.TableAclManager;
 import org.opendatakit.aggregate.odktables.exception.PermissionDeniedException;
@@ -29,6 +25,10 @@ import org.opendatakit.aggregate.odktables.rest.entity.TableRole.TablePermission
 import org.opendatakit.common.persistence.exception.ODKDatastoreException;
 import org.opendatakit.common.persistence.exception.ODKEntityNotFoundException;
 import org.opendatakit.common.web.CallingContext;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class AuthFilter {
 
@@ -104,8 +104,8 @@ public class AuthFilter {
    */
   public boolean hasFilterScope(TablePermission permission, String rowId, Scope filter)
       throws ODKDatastoreException {
-    Validate.notNull(permission);
-    Validate.notNull(rowId);
+    Validate.notNull(permission, "permission is null");
+    Validate.notNull(rowId, "rowId is null");
 
 //    if (!permissions.contains(permission)) {
 //      if (filter == null || filter.equals(Scope.EMPTY_SCOPE)) {

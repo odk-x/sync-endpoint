@@ -13,18 +13,6 @@
  */
 package org.opendatakit.common.persistence.engine.mysql;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.sql.DataSource;
-
 import org.apache.commons.logging.LogFactory;
 import org.opendatakit.common.persistence.CommonFieldsBase;
 import org.opendatakit.common.persistence.DataField;
@@ -51,6 +39,17 @@ import org.springframework.jdbc.core.SqlParameterValue;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
+
+import javax.sql.DataSource;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -84,12 +83,6 @@ public class DatastoreImpl implements Datastore, InitializingBean {
     } catch ( Exception e ) {
       // ignore this but log a brief info message
       LogFactory.getLog(DatastoreImpl.class).info("Failed to load com.mysql.jdbc.Driver (did you download and install/copy MySQL Connector/J ?) Exception: " + e.toString());
-    }
-    try {
-      Class.forName("com.mysql.jdbc.GoogleDriver");
-    } catch ( Exception e ) {
-      // ignore this but log a brief info message
-      LogFactory.getLog(DatastoreImpl.class).info("Failed to load com.mysql.jdbc.GoogleDriver Exception: " + e.toString());
     }
     this.tm = new DataSourceTransactionManager(dataSource);
   }

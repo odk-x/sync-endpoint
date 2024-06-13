@@ -15,6 +15,14 @@
  */
 package org.opendatakit.aggregate.odktables.api;
 
+import org.opendatakit.aggregate.odktables.exception.PermissionDeniedException;
+import org.opendatakit.aggregate.odktables.rest.ApiConstants;
+import org.opendatakit.aggregate.odktables.rest.entity.OdkTablesFileManifest;
+import org.opendatakit.common.persistence.exception.ODKDatastoreException;
+import org.opendatakit.common.persistence.exception.ODKEntityNotFoundException;
+import org.opendatakit.common.persistence.exception.ODKOverQuotaException;
+import org.opendatakit.common.persistence.exception.ODKTaskLockException;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -23,14 +31,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
-import org.opendatakit.aggregate.odktables.exception.PermissionDeniedException;
-import org.opendatakit.aggregate.odktables.rest.ApiConstants;
-import org.opendatakit.aggregate.odktables.rest.entity.OdkTablesFileManifest;
-import org.opendatakit.common.persistence.exception.ODKDatastoreException;
-import org.opendatakit.common.persistence.exception.ODKEntityNotFoundException;
-import org.opendatakit.common.persistence.exception.ODKOverQuotaException;
-import org.opendatakit.common.persistence.exception.ODKTaskLockException;
 
 /**
  * Servlet for downloading a manifest of files to the phone for the correct app

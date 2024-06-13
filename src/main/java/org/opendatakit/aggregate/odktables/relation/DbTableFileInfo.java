@@ -16,10 +16,6 @@
 
 package org.opendatakit.aggregate.odktables.relation;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import org.opendatakit.aggregate.odktables.rest.TableConstants;
 import org.opendatakit.common.ermodel.BlobEntitySet;
 import org.opendatakit.common.ermodel.Entity;
@@ -34,6 +30,10 @@ import org.opendatakit.common.persistence.exception.ODKDatastoreException;
 import org.opendatakit.common.persistence.exception.ODKEntityPersistException;
 import org.opendatakit.common.persistence.exception.ODKOverQuotaException;
 import org.opendatakit.common.web.CallingContext;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * This is the table in the database that holds information about the files that

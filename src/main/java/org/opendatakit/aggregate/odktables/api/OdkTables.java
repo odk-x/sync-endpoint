@@ -1,5 +1,14 @@
 package org.opendatakit.aggregate.odktables.api;
 
+import org.opendatakit.aggregate.odktables.exception.AppNameMismatchException;
+import org.opendatakit.aggregate.odktables.exception.PermissionDeniedException;
+import org.opendatakit.aggregate.odktables.impl.api.FileManifestServiceImpl;
+import org.opendatakit.aggregate.odktables.impl.api.FileServiceImpl;
+import org.opendatakit.aggregate.odktables.impl.api.TableServiceImpl;
+import org.opendatakit.aggregate.odktables.rest.ApiConstants;
+import org.opendatakit.common.persistence.exception.ODKDatastoreException;
+import org.opendatakit.common.persistence.exception.ODKTaskLockException;
+
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -14,15 +23,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-
-import org.opendatakit.aggregate.odktables.exception.AppNameMismatchException;
-import org.opendatakit.aggregate.odktables.exception.PermissionDeniedException;
-import org.opendatakit.aggregate.odktables.impl.api.FileManifestServiceImpl;
-import org.opendatakit.aggregate.odktables.impl.api.FileServiceImpl;
-import org.opendatakit.aggregate.odktables.impl.api.TableServiceImpl;
-import org.opendatakit.aggregate.odktables.rest.ApiConstants;
-import org.opendatakit.common.persistence.exception.ODKDatastoreException;
-import org.opendatakit.common.persistence.exception.ODKTaskLockException;
 
 public interface OdkTables {
 

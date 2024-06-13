@@ -16,10 +16,6 @@
 
 package org.opendatakit.aggregate.odktables.relation;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import org.apache.commons.lang3.Validate;
 import org.opendatakit.aggregate.odktables.relation.DbColumnDefinitions.DbColumnDefinitionsEntity;
 import org.opendatakit.aggregate.odktables.relation.DbTableDefinitions.DbTableDefinitionsEntity;
@@ -34,6 +30,10 @@ import org.opendatakit.common.persistence.PersistConsts;
 import org.opendatakit.common.persistence.exception.ODKDatastoreException;
 import org.opendatakit.common.persistence.exception.ODKEntityNotFoundException;
 import org.opendatakit.common.web.CallingContext;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Represents the schema for a user-defined (data, security, shortcut) table in
@@ -164,9 +164,9 @@ public class DbTable extends Relation {
    */
   public static List<Entity> query(DbTable table, List<String> rowIds, CallingContext cc)
       throws ODKEntityNotFoundException, ODKDatastoreException {
-    Validate.notNull(table);
+    Validate.notNull(table, "table is null");
     Validate.noNullElements(rowIds);
-    Validate.notNull(cc);
+    Validate.notNull(cc, "cc is null");
 
     Query query = table.query("DbTable.query", cc);
     query.include(PersistConsts.URI_COLUMN_NAME, rowIds);

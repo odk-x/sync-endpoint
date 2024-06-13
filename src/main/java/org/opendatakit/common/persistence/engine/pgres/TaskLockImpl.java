@@ -15,13 +15,6 @@
  */
 package org.opendatakit.common.persistence.engine.pgres;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import org.apache.commons.logging.LogFactory;
 import org.opendatakit.common.persistence.CommonFieldsBase;
 import org.opendatakit.common.persistence.DataField;
@@ -37,6 +30,13 @@ import org.opendatakit.common.security.User;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ConnectionCallback;
 import org.springframework.jdbc.core.JdbcTemplate;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 
@@ -256,7 +256,7 @@ public class TaskLockImpl implements TaskLock {
     } catch (Exception e) {
       throw new ODKTaskLockException(PERSISTENCE_LAYER_PROBLEM, e);
     }
-    return (TaskLockTable) datastore.getEntity(relation, entity.getUri(), user);
+    return datastore.getEntity(relation, entity.getUri(), user);
   }
 
   @Override

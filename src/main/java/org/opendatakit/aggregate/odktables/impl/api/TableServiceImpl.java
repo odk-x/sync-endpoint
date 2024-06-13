@@ -16,34 +16,10 @@
 
 package org.opendatakit.aggregate.odktables.impl.api;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.UnsupportedEncodingException;
-import java.io.Writer;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeSet;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
-
-import com.nimbusds.jose.util.StandardCharset;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.opendatakit.aggregate.odktables.ConfigFileChangeDetail;
@@ -87,10 +63,32 @@ import org.opendatakit.common.utils.WebUtils;
 import org.opendatakit.common.web.CallingContext;
 import org.opendatakit.common.web.constants.HtmlConsts;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
 
 public class TableServiceImpl implements TableService {
   private static final Log logger = LogFactory.getLog(TableServiceImpl.class);
@@ -339,7 +337,7 @@ public class TableServiceImpl implements TableService {
       RFC4180CsvReader csvReader = null;
       ArrayList<PropertyEntryXml> properties = new ArrayList<PropertyEntryXml>();
       try {
-        rdr = new InputStreamReader(bas, StandardCharset.UTF_8);
+        rdr = new InputStreamReader(bas, StandardCharsets.UTF_8);
         csvReader = new RFC4180CsvReader(rdr);
 
         String[] entries = csvReader.readNext();
@@ -587,7 +585,7 @@ public class TableServiceImpl implements TableService {
     RFC4180CsvWriter csvWtr = null;
 
     try {
-      wtr = new OutputStreamWriter(bas, StandardCharset.UTF_8);
+      wtr = new OutputStreamWriter(bas, StandardCharsets.UTF_8);
       csvWtr = new RFC4180CsvWriter(wtr);
       String[] entry = new String[5];
       entry[0] = "_partition";

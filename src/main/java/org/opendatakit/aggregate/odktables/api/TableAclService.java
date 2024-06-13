@@ -16,6 +16,13 @@
 
 package org.opendatakit.aggregate.odktables.api;
 
+import org.opendatakit.aggregate.odktables.exception.PermissionDeniedException;
+import org.opendatakit.aggregate.odktables.rest.ApiConstants;
+import org.opendatakit.aggregate.odktables.rest.entity.TableAcl;
+import org.opendatakit.aggregate.odktables.rest.entity.TableAclResource;
+import org.opendatakit.aggregate.odktables.rest.entity.TableAclResourceList;
+import org.opendatakit.common.persistence.exception.ODKDatastoreException;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -26,13 +33,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
-import org.opendatakit.aggregate.odktables.exception.PermissionDeniedException;
-import org.opendatakit.aggregate.odktables.rest.ApiConstants;
-import org.opendatakit.aggregate.odktables.rest.entity.TableAcl;
-import org.opendatakit.aggregate.odktables.rest.entity.TableAclResource;
-import org.opendatakit.aggregate.odktables.rest.entity.TableAclResourceList;
-import org.opendatakit.common.persistence.exception.ODKDatastoreException;
 
 public interface TableAclService {
   

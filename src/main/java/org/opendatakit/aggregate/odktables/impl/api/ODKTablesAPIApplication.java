@@ -16,11 +16,6 @@
 
 package org.opendatakit.aggregate.odktables.impl.api;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.ws.rs.core.Application;
-
 import org.apache.wink.common.internal.providers.entity.ByteArrayProvider;
 import org.apache.wink.common.internal.providers.entity.FileProvider;
 import org.apache.wink.common.internal.providers.multipart.BufferedInMultiPartProvider;
@@ -28,6 +23,10 @@ import org.apache.wink.common.internal.providers.multipart.OutMultiPartProvider;
 import org.opendatakit.aggregate.odktables.entity.serialization.SimpleHTMLMessageWriter;
 import org.opendatakit.aggregate.odktables.entity.serialization.SimpleJSONMessageReaderWriter;
 import org.opendatakit.aggregate.odktables.entity.serialization.SimpleXMLMessageReaderWriter;
+
+import javax.ws.rs.core.Application;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ODKTablesAPIApplication extends Application {
 

@@ -16,13 +16,8 @@
 
 package org.opendatakit.aggregate.odktables.entity.serialization;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.nio.charset.Charset;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import org.opendatakit.aggregate.odktables.rest.ApiConstants;
 
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
@@ -30,10 +25,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
-
-import org.opendatakit.aggregate.odktables.rest.ApiConstants;
-
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.nio.charset.Charset;
 
 @Produces({ "text/*" })
 @Provider

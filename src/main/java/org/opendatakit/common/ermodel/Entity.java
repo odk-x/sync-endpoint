@@ -16,14 +16,14 @@
 
 package org.opendatakit.common.ermodel;
 
-import java.util.Date;
-
 import org.opendatakit.common.persistence.DataField;
 import org.opendatakit.common.persistence.WrappedBigDecimal;
 import org.opendatakit.common.persistence.exception.ODKDatastoreException;
 import org.opendatakit.common.persistence.exception.ODKEntityPersistException;
 import org.opendatakit.common.persistence.exception.ODKOverQuotaException;
 import org.opendatakit.common.web.CallingContext;
+
+import java.util.Date;
 
 public interface Entity {
 

@@ -13,12 +13,12 @@
  */
 package org.opendatakit.common.persistence;
 
+import org.opendatakit.common.persistence.exception.ODKDatastoreException;
+import org.opendatakit.common.persistence.exception.ODKOverQuotaException;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-
-import org.opendatakit.common.persistence.exception.ODKDatastoreException;
-import org.opendatakit.common.persistence.exception.ODKOverQuotaException;
 
 /**
  * The Query interface defines how persistence implementations should create query functionality.

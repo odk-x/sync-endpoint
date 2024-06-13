@@ -16,13 +16,12 @@
 
 package org.opendatakit.aggregate.odktables.impl.api;
 
-import java.io.IOException;
-
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
+import java.io.IOException;
 
 @Produces({ MediaType.APPLICATION_JSON })
 @Provider

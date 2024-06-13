@@ -16,9 +16,6 @@
 
 package org.opendatakit.aggregate.server;
 
-import java.util.Date;
-import java.util.List;
-
 import org.opendatakit.common.persistence.CommonFieldsBase;
 import org.opendatakit.common.persistence.DataField;
 import org.opendatakit.common.persistence.Datastore;
@@ -30,6 +27,9 @@ import org.opendatakit.common.persistence.exception.ODKOverQuotaException;
 import org.opendatakit.common.security.User;
 import org.opendatakit.common.utils.WebUtils;
 import org.opendatakit.common.web.CallingContext;
+
+import java.util.Date;
+import java.util.List;
 
 public class ServerPreferencesProperties extends CommonFieldsBase {
 

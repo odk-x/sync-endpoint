@@ -15,15 +15,15 @@
  */
 package org.opendatakit.common.security.spring;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.opendatakit.common.security.User;
 import org.opendatakit.common.security.common.GrantedAuthorityName;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 public class UserImpl implements org.opendatakit.common.security.User {
 

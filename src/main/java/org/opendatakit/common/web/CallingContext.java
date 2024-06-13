@@ -15,11 +15,11 @@
  */
 package org.opendatakit.common.web;
 
-import javax.servlet.ServletContext;
-
 import org.opendatakit.common.persistence.Datastore;
 import org.opendatakit.common.security.User;
 import org.opendatakit.common.security.UserService;
+
+import javax.servlet.ServletContext;
 
 /**
  * Context in which the call occurs.  

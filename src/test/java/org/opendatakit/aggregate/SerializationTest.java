@@ -16,12 +16,7 @@
 
 package org.opendatakit.aggregate;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.opendatakit.aggregate.odktables.rest.SavepointTypeManipulator;
@@ -37,7 +32,11 @@ import org.opendatakit.aggregate.odktables.rest.entity.TableEntry;
 import org.opendatakit.aggregate.odktables.rest.entity.TableResource;
 import org.opendatakit.aggregate.odktables.rest.entity.TableRole;
 
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 public class SerializationTest {
 

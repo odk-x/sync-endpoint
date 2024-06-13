@@ -16,12 +16,6 @@
 
 package org.opendatakit.aggregate.odktables.impl.api;
 
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.ext.ExceptionMapper;
-
 import org.opendatakit.aggregate.odktables.exception.AppNameMismatchException;
 import org.opendatakit.aggregate.odktables.exception.BadColumnNameException;
 import org.opendatakit.aggregate.odktables.exception.ETagMismatchException;
@@ -38,6 +32,12 @@ import org.opendatakit.aggregate.odktables.exception.TableNotFoundException;
 import org.opendatakit.aggregate.odktables.rest.ApiConstants;
 import org.opendatakit.aggregate.odktables.rest.entity.Error;
 import org.opendatakit.aggregate.odktables.rest.entity.Error.ErrorType;
+
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.ext.ExceptionMapper;
 
 public class ODKTablesExceptionMapper implements ExceptionMapper<ODKTablesException> {
 

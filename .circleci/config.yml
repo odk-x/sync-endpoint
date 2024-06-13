@@ -1,0 +1,86 @@
+# Use the latest 2.1 version of CircleCI pipeline process engine.
+# See: https://circleci.com/docs/configuration-reference
+version: 2.1
+# Define a job to be invoked later in a workflow.
+# See: https://circleci.com/docs/configuration-reference/#job
+jobs:
+  build-and-test:   
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large
+
+    steps:
+      - checkout
+      - run:
+          name: Setup java version
+          command: |
+            sudo apt update
+            sudo apt-get install openjdk-11-jdk
+            sudo update-java-alternatives --set java-1.11.0-openjdk-amd64
+            java -version
+      - run:
+          name: Compile and Run Tests Saving docker image as tar file
+          command: |
+            mvn clean install
+      - run:
+          name: Saving docker image as tar file
+          command: |
+            docker save -o ./sync-endpoint-docker-swarm/sync-endpoint.tar odk/sync-endpoint:latest
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+      - save_cache:
+          key: v1-odk/sync-endpoint
+          paths:
+            - .
+  deploy-jar:
+    docker:
+      - image: circleci/openjdk:11
+
+    steps:
+      - restore_cache:
+          key: v1-odk/sync-endpoint
+      - attach_workspace:
+          at: /home/circleci/project
+      - run:
+          name: Deploying jars to github maven repo 
+          command: |
+            mvn -gs settings.xml -N clean deploy
+            mvn -gs settings.xml -pl 'odkx-rest-interface' clean deploy -DskipTests
+
+  deploy-image:
+    machine:
+      image: ubuntu-2204:current
+    
+    steps:
+      - restore_cache:
+          key: v1-odk/sync-endpoint
+      - attach_workspace:
+          at: /home/circleci/project
+      - run:
+          name: Setting up ghcr repo
+          command: |
+            export CR_PAT=$GITHUB_TOKEN
+            echo $CR_PAT | docker login ghcr.io -u odk-x-bot --password-stdin
+            docker load -i ./sync-endpoint-docker-swarm/sync-endpoint.tar
+      - run:
+          name: Pushing the image to GHCR
+          command: |
+            docker tag odk/sync-endpoint:latest ghcr.io/odk-x/sync-endpoint:latest
+            docker push ghcr.io/odk-x/sync-endpoint:latest
+
+# Invoke jobs via workflows
+# See: https://circleci.com/docs/configuration-reference/#workflows
+workflows:
+  Build-Test-Deploy:
+    jobs:
+      - build-and-test
+      - deploy-jar:
+          requires:
+            - build-and-test
+      - deploy-image:
+          requires:
+            - build-and-test
+ 
