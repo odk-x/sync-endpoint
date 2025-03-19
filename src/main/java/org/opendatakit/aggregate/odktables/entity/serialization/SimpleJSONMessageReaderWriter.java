@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2012-2013 University of Washington
- *
+  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
@@ -16,30 +16,36 @@
 
 package org.opendatakit.aggregate.odktables.entity.serialization;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.nio.charset.Charset;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.opendatakit.aggregate.odktables.rest.ApiConstants;
 
 import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
-
-import org.opendatakit.aggregate.odktables.rest.ApiConstants;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.StringWriter;
+import java.io.PrintWriter;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.nio.charset.Charset;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Map;
+import java.util.zip.GZIPInputStream;
 
 @Consumes({MediaType.APPLICATION_JSON})
 @Produces({MediaType.APPLICATION_JSON})
@@ -56,7 +62,10 @@ public class SimpleJSONMessageReaderWriter<T> implements MessageBodyReader<T>,
       this.buffer = buffer;
     }
   };
-  
+
+  @Context
+  private HttpHeaders headers;
+
   @Context
   ServletContext context;
 
@@ -74,22 +83,58 @@ public class SimpleJSONMessageReaderWriter<T> implements MessageBodyReader<T>,
         && mediaType.getSubtype().equals(MediaType.APPLICATION_JSON_TYPE.getSubtype());
   }
 
-  @Override
-  public T readFrom(Class<T> aClass, Type genericType, Annotation[] annotations,
-      MediaType mediaType, MultivaluedMap<String, String> map, InputStream stream)
-      throws IOException, WebApplicationException {
-    String encoding = getCharsetAsString(mediaType);
-    try {
-      if (!encoding.equalsIgnoreCase(DEFAULT_ENCODING)) {
-        throw new IllegalArgumentException("charset for the request is not utf-8");
-      }
-      InputStreamReader r = new InputStreamReader(stream,
-          Charset.forName(ApiConstants.UTF8_ENCODE));
-      return mapper.readValue(r, aClass);
-    } catch (Exception e) {
-      throw new IOException(e);
+   @Override
+    public T readFrom(Class<T> aClass, Type genericType, Annotation[] annotations,
+        MediaType mediaType, MultivaluedMap<String, String> map, InputStream stream)
+        throws IOException, WebApplicationException {
+        String encoding = getCharsetAsString(mediaType);
+        String requestBody = "";
+
+        try {
+            if (!encoding.equalsIgnoreCase(DEFAULT_ENCODING)) {
+                throw new IllegalArgumentException("Charset for the request is not utf-8, received: " + encoding);
+            }
+
+            // Check if request body is compressed (gzip)
+            String contentEncoding = (headers != null && headers.getRequestHeaders().containsKey("Content-Encoding"))
+                    ? headers.getRequestHeaders().get("Content-Encoding").get(0) : null;
+            if ("gzip".equalsIgnoreCase(contentEncoding)) {
+                // System.out.println("Detected Gzipped request, decompressing...");
+                stream = new GZIPInputStream(stream);
+            }
+
+            // Read the InputStream into a String before parsing
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream, Charset.forName(ApiConstants.UTF8_ENCODE)));
+            StringBuilder rawInput = new StringBuilder();
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                rawInput.append(line).append("\n");
+            }
+            requestBody = rawInput.toString();
+
+            // System.out.println("Decompressed Request Body: " + requestBody);
+            return mapper.readValue(requestBody, aClass);
+        } catch (Exception e) {
+            System.err.println("Unexpected error while reading JSON: " + e.getMessage()); 
+            System.out.println("Received Encoding: " + encoding);            
+            if (headers != null) {
+                for (java.util.Map.Entry<String, List<String>> header : headers.getRequestHeaders().entrySet()) {
+                    System.out.println("Header: " + header.getKey() + " = " + String.join(", ", header.getValue()));
+                }
+            }
+            
+
+            // Log raw request body in case of an error
+            System.err.println("Raw Request Body (on error): " + requestBody);
+
+            // Log stack trace for debugging
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+            System.err.println(sw.toString());
+
+            throw new IOException("Error parsing JSON request: " + e.getMessage(), e);
+        }
     }
-  }
 
   @Override
   public void writeTo(T o, Class<?> aClass, Type type, Annotation[] annotations,
@@ -103,7 +148,7 @@ public class SimpleJSONMessageReaderWriter<T> implements MessageBodyReader<T>,
 
       /**
        * This is an optimization because of the weird way Wink handles request/response
-       * processing. I'd like to do post-processing on the constructed response, but 
+       * processing. I'd like to do post-processing on the constructed response, but
        * am forced to do pre-processing. We only do this for JSON response path.
        */
       byte[] bytes = null;
