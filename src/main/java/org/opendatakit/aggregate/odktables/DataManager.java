@@ -1601,9 +1601,11 @@ public class DataManager {
       
       Query query;
       if (unifiedSequenceValue == null) {
-        query = buildRowsFromBeginningQuery(logTable, entry, true);
+        query = logTable.query("DataManager.getChangesetsSinceBeginning", cc);
+        query.greaterThanOrEqual(DbLogTable.SEQUENCE_VALUE, entry.getAprioriDataSequenceValue());
       } else {
-        query = buildRowsSinceQuery(logTable, unifiedSequenceValue, true);
+        query = logTable.query("DataManager.getChangesetsSinceQuery", cc);
+        query.greaterThan(DbLogTable.SEQUENCE_VALUE, unifiedSequenceValue);
       }
       
       result = query.getDistinct(DbLogTable.DATA_ETAG_AT_MODIFICATION);
