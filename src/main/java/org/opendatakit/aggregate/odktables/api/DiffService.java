@@ -39,6 +39,7 @@ public interface DiffService {
   public static final String QUERY_SEQUENCE_VALUE = "sequence_value";
   public static final String CURSOR_PARAMETER = "cursor";
   public static final String FETCH_LIMIT = "fetchLimit";
+  public static final String GET_FULL_LOG = "getFullLog";
 
   /**
    *
@@ -54,7 +55,7 @@ public interface DiffService {
    */
   @GET
   @Produces({MediaType.APPLICATION_JSON, ApiConstants.MEDIA_TEXT_XML_UTF8, ApiConstants.MEDIA_APPLICATION_XML_UTF8})
-  public Response /*RowResourceList*/ getRowsSince(@QueryParam(QUERY_DATA_ETAG) String dataETag, @QueryParam(CURSOR_PARAMETER) String cursor, @QueryParam(FETCH_LIMIT) String fetchLimit)
+  public Response /*RowResourceList*/ getRowsSince(@QueryParam(QUERY_DATA_ETAG) String dataETag, @QueryParam(CURSOR_PARAMETER) String cursor, @QueryParam(FETCH_LIMIT) String fetchLimit, @QueryParam(GET_FULL_LOG) String getFullLog)
       throws ODKDatastoreException, PermissionDeniedException, InconsistentStateException, ODKTaskLockException, BadColumnNameException;
   
   /**

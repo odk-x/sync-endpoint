@@ -393,7 +393,7 @@ public class DataManagerTestIT {
     row = round3changes.get(0);
     expected.put(row.getRowId(), row);
 
-    WebsafeRows websafeRows = dm.getRowsSince(beginETag, null, 2000);
+    WebsafeRows websafeRows = dm.getRowsSince(beginETag, null, 2000, false);
     List<Row> actual = websafeRows.rows;
     Util.assertCollectionSameElements(expected.values(), actual);
   }
